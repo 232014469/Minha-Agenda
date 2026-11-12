@@ -1,7 +1,7 @@
 /**
  * O curso de quem usa o app. Para adaptar a outro curso, troque o CURSO e a
- * lista FLUXOGRAMA (um array por semestre). Sem fluxograma? Deixe
- * `FLUXOGRAMA = []` e a seção some da aba Adicionar matéria.
+ * lista FLUXOGRAMA_DO_CURSO (um array por semestre). Sem fluxograma? Use
+ * `comFluxograma: false` em app.js e a seção some da aba Adicionar matéria.
  *
  * Cada disciplina: d(código, nome, créditos, cor). As cores possíveis são
  * lilas, amarelo, verde, rosa, azul, laranja, turquesa e marrom. Optativas
@@ -12,13 +12,15 @@
  * rosa (optativas e Desenvolvimento de Software), laranja (projetos
  * integradores, estágio e TCC) e marrom (extensão).
  */
+import { APP } from './app'
+
 export const CURSO = 'Engenharia de Software · UnB Gama'
 
 /**
  * O botão "Importar do histórico" lê o PDF do SIGAA (UnB). Em outra
  * faculdade, deixe `false` para escondê-lo.
  */
-export const IMPORTAR_HISTORICO_SIGAA = true
+export const IMPORTAR_HISTORICO_SIGAA = APP.comFluxograma
 
 const d = (codigo, nome, creditos, cor) => ({
   id: codigo,
@@ -36,7 +38,7 @@ const optativa = (semestre, n) => ({
   cor: 'rosa',
 })
 
-export const FLUXOGRAMA = [
+const FLUXOGRAMA_DO_CURSO = [
   [
     d('MAT0025', 'Cálculo 1', 6, 'amarelo'),
     d('CIC0004', 'Algoritmos e Programação de Computadores', 6, 'amarelo'),
@@ -128,6 +130,9 @@ export const FLUXOGRAMA = [
     d('FGA0290', 'Trabalho de Conclusão de Curso 2', 6, 'laranja'),
   ],
 ]
+
+// O Study (versão geral) não tem fluxograma: a seção some sozinha.
+export const FLUXOGRAMA = APP.comFluxograma ? FLUXOGRAMA_DO_CURSO : []
 
 /**
  * Código antigo → código atual, para o importador do histórico reconhecer

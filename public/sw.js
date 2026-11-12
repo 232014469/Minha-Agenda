@@ -1,15 +1,18 @@
 // Deixa o app abrir sem internet. As páginas buscam primeiro a versão nova
 // na rede (e usam a guardada se estiver offline); os arquivos de código e
 // imagens, que mudam de nome a cada versão, vêm do cache.
-const CACHE = 'jeff-study-v1'
-const BASICOS = [
-  './',
-  './manifest.webmanifest',
-  './favicon.svg',
-  './icone-192.png',
-  './icone-512.png',
-  './apple-touch-icon.png',
-]
+//
+// O site tem duas versões (Jeff Study na raiz e Study em study/), cada uma
+// com o seu sw.js. Por isso o nome do cache leva o endereço da versão: uma
+// nunca apaga nem usa o cache da outra.
+const ESCOPO = self.registration.scope
+const CACHE = `${ESCOPO}#v1`
+const BASICOS = ['./', './manifest.webmanifest']
+
+/** Pedidos da outra versão (study/ dentro da raiz) não são deste app. */
+function eDaOutraVersao(url) {
+  return url.startsWith(`${ESCOPO}study/`)
+}
 
 self.addEventListener('install', (evento) => {
   self.skipWaiting()
@@ -23,7 +26,12 @@ self.addEventListener('activate', (evento) => {
       .then((nomes) =>
         Promise.all(
           nomes
-            .filter((nome) => nome !== CACHE)
+            .filter(
+              (nome) =>
+                nome !== CACHE &&
+                // Caches antigos desta versão, e o da primeira publicação.
+                (nome.startsWith(`${ESCOPO}#`) || nome === 'jeff-study-v1'),
+            )
             .map((nome) => caches.delete(nome)),
         ),
       )
@@ -36,7 +44,8 @@ self.addEventListener('fetch', (evento) => {
 
   if (
     pedido.method !== 'GET' ||
-    new URL(pedido.url).origin !== location.origin
+    new URL(pedido.url).origin !== location.origin ||
+    eDaOutraVersao(pedido.url)
   ) {
     return
   }
@@ -49,13 +58,13 @@ self.addEventListener('fetch', (evento) => {
           caches.open(CACHE).then((cache) => cache.put('./', copia))
           return resposta
         })
-        .catch(() => caches.match('./')),
+        .catch(() => caches.match('./', { cacheName: CACHE })),
     )
     return
   }
 
   evento.respondWith(
-    caches.match(pedido).then(
+    caches.match(pedido, { cacheName: CACHE }).then(
       (guardada) =>
         guardada ||
         fetch(pedido).then((resposta) => {

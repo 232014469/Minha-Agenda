@@ -19,5 +19,10 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  // O vite.config.js roda no Node (no build), não no navegador.
+  {
+    files: ['vite.config.js'],
+    languageOptions: { globals: globals.node },
+  },
   eslintConfigPrettier,
 ])
