@@ -1,0 +1,30 @@
+/* Cor de cada matéria: o painel usa estas variáveis. */
+.materia-cor-lilas {
+  --painel-fundo: var(--cor-lilas-claro);
+  --painel-forte: var(--cor-lilas);
+  --painel-destaque: var(--cor-lilas-escuro);
+}
+
+.materia-cor-amarelo {
+  --painel-fundo: var(--cor-amarelo-claro);
+  --painel-forte: var(--cor-amarelo);
+  --painel-destaque: #8a5a00;
+}
+
+.materia-cor-verde {
+  --painel-fundo: var(--cor-verde-claro);
+  --painel-forte: var(--cor-verde);
+  --painel-destaque: #4f5e3a;
+}
+
+.materia-cor-rosa {
+  --painel-fundo: var(--cor-rosa-claro);
+  --painel-forte: #f0b8aa;
+  --painel-destaque: #a1402c;
+}
+
+.materia-cor-azul {
+  --painel-fundo: var(--cor-azul-claro);
+  --painel-forte: #9fd3f2;
+  --painel-destaque: #1f5f8f;
+}

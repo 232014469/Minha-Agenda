@@ -1,0 +1,109 @@
+.materias-pagina {
+  display: grid;
+  gap: 20px;
+  max-width: 1000px;
+}
+
+.materias-pagina h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.materias-subtitulo {
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.materias-nova,
+.materias-backup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  background: var(--cor-papel);
+}
+
+.materias-backup {
+  display: grid;
+  align-items: start;
+}
+
+.materias-backup h2,
+.materias-backup p {
+  margin: 0;
+}
+
+.materias-backup-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.materias-nova label {
+  display: grid;
+  flex: 1 1 200px;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.materias-pagina input[type='text'] {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cor-texto);
+}
+
+.materias-pagina button {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 999px;
+  background: var(--cor-lilas);
+  color: var(--cor-texto);
+  font-weight: 700;
+}
+
+.materias-pagina button:disabled {
+  opacity: 0.6;
+}
+
+.materias-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.materias-cartao {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  background: var(--painel-fundo);
+}
+
+.materias-cartao h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.materias-cartao a {
+  color: var(--cor-texto);
+}
+
+.materias-cartao p {
+  margin: 0;
+}
+
+.materias-vazio {
+  margin: 0;
+  padding: 24px 0;
+}
