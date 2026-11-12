@@ -1,10 +1,13 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest'
 import {
+  CHAVE,
+  CORES,
   DADOS_VAZIOS,
   lerDados,
   proximoId,
   salvarDados,
+  semestreDaData,
   validarDados,
 } from './armazenamento'
 
@@ -26,9 +29,30 @@ describe('validarDados', () => {
   it('aceita dados corretos', () => {
     expect(validarDados({ materias: [materia], tarefas: [tarefa] })).toEqual({
       versao: 1,
+      semestre: null,
       materias: [materia],
       tarefas: [tarefa],
+      cursadas: [],
     })
+  })
+
+  it('aceita a situação Não realizada', () => {
+    const naoFeita = { ...tarefa, status: 'NAO_REALIZADA' }
+
+    expect(
+      validarDados({ materias: [materia], tarefas: [naoFeita] }).tarefas,
+    ).toEqual([naoFeita])
+  })
+
+  it('aceita as 8 cores de matéria', () => {
+    const materias = CORES.map((cor, indice) => ({
+      ...materia,
+      id: indice + 1,
+      cor,
+    }))
+
+    expect(CORES).toHaveLength(8)
+    expect(validarDados({ materias, tarefas: [] }).materias).toEqual(materias)
   })
 
   it('rejeita o que não tem a forma esperada', () => {
@@ -59,16 +83,60 @@ describe('lerDados e salvarDados', () => {
   })
 
   it('devolve o que foi salvo', () => {
-    const dados = { versao: 1, materias: [materia], tarefas: [tarefa] }
+    const dados = {
+      versao: 1,
+      semestre: '2026.2',
+      materias: [materia],
+      tarefas: [tarefa],
+      cursadas: ['MAT0025'],
+    }
 
     expect(salvarDados(dados)).toBe(true)
     expect(lerDados()).toEqual(dados)
   })
 
   it('ignora um conteúdo salvo que está corrompido', () => {
-    localStorage.setItem('minha-agenda.dados', '{não é json')
+    localStorage.setItem(CHAVE, '{não é json')
 
     expect(lerDados()).toEqual(DADOS_VAZIOS)
+  })
+})
+
+describe('semestres', () => {
+  it('calcula o semestre pela data', () => {
+    expect(semestreDaData(new Date(2026, 0, 10))).toBe('2026.1')
+    expect(semestreDaData(new Date(2026, 5, 30))).toBe('2026.1')
+    expect(semestreDaData(new Date(2026, 6, 1))).toBe('2026.2')
+    expect(semestreDaData(new Date(2026, 11, 31))).toBe('2026.2')
+  })
+
+  it('guarda o semestre escolhido e limpa o período da matéria', () => {
+    const resultado = validarDados({
+      semestre: '2026.2',
+      materias: [{ ...materia, periodo: ' 2026.1 ' }],
+      tarefas: [],
+      notas: [{ id: 1, texto: 'antigo', cor: 'rosa' }],
+    })
+
+    expect(resultado.semestre).toBe('2026.2')
+    expect(resultado.materias[0].periodo).toBe('2026.1')
+    expect(resultado).not.toHaveProperty('notas')
+  })
+})
+
+describe('cursadas', () => {
+  it('guarda os códigos sem repetir e ignora o que não é texto', () => {
+    expect(
+      validarDados({
+        materias: [],
+        tarefas: [],
+        cursadas: ['MAT0025', 'MAT0025', 42, 'OPT-7-1'],
+      }).cursadas,
+    ).toEqual(['MAT0025', 'OPT-7-1'])
+  })
+
+  it('backup antigo sem cursadas vira lista vazia', () => {
+    expect(validarDados({ materias: [], tarefas: [] }).cursadas).toEqual([])
   })
 })
 

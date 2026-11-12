@@ -5,9 +5,10 @@ import '@testing-library/jest-dom/vitest'
 import { MemoryRouter } from 'react-router'
 import DadosProvider from '../../dados/DadosProvider'
 import AgendaPage from './AgendaPage'
+import { CHAVE } from '../../dados/armazenamento'
 
 function guardar(dados) {
-  localStorage.setItem('minha-agenda.dados', JSON.stringify(dados))
+  localStorage.setItem(CHAVE, JSON.stringify(dados))
 }
 
 function abrir() {
@@ -44,10 +45,9 @@ describe('Agenda sem matérias', () => {
   it('pede para cadastrar uma matéria antes de adicionar tarefas', () => {
     abrir()
 
-    expect(screen.getByRole('link', { name: 'Matérias' })).toHaveAttribute(
-      'href',
-      '/materias',
-    )
+    expect(
+      screen.getByRole('link', { name: 'Adicionar matéria' }),
+    ).toHaveAttribute('href', '/adicionar-materia')
     expect(
       screen.queryByRole('button', { name: 'Adicionar' }),
     ).not.toBeInTheDocument()
@@ -58,6 +58,7 @@ describe('Agenda com dados', () => {
   beforeEach(() => {
     guardar({
       versao: 1,
+      semestre: '',
       materias: [{ id: 1, nome: 'Cálculo', periodo: '', cor: 'verde' }],
       tarefas: [
         {
@@ -94,9 +95,38 @@ describe('Agenda com dados', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: 'Adicionar' }))
 
-    const salvo = JSON.parse(localStorage.getItem('minha-agenda.dados'))
+    const salvo = JSON.parse(localStorage.getItem(CHAVE))
 
     expect(salvo.tarefas.map((tarefa) => tarefa.titulo)).toContain('Prova 2')
+  })
+
+  it('oferece os novos tipos e salva o escolhido', () => {
+    abrir()
+
+    const tipos = Array.from(
+      screen.getByLabelText('Tipo').querySelectorAll('option'),
+      (opcao) => opcao.textContent,
+    )
+
+    expect(tipos).toEqual(expect.arrayContaining(['Apresentação', 'Outro']))
+
+    fireEvent.change(screen.getByLabelText('Matéria'), {
+      target: { value: '1' },
+    })
+    fireEvent.change(screen.getByLabelText('Título'), {
+      target: { value: 'Seminário de grupo' },
+    })
+    fireEvent.change(screen.getByLabelText('Tipo'), {
+      target: { value: 'Apresentação' },
+    })
+    fireEvent.change(screen.getByLabelText('Data de entrega'), {
+      target: { value: iso(0).slice(0, 10) },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Adicionar' }))
+
+    const salvo = JSON.parse(localStorage.getItem(CHAVE))
+
+    expect(salvo.tarefas.at(-1).tipo).toBe('Apresentação')
   })
 
   it('avisa quando faltam campos', () => {
@@ -115,7 +145,7 @@ describe('Agenda com dados', () => {
       target: { value: 'CONCLUIDA' },
     })
 
-    const salvo = JSON.parse(localStorage.getItem('minha-agenda.dados'))
+    const salvo = JSON.parse(localStorage.getItem(CHAVE))
 
     expect(salvo.tarefas[0].status).toBe('CONCLUIDA')
   })

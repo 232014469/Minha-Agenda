@@ -69,13 +69,15 @@ describe('contarPorCategoria', () => {
       entrega(2, 'EM_ANDAMENTO', '2026-06-01T12:00:00'),
       entrega(3, 'CONCLUIDA', '2026-06-01T12:00:00'),
       entrega(4, 'CONCLUIDA', '2026-06-01T12:00:00'),
+      entrega(5, 'NAO_REALIZADA', '2026-06-01T12:00:00'),
     ]
 
     expect(contarPorCategoria(lista)).toEqual({
-      todas: 4,
+      todas: 5,
       afazer: 1,
       andamento: 1,
       concluida: 2,
+      naorealizada: 1,
     })
   })
 })

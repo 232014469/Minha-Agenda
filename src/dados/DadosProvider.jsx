@@ -1,32 +1,43 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { DadosContexto } from './contexto'
 import {
   CORES,
   lerDados,
   proximoId,
   salvarDados,
+  semestreDaData,
   validarDados,
 } from './armazenamento'
 
-/** Guarda as matérias e tarefas no navegador e entrega as ações para as telas. */
+/**
+ * Guarda as matérias e tarefas no navegador e entrega as ações para
+ * as telas. As telas recebem só o que é do semestre escolhido; o backup usa
+ * `todos`, com todos os semestres.
+ */
 export default function DadosProvider({ children }) {
   const [dados, setDados] = useState(lerDados)
-  const [salvou, setSalvou] = useState(true)
+  // Salva a cada mudança. Gravar de novo os mesmos dados não tem efeito
+  // nenhum, então pode rodar durante a renderização.
+  const salvou = useMemo(() => salvarDados(dados), [dados])
 
-  useEffect(() => {
-    setSalvou(salvarDados(dados))
-  }, [dados])
+  const escolherSemestre = useCallback((semestre) => {
+    setDados((atuais) => ({ ...atuais, semestre }))
+  }, [])
 
-  const adicionarMateria = useCallback(({ nome, periodo }) => {
+  /** Cadastra a matéria e passa a mostrar o semestre dela. */
+  const adicionarMateria = useCallback(({ nome, periodo, cor }) => {
     setDados((atuais) => ({
       ...atuais,
+      semestre: periodo || '',
       materias: [
         ...atuais.materias,
         {
           id: proximoId(atuais.materias),
           nome,
           periodo: periodo || '',
-          cor: CORES[atuais.materias.length % CORES.length],
+          cor: CORES.includes(cor)
+            ? cor
+            : CORES[atuais.materias.length % CORES.length],
         },
       ],
     }))
@@ -37,15 +48,6 @@ export default function DadosProvider({ children }) {
       ...atuais,
       materias: atuais.materias.filter((materia) => materia.id !== id),
       tarefas: atuais.tarefas.filter((tarefa) => tarefa.materiaId !== id),
-    }))
-  }, [])
-
-  const mudarCorDaMateria = useCallback((id, cor) => {
-    setDados((atuais) => ({
-      ...atuais,
-      materias: atuais.materias.map((materia) =>
-        materia.id === id ? { ...materia, cor } : materia,
-      ),
     }))
   }, [])
 
@@ -75,6 +77,24 @@ export default function DadosProvider({ children }) {
     }))
   }, [])
 
+  /** Marca ou desmarca uma disciplina do fluxograma como cursada. */
+  const alternarCursada = useCallback((id) => {
+    setDados((atuais) => ({
+      ...atuais,
+      cursadas: atuais.cursadas.includes(id)
+        ? atuais.cursadas.filter((item) => item !== id)
+        : [...atuais.cursadas, id],
+    }))
+  }, [])
+
+  /** Marca várias de uma vez (importação do histórico), sem desmarcar nada. */
+  const marcarCursadas = useCallback((ids) => {
+    setDados((atuais) => ({
+      ...atuais,
+      cursadas: [...new Set([...atuais.cursadas, ...ids])],
+    }))
+  }, [])
+
   /** Troca tudo pelo conteúdo de um backup. Devolve `false` se o arquivo não servir. */
   const importar = useCallback((conteudo) => {
     const validos = validarDados(conteudo)
@@ -85,25 +105,62 @@ export default function DadosProvider({ children }) {
     return true
   }, [])
 
+  const semestre = dados.semestre ?? semestreDaData()
+
+  const doSemestre = useMemo(() => {
+    const materias = dados.materias.filter(
+      (materia) => materia.periodo === semestre,
+    )
+    const ids = new Set(materias.map((materia) => materia.id))
+
+    return {
+      materias,
+      tarefas: dados.tarefas.filter((tarefa) => ids.has(tarefa.materiaId)),
+    }
+  }, [dados, semestre])
+
+  // O semestre de hoje sempre aparece na lista, para começar um novo.
+  const semestres = useMemo(
+    () =>
+      [
+        ...new Set([
+          semestreDaData(),
+          semestre,
+          ...dados.materias.map((materia) => materia.periodo),
+        ]),
+      ].sort((a, b) => (a && b ? b.localeCompare(a) : a ? -1 : 1)),
+    [dados.materias, semestre],
+  )
+
   const valor = useMemo(
     () => ({
-      materias: dados.materias,
-      tarefas: dados.tarefas,
+      ...doSemestre,
+      todos: dados,
+      cursadas: dados.cursadas,
+      alternarCursada,
+      marcarCursadas,
+      semestre,
+      semestres,
+      escolherSemestre,
       salvou,
       adicionarMateria,
       removerMateria,
-      mudarCorDaMateria,
       adicionarTarefa,
       alterarStatus,
       removerTarefa,
       importar,
     }),
     [
+      doSemestre,
       dados,
+      semestre,
+      semestres,
+      escolherSemestre,
       salvou,
+      alternarCursada,
+      marcarCursadas,
       adicionarMateria,
       removerMateria,
-      mudarCorDaMateria,
       adicionarTarefa,
       alterarStatus,
       removerTarefa,

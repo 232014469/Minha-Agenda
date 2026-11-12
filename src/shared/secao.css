@@ -1,0 +1,42 @@
+/* Caixa de seção usada nas telas (ex.: "Nova matéria" e "Fluxograma"),
+   para todas terem a mesma borda, o mesmo título e o mesmo botão. */
+.secao-caixa {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  background: var(--cor-papel);
+}
+
+.secao-caixa > header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.secao-caixa > header p {
+  margin: 4px 0 0;
+  color: var(--cor-texto-suave);
+}
+
+.secao-botao {
+  justify-self: start;
+  padding: 6px 14px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 999px;
+  background: var(--cor-lilas);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secao-botao:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.secao-botao:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}

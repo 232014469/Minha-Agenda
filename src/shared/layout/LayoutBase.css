@@ -37,11 +37,18 @@
   pointer-events: none;
 }
 
-.layout-marca {
+/* O nome no menu e o título de cada tela têm o mesmo tamanho e ficam na mesma
+   altura: os dois começam 40px abaixo do topo. */
+.layout-marca,
+.titulo-pagina {
   margin: 0;
   font-family: var(--fonte-titulo);
   font-size: 2rem;
   font-weight: 700;
+  line-height: 1.2;
+}
+
+.layout-marca {
   text-align: center;
 }
 
@@ -92,6 +99,99 @@
   display: none;
 }
 
+.layout-so-computador {
+  display: inline;
+}
+
+/* Quadro "Esta semana": post-its só para ver, abaixo dos links */
+.semana {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding-top: 18px;
+  border-top: 2px dashed #d7cfbd;
+}
+
+.semana h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.semana-vazia {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+}
+
+.semana-lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  margin: 0;
+  padding: 4px 4px 8px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.semana-postit {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 70px;
+  padding: 6px;
+  border-radius: 2px 2px 8px 2px;
+  background: var(--painel-forte);
+  box-shadow: 0 3px 6px rgb(67 45 30 / 0.18);
+  cursor: default;
+  transform: rotate(-1.5deg);
+}
+
+.semana-postit:nth-child(even) {
+  transform: rotate(1.2deg);
+}
+
+.semana-hoje {
+  outline: 2px solid var(--cor-texto);
+}
+
+.semana-dia {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.semana-titulo {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.semana-materia {
+  margin-top: auto;
+  overflow: hidden;
+  color: var(--painel-destaque);
+  font-size: 0.6rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .semana-postit,
+  .semana-postit:nth-child(even) {
+    transform: none;
+  }
+}
+
 /* Coluna da direita: barra do topo e conteúdo */
 .layout-coluna {
   position: relative;
@@ -128,6 +228,7 @@
 }
 
 .layout-topo,
+.layout-semestre,
 .layout-conteudo {
   position: relative;
   z-index: 1;
@@ -205,11 +306,43 @@
 .layout-conteudo {
   flex: 1;
   min-width: 0;
-  padding: 8px clamp(20px, 4vw, 48px) 40px;
+  padding: 40px clamp(20px, 4vw, 48px) 40px;
 }
 
-.layout-conteudo h1 {
-  font-family: var(--fonte-titulo);
+/* Semestre que as telas mostram: no canto, sem empurrar o título para baixo */
+.layout-semestre {
+  position: absolute;
+  top: 43px;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 0 clamp(20px, 4vw, 48px);
+  font-weight: 700;
+}
+
+.layout-semestre select {
+  padding: 4px 22px 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent
+    url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='12'%20viewBox='0%200%2012%2012'%3E%3Cpath%20d='M2%204l4%204%204-4'%20fill='none'%20stroke='%23432d1e'%20stroke-width='1.8'%20stroke-linecap='round'%20stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 6px center;
+  color: var(--cor-texto);
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+.layout-semestre select:hover {
+  background-color: rgb(67 45 30 / 0.08);
+}
+
+.layout-semestre select:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
 }
 
 /* Celular: o menu vira uma barra na parte de baixo */
@@ -234,8 +367,18 @@
 
   .layout-menu::after,
   .layout-marca-bloco,
+  .semana,
   .layout-engrenagem {
     display: none;
+  }
+
+  .layout-semestre {
+    position: static;
+    padding-top: 16px;
+  }
+
+  .layout-conteudo {
+    padding-top: 12px;
   }
 
   .layout-links {
@@ -250,6 +393,10 @@
 
   .layout-so-celular {
     display: block;
+  }
+
+  .layout-so-computador {
+    display: none;
   }
 
   .layout-links a {

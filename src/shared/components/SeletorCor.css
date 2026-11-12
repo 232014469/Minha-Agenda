@@ -1,0 +1,50 @@
+/* Oito bolinhas de cor, uma para cada opção */
+.seletor-cor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.seletor-cor legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-weight: 700;
+}
+
+.seletor-cor-opcao {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.seletor-cor-opcao input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.seletor-cor-opcao span {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--cor-borda-forte);
+  border-radius: 50%;
+  background: var(--painel-forte);
+}
+
+.seletor-cor-opcao input:checked + span {
+  border-color: var(--cor-texto);
+  box-shadow:
+    0 0 0 3px var(--cor-papel),
+    0 0 0 5px var(--painel-destaque);
+}
+
+.seletor-cor-opcao input:focus-visible + span {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 4px;
+}

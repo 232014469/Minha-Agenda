@@ -19,7 +19,7 @@
 }
 
 .agenda-subtitulo {
-  margin: -12px 0 20px;
+  margin: 8px 0 20px;
 }
 
 .agenda-grade {
@@ -528,7 +528,7 @@
 
 .agenda-kanban {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   align-items: start;
 }
@@ -682,27 +682,9 @@
 
 .agenda-mover {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  font-size: 14px;
+  justify-content: flex-end;
+  margin: -4px -6px -6px 0;
   color: #554e44;
-}
-
-.agenda-mover select {
-  flex: 1;
-  min-height: 36px;
-  border: 2px solid #e2ddcf;
-  border-radius: 8px;
-  background: #fcf9f1;
-  color: #30251e;
-  font: inherit;
-  padding: 4px 8px;
-}
-
-.agenda-mover select:focus-visible {
-  outline: 3px solid #72528e;
-  outline-offset: 4px;
 }
 
 @media (max-width: 900px) {

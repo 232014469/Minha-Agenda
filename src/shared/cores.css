@@ -28,3 +28,21 @@
   --painel-forte: #9fd3f2;
   --painel-destaque: #1f5f8f;
 }
+
+.materia-cor-laranja {
+  --painel-fundo: var(--cor-laranja-claro);
+  --painel-forte: #f5b27a;
+  --painel-destaque: #9a4a12;
+}
+
+.materia-cor-turquesa {
+  --painel-fundo: var(--cor-turquesa-claro);
+  --painel-forte: #86cfc4;
+  --painel-destaque: #1d6b61;
+}
+
+.materia-cor-marrom {
+  --painel-fundo: var(--cor-marrom-claro);
+  --painel-forte: #c4a383;
+  --painel-destaque: #6b4a2e;
+}

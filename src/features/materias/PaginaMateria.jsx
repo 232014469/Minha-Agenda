@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
-import { CORES } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import '../../shared/cores.css'
@@ -19,20 +18,14 @@ const FILTROS = [
   { chave: 'afazer', titulo: 'A fazer' },
   { chave: 'andamento', titulo: 'Em andamento' },
   { chave: 'concluida', titulo: 'Concluídas' },
+  { chave: 'naorealizada', titulo: 'Não realizadas' },
 ]
 
 const SITUACAO = {
   afazer: { texto: 'A fazer', classe: 'rosa' },
   andamento: { texto: 'Em andamento', classe: 'amarelo' },
   concluida: { texto: 'Concluída', classe: 'verde' },
-}
-
-const NOMES_DAS_CORES = {
-  lilas: 'Lilás',
-  amarelo: 'Amarelo',
-  verde: 'Verde',
-  rosa: 'Rosa',
-  azul: 'Azul',
+  naorealizada: { texto: 'Não realizada', classe: 'cinza' },
 }
 
 const formatarData = (prazo) =>
@@ -106,19 +99,13 @@ function Entrega({ entrega, numero, agora, aoAlternar, aoExcluir }) {
 export default function PaginaMateria() {
   const { id } = useParams()
   const navegar = useNavigate()
-  const {
-    materias,
-    tarefas,
-    alterarStatus,
-    removerTarefa,
-    removerMateria,
-    mudarCorDaMateria,
-  } = useDados()
+  const { materias, tarefas, alterarStatus, removerTarefa, removerMateria } =
+    useDados()
   const [filtro, setFiltro] = useState('todas')
   const [confirmando, setConfirmando] = useState(false)
   const materia = materias.find((item) => String(item.id) === id)
 
-  if (!materia) return <Navigate to="/materias" replace />
+  if (!materia) return <Navigate to="/dashboard" replace />
 
   const entregas = tarefas.filter((tarefa) => tarefa.materiaId === materia.id)
   const agora = new Date()
@@ -140,14 +127,14 @@ export default function PaginaMateria() {
 
   function excluirMateria() {
     removerMateria(materia.id)
-    navegar('/materias', { replace: true })
+    navegar('/dashboard', { replace: true })
   }
 
   return (
     <div className="disciplina-layout">
       <div className="disciplina-main">
-        <Link className="disciplina-voltar" to="/materias">
-          ← Voltar para as matérias
+        <Link className="disciplina-voltar" to="/dashboard">
+          ← Voltar para o Dashboard
         </Link>
         <div className={`disciplina-pagina materia-cor-${materia.cor}`}>
           <header className="disciplina-cabecalho">
@@ -156,7 +143,7 @@ export default function PaginaMateria() {
             </span>
             <div className="disciplina-cabecalho-texto">
               <h1>{materia.nome}</h1>
-              {materia.periodo && <p>Período letivo · {materia.periodo}</p>}
+              {materia.periodo && <p>Semestre · {materia.periodo}</p>}
               <BarraProgresso
                 concluidas={contagem.concluida}
                 total={contagem.todas}
@@ -219,21 +206,6 @@ export default function PaginaMateria() {
             aria-label="Ajustes da matéria"
           >
             <div className="disciplina-ajustes">
-              <label>
-                Cor da matéria
-                <select
-                  value={materia.cor}
-                  onChange={(evento) =>
-                    mudarCorDaMateria(materia.id, evento.target.value)
-                  }
-                >
-                  {CORES.map((cor) => (
-                    <option key={cor} value={cor}>
-                      {NOMES_DAS_CORES[cor]}
-                    </option>
-                  ))}
-                </select>
-              </label>
               {confirmando ? (
                 <div className="disciplina-confirmar" role="alert">
                   <span>

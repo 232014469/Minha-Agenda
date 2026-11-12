@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
+import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
+import MenuDeOpcoes from '../../shared/components/MenuDeOpcoes'
 import {
   agruparPorDia,
   categorizarEntrega,
@@ -9,6 +11,7 @@ import {
   descreverSemana,
   diasDaSemana,
   ehAtrasada,
+  ehNaoRealizada,
   ehConcluida,
   formatarHora,
   formatarPrazoDdMm,
@@ -35,10 +38,12 @@ const COLUNAS = [
   { chave: 'A_FAZER', status: 'A_FAZER', titulo: 'A fazer' },
   { chave: 'EM_ANDAMENTO', status: 'EM_ANDAMENTO', titulo: 'Em andamento' },
   { chave: 'CONCLUIDAS', status: 'CONCLUIDA', titulo: 'Concluídas' },
+  { chave: 'NAO_REALIZADA', status: 'NAO_REALIZADA', titulo: 'Não realizadas' },
 ]
 
 function descreverStatus(item) {
   if (ehConcluida(item.status)) return 'concluída'
+  if (ehNaoRealizada(item.status)) return 'não realizada'
   if (ehAtrasada(item)) return 'atrasada'
 
   return 'a fazer'
@@ -47,7 +52,9 @@ function descreverStatus(item) {
 function Chip({ item, cor }) {
   const classes = ['agenda-chip', `agenda-chip-${cor}`]
 
-  if (ehConcluida(item.status)) classes.push('agenda-chip-concluida')
+  if (ehConcluida(item.status) || ehNaoRealizada(item.status)) {
+    classes.push('agenda-chip-concluida')
+  }
   if (ehAtrasada(item)) classes.push('agenda-chip-atrasada')
 
   return (
@@ -232,9 +239,6 @@ function Filtro({ disciplinas, ocultas, corDe, aoAlternar }) {
   )
 }
 
-// Sem backend para criar atividades ainda: o formulário do protótipo aparece desativado.
-const TIPOS = ['Entrega de trabalho', 'Prova', 'Lista de exercícios', 'Leitura']
-
 function AdicionarTarefa({ materias, aoAdicionar }) {
   const [materiaId, setMateriaId] = useState('')
   const [titulo, setTitulo] = useState('')
@@ -248,8 +252,8 @@ function AdicionarTarefa({ materias, aoAdicionar }) {
       <section className="agenda-caixa agenda-adicionar">
         <h2>Adicionar tarefas</h2>
         <p className="agenda-nota">
-          Cadastre uma matéria primeiro, em <Link to="/materias">Matérias</Link>
-          .
+          Cadastre uma matéria primeiro, em{' '}
+          <Link to="/adicionar-materia">Adicionar matéria</Link>.
         </p>
       </section>
     )
@@ -439,22 +443,17 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
                             </span>
                           )}
                         </div>
-                        <label className="agenda-mover">
-                          <span aria-hidden="true">Mover para</span>
-                          <select
-                            aria-label={`Mover ${item.titulo} para`}
-                            value={coluna.status}
-                            onChange={(evento) =>
-                              mover(item.id, evento.target.value)
-                            }
-                          >
-                            {COLUNAS.map((opcao) => (
-                              <option key={opcao.status} value={opcao.status}>
-                                {opcao.titulo}
-                              </option>
-                            ))}
-                          </select>
-                        </label>
+                        <span className="agenda-mover">
+                          <MenuDeOpcoes
+                            rotulo={`Mover ${item.titulo} para`}
+                            valor={coluna.status}
+                            opcoes={COLUNAS.map((opcao) => ({
+                              valor: opcao.status,
+                              titulo: opcao.titulo,
+                            }))}
+                            aoMudar={(status) => mover(item.id, status)}
+                          />
+                        </span>
                       </li>
                     )
                   })}
@@ -694,7 +693,7 @@ export default function AgendaPage() {
 
   return (
     <div className="agenda-pagina">
-      <h1>Agenda</h1>
+      <h1 className="titulo-pagina">Agenda</h1>
       <p className="agenda-subtitulo">
         Organize seus compromissos acadêmicos e nunca perca um prazo.
       </p>

@@ -1,0 +1,219 @@
+.fluxo-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fluxo-progresso {
+  display: grid;
+  flex: 0 1 340px;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+/* Dez colunas lado a lado; em tela estreita, rola para o lado */
+.fluxo-rolagem {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.fluxo-grade {
+  display: grid;
+  grid-template-columns: repeat(10, 136px);
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fluxo-coluna {
+  min-width: 0;
+}
+
+.fluxo-coluna h3 {
+  display: grid;
+  margin: 0 0 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--cor-menu);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.fluxo-coluna h3 span {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-texto);
+  font-size: 0.75rem;
+}
+
+.fluxo-coluna ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Disciplina: clarinha e tracejada até ser cursada; cheia depois */
+.fluxo-disciplina {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  min-height: 112px;
+  box-sizing: border-box;
+  padding: 8px;
+  border: 2px dashed var(--painel-forte);
+  border-radius: 4px 4px 10px 4px;
+  background: var(--painel-fundo);
+}
+
+.fluxo-cursada {
+  border-style: solid;
+  background: var(--painel-forte);
+}
+
+.fluxo-cabeca {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.fluxo-codigo {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.fluxo-nome {
+  font-size: 0.72rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.fluxo-etiqueta {
+  align-self: flex-start;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--cor-lilas-escuro);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.fluxo-rodape {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-top: auto;
+}
+
+.fluxo-creditos {
+  color: var(--cor-texto-suave);
+  font-size: 0.68rem;
+  white-space: nowrap;
+}
+
+.fluxo-cursada .fluxo-creditos {
+  color: var(--cor-texto);
+}
+
+.fluxo-rodape button {
+  min-height: 0;
+  padding: 3px 6px;
+  white-space: nowrap;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.6);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fluxo-rodape button:hover {
+  background: rgb(255 255 255 / 0.9);
+}
+
+.fluxo-cursada .fluxo-marcar {
+  background: rgb(255 255 255 / 0.75);
+  color: var(--painel-destaque);
+}
+
+.fluxo-marcar {
+  flex: 1;
+  min-width: 0;
+}
+
+.fluxo-rodape .fluxo-cursar {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.fluxo-rodape button:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 1px;
+}
+
+/* Importar do histórico */
+.fluxo-abrir-importar {
+  margin-top: 10px;
+}
+
+.fluxo-botao-claro {
+  background: var(--cor-papel);
+}
+
+.fluxo-importar {
+  display: grid;
+  gap: 6px;
+  max-width: 760px;
+  padding: 14px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: 12px;
+  background: var(--cor-fundo);
+}
+
+.fluxo-importar label {
+  font-weight: 700;
+}
+
+.fluxo-ajuda,
+.fluxo-importar-resultado {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.fluxo-ajuda {
+  color: var(--cor-texto-suave);
+}
+
+.fluxo-importar textarea {
+  padding: 8px 10px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.8rem;
+  resize: vertical;
+}
+
+.fluxo-importar-acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.fluxo-importar textarea:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}

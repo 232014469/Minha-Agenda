@@ -24,14 +24,20 @@ export function ehEmAndamento(status) {
   return normalizado === 'EM_ANDAMENTO' || normalizado === 'EM ANDAMENTO'
 }
 
+/** Tarefa que não deu para entregar: sai das pendentes e não conta como atrasada. */
+export function ehNaoRealizada(status) {
+  return status?.trim().toUpperCase() === 'NAO_REALIZADA'
+}
+
 export function ehAtrasada(item) {
   if (!item?.prazo) return false
-  if (ehConcluida(item.status)) return false
+  if (ehConcluida(item.status) || ehNaoRealizada(item.status)) return false
   return new Date(item.prazo) < new Date()
 }
 
 export function categorizarEntrega(item) {
   if (ehConcluida(item.status)) return 'CONCLUIDAS'
+  if (ehNaoRealizada(item.status)) return 'NAO_REALIZADA'
   if (ehEmAndamento(item.status)) return 'EM_ANDAMENTO'
   return 'A_FAZER'
 }
@@ -160,9 +166,10 @@ export function formatarHora(dataIso) {
   return `${hora}:${minuto}`
 }
 
-/** Situação da entrega em texto: Concluída, Atrasada, Em andamento ou A fazer. */
+/** Situação da entrega em texto: Concluída, Não realizada, Atrasada, Em andamento ou A fazer. */
 export function rotuloDoStatus(item) {
   if (ehConcluida(item.status)) return 'Concluída'
+  if (ehNaoRealizada(item.status)) return 'Não realizada'
   if (ehAtrasada(item)) return 'Atrasada'
   if (ehEmAndamento(item.status)) return 'Em andamento'
 

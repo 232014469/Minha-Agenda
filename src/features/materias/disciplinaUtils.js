@@ -1,8 +1,9 @@
 const UM_DIA = 24 * 60 * 60 * 1000
 
-/** Situação de uma entrega para a lista: 'concluida', 'andamento' ou 'afazer'. */
+/** Situação de uma entrega para a lista: 'concluida', 'naorealizada', 'andamento' ou 'afazer'. */
 export function categoriaDaEntrega(entrega) {
   if (entrega.status === 'CONCLUIDA') return 'concluida'
+  if (entrega.status === 'NAO_REALIZADA') return 'naorealizada'
   if (entrega.status === 'EM_ANDAMENTO') return 'andamento'
   return 'afazer'
 }
@@ -10,7 +11,7 @@ export function categoriaDaEntrega(entrega) {
 /** Atrasada é a entrega com prazo vencido que ainda não foi concluída. */
 export function estaAtrasada(entrega, agora = new Date()) {
   return (
-    categoriaDaEntrega(entrega) !== 'concluida' &&
+    ['afazer', 'andamento'].includes(categoriaDaEntrega(entrega)) &&
     new Date(entrega.prazo) < agora
   )
 }
@@ -21,7 +22,9 @@ export function estaAtrasada(entrega, agora = new Date()) {
  */
 export function ordenarPorUrgencia(entregas, agora = new Date()) {
   const peso = (entrega) => {
-    if (categoriaDaEntrega(entrega) === 'concluida') return 2
+    if (['concluida', 'naorealizada'].includes(categoriaDaEntrega(entrega))) {
+      return 2
+    }
 
     return estaAtrasada(entrega, agora) ? 0 : 1
   }
@@ -39,6 +42,7 @@ export function contarPorCategoria(entregas) {
     afazer: 0,
     andamento: 0,
     concluida: 0,
+    naorealizada: 0,
   }
 
   for (const entrega of entregas) {

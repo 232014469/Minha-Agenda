@@ -1,0 +1,340 @@
+.postit-pagina {
+  display: grid;
+  gap: 20px;
+}
+
+.postit-pagina h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.postit-subtitulo {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.postit-subtitulo a {
+  color: var(--cor-texto);
+  font-weight: 700;
+}
+
+.postit-pagina button {
+  font: inherit;
+}
+
+.postit-pagina a:focus-visible,
+.postit-pagina button:focus-visible,
+.postit-pagina select:focus-visible,
+.postit-pagina input:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}
+
+/* Blocos: um por matéria, com folhas empilhadas por baixo */
+.postit-blocos {
+  display: grid;
+  gap: 12px;
+}
+
+.postit-blocos ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0 0 4px;
+  list-style: none;
+}
+
+/* Todos do mesmo tamanho; o nome quebra só entre palavras, em até 3 linhas */
+.postit-bloco {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 124px;
+  height: 64px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 2px 2px 8px 2px;
+  background: var(--painel-forte);
+  box-shadow:
+    2px 2px 0 var(--painel-fundo),
+    4px 4px 0 var(--painel-forte),
+    4px 4px 6px rgb(67 45 30 / 0.2);
+  color: var(--cor-texto);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  cursor: grab;
+}
+
+.postit-bloco-nome {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.postit-bloco:active {
+  cursor: grabbing;
+}
+
+.postit-bloco:hover {
+  filter: brightness(0.97);
+}
+
+/* Áreas: Atividades e Concluídas grandes, Não realizadas menor */
+.postit-areas {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.postit-area {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 200px;
+  padding: 14px;
+  border: 2px dashed var(--cor-borda-forte);
+  border-radius: 16px;
+  background: var(--cor-papel);
+}
+
+.postit-area h2 span {
+  color: var(--cor-texto-suave);
+  font-weight: 400;
+}
+
+.postit-area-naorealizadas {
+  background: #f3efe8;
+}
+
+.postit-area-alvo {
+  border-color: var(--cor-lilas-escuro);
+  background: var(--cor-lilas-claro);
+}
+
+.postit-vazio {
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.postit-grupos {
+  display: grid;
+  gap: 10px;
+}
+
+/* Cada fileira é uma matéria; uma linha fina separa uma da outra */
+.postit-grupos .postit-lista + .postit-lista {
+  padding-top: 12px;
+  border-top: 1px dashed var(--cor-borda);
+}
+
+.postit-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 68px);
+  gap: 10px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+}
+
+/* Post-it */
+.postit {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  width: 68px;
+  min-height: 68px;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: 2px 2px 8px 2px;
+  background: var(--painel-forte);
+  box-shadow: 0 3px 6px rgb(67 45 30 / 0.18);
+  cursor: grab;
+  transform: rotate(-1deg);
+}
+
+.postit:nth-child(even) {
+  transform: rotate(0.8deg);
+}
+
+.postit-area-concluidas .postit,
+.postit-area-naorealizadas .postit {
+  opacity: 0.75;
+}
+
+.postit-area-concluidas .postit-titulo {
+  text-decoration: line-through;
+}
+
+.postit-atrasado {
+  outline: 2px solid var(--cor-alerta);
+}
+
+.postit-escondido {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.postit-materia {
+  justify-self: start;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.55);
+  color: var(--painel-destaque);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.postit-titulo {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.postit-info {
+  margin: 0;
+  font-size: 0.66rem;
+}
+
+.postit-info strong {
+  color: var(--cor-alerta);
+}
+
+.postit-mover {
+  display: flex;
+  justify-content: flex-end;
+  margin: auto -3px -3px 0;
+}
+
+.postit-mover .menu-opcoes {
+  width: 22px;
+  height: 22px;
+}
+
+.postit select,
+.postit input {
+  min-width: 0;
+  padding: 4px 6px;
+  border: 1px solid rgb(67 45 30 / 0.3);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.8);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+/* Post-it em branco: só a cor da matéria, esperando o texto */
+.postit-branco {
+  background: var(--painel-fundo);
+  border: 2px dashed var(--painel-forte);
+  cursor: default;
+  transform: none;
+}
+
+.postit-abrir {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Aberto para escrever, o post-it em branco ganha espaço para o formulário */
+.postit-aberto {
+  grid-column: span 3;
+  width: auto;
+  min-width: 0;
+}
+
+.postit-aberto .postit-materia {
+  font-size: 0.72rem;
+}
+
+.postit-form input,
+.postit-form select {
+  font-size: 0.8rem;
+}
+
+.postit-form {
+  display: grid;
+  gap: 4px;
+}
+
+.postit-form label {
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.postit-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.postit-acoes button {
+  padding: 4px 10px;
+  border: 1px solid rgb(67 45 30 / 0.3);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.7);
+  color: var(--cor-texto);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.postit-acoes button:disabled {
+  opacity: 0.6;
+}
+
+@media (max-width: 1000px) {
+  .postit-areas {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .postit-area-naorealizadas {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .postit-areas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .postit-area {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postit,
+  .postit:nth-child(even) {
+    transform: none;
+  }
+}

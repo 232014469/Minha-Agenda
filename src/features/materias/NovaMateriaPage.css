@@ -1,0 +1,45 @@
+.materias-pagina {
+  display: grid;
+  gap: 20px;
+}
+
+.materias-subtitulo {
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.materias-nova {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+}
+
+.materias-nova > label {
+  display: grid;
+  flex: 1 1 200px;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.materias-nova .seletor-cor {
+  flex: 1 1 100%;
+}
+
+.materias-nova input[type='text'] {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cor-texto);
+}
+
+.materias-adicionada {
+  margin: 0;
+}
+
+.materias-adicionada a {
+  color: var(--cor-texto);
+  font-weight: 700;
+}
