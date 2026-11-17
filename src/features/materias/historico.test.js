@@ -223,9 +223,13 @@ describe('lerHistoricoGeral (qualquer curso)', () => {
     })
     expect(lido.integralizado.total).toBe(210)
     expect(lido.cursadas).toEqual([
-      { codigo: 'CCA0015', nome: 'CONTABILIDADE GERAL 1' },
-      { codigo: 'EST0023', nome: 'PROBABILIDADE E ESTATÍSTICA' },
-      { codigo: 'MAT0025', nome: 'CÁLCULO 1' },
+      { codigo: 'CCA0015', nome: 'CONTABILIDADE GERAL 1', tipo: 'obrigatoria' },
+      {
+        codigo: 'EST0023',
+        nome: 'PROBABILIDADE E ESTATÍSTICA',
+        tipo: 'obrigatoria',
+      },
+      { codigo: 'MAT0025', nome: 'CÁLCULO 1', tipo: 'obrigatoria' },
     ])
     expect(lido.pendentes).toEqual([
       { codigo: 'CCA0077', nome: 'CONTABILIDADE GERAL 2', ch: 60 },
@@ -236,6 +240,18 @@ describe('lerHistoricoGeral (qualquer curso)', () => {
       },
       { codigo: 'FDD0015', nome: 'LEGISLAÇÃO SOCIAL', ch: 60 },
     ])
+  })
+
+  it('separa obrigatórias, optativas e eletivas pela marca do SIGAA', () => {
+    const tipos = Object.fromEntries(
+      lerHistoricoGeral(COLUNAS_LADO_A_LADO).cursadas.map((item) => [
+        item.codigo,
+        item.tipo,
+      ]),
+    )
+
+    expect(tipos.ADM0192).toBe('eletiva')
+    expect(tipos.CIC0004).toBe('obrigatoria')
   })
 
   it('não guarda nada pessoal', () => {

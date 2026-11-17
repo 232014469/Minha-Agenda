@@ -236,11 +236,37 @@
 
 .curso-totais li {
   display: grid;
-  gap: 4px;
-  padding: 10px 12px;
+  gap: 6px;
+  padding: 10px 14px;
+  border-left: 6px solid var(--painel-forte);
   border-radius: 10px;
   background: var(--painel-fundo);
   font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.curso-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+}
+
+.curso-legenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.curso-legenda li::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--painel-forte);
 }
 
 .curso-subtitulo,
@@ -256,7 +282,7 @@
 .curso-cursadas summary span {
   padding: 0 8px;
   border-radius: 999px;
-  background: var(--painel-forte);
+  background: var(--cor-borda);
   font-size: 0.8rem;
 }
 
@@ -275,22 +301,38 @@
 
 .curso-lista {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  align-items: start;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .curso-disciplina {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  gap: 3px;
   min-width: 0;
-  padding: 8px 10px;
-  border: 2px dashed var(--painel-forte);
-  border-radius: 4px 4px 10px 4px;
+  padding: 7px 10px 8px;
+  border: 1px solid var(--painel-forte);
+  border-left-width: 5px;
+  border-radius: 8px;
   background: var(--painel-fundo);
+}
+
+.curso-cursada {
+  background: var(--painel-forte);
+}
+
+.curso-cabeca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.curso-cabeca .fluxo-creditos {
+  margin-right: auto;
+  color: var(--cor-texto);
 }
 
 .curso-nome {
@@ -299,23 +341,19 @@
   overflow-wrap: anywhere;
 }
 
-.curso-rodape {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-  margin-top: auto;
+.curso-disciplina .fluxo-etiqueta {
+  justify-self: start;
 }
 
 .curso-cursar {
-  width: 24px;
-  height: 24px;
-  margin-left: auto;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.7);
-  color: var(--cor-texto);
+  background: #fff;
+  color: var(--painel-destaque);
   font: inherit;
   font-weight: 700;
   line-height: 1;
@@ -323,7 +361,7 @@
 }
 
 .curso-cursar:hover {
-  background: #fff;
+  background: var(--painel-forte);
 }
 
 .curso-cursar:focus-visible {

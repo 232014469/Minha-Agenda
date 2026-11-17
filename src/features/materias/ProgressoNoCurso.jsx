@@ -2,20 +2,28 @@ import { useDados } from '../../dados/useDados'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import { nomeBonito } from './historico'
 
+/** Uma cor para cada tipo de disciplina, a mesma da legenda e das barras. */
+const TIPOS = {
+  obrigatoria: { rotulo: 'Obrigatória', cor: 'azul' },
+  optativa: { rotulo: 'Optativa', cor: 'amarelo' },
+  eletiva: { rotulo: 'Eletiva', cor: 'verde' },
+  complementar: { rotulo: 'Complementar', cor: 'lilas' },
+}
+
 const normalizar = (texto) =>
   texto.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
 
 function Totais({ exigido, integralizado }) {
   const linhas = [
-    ['Obrigatórias', 'obrigatorias'],
-    ['Optativas', 'optativas'],
-    ['Complementares', 'complementares'],
+    ['Obrigatórias', 'obrigatorias', 'obrigatoria'],
+    ['Optativas', 'optativas', 'optativa'],
+    ['Complementares', 'complementares', 'complementar'],
   ].filter(([, campo]) => exigido[campo] > 0)
 
   return (
     <ul className="curso-totais">
-      {linhas.map(([rotulo, campo]) => (
-        <li key={campo}>
+      {linhas.map(([rotulo, campo, tipo]) => (
+        <li key={campo} className={`materia-cor-${TIPOS[tipo].cor}`}>
           <span>{rotulo}</span>
           <BarraProgresso
             concluidas={integralizado?.[campo] ?? 0}
@@ -89,6 +97,14 @@ export default function ProgressoNoCurso({
 
       {exigido && <Totais exigido={exigido} integralizado={integralizado} />}
 
+      <ul className="curso-legenda" aria-label="Cores">
+        {['obrigatoria', 'optativa', 'eletiva'].map((tipo) => (
+          <li key={tipo} className={`materia-cor-${TIPOS[tipo].cor}`}>
+            {TIPOS[tipo].rotulo}
+          </li>
+        ))}
+      </ul>
+
       <h3 className="curso-subtitulo">
         Obrigatórias que faltam <span>{pendentes.length}</span>
       </h3>
@@ -100,16 +116,13 @@ export default function ProgressoNoCurso({
             const nome = nomeBonito(disciplina.nome)
 
             return (
-              <li key={disciplina.codigo} className="curso-disciplina">
-                <span className="fluxo-cabeca">
+              <li
+                key={disciplina.codigo}
+                className="curso-disciplina materia-cor-azul"
+              >
+                <span className="curso-cabeca">
                   <span className="fluxo-codigo">{disciplina.codigo}</span>
                   <span className="fluxo-creditos">{disciplina.ch} h</span>
-                </span>
-                <span className="curso-nome">{nome}</span>
-                <span className="curso-rodape">
-                  {nomesNoSemestre.has(normalizar(nome)) && (
-                    <span className="fluxo-etiqueta">Cursando</span>
-                  )}
                   <button
                     type="button"
                     className="curso-cursar"
@@ -126,6 +139,10 @@ export default function ProgressoNoCurso({
                     +
                   </button>
                 </span>
+                <span className="curso-nome">{nome}</span>
+                {nomesNoSemestre.has(normalizar(nome)) && (
+                  <span className="fluxo-etiqueta">Cursando</span>
+                )}
               </li>
             )
           })}
@@ -141,9 +158,15 @@ export default function ProgressoNoCurso({
             {cursadas.map((disciplina) => (
               <li
                 key={disciplina.codigo}
-                className="curso-disciplina fluxo-cursada"
+                className={`curso-disciplina curso-cursada materia-cor-${
+                  (TIPOS[disciplina.tipo] ?? TIPOS.obrigatoria).cor
+                }`}
+                title={(TIPOS[disciplina.tipo] ?? TIPOS.obrigatoria).rotulo}
               >
-                <span className="fluxo-codigo">{disciplina.codigo}</span>
+                <span className="curso-cabeca">
+                  <span className="fluxo-codigo">{disciplina.codigo}</span>
+                  <span className="fluxo-creditos">✓</span>
+                </span>
                 <span className="curso-nome">
                   {disciplina.nome ? nomeBonito(disciplina.nome) : '—'}
                 </span>

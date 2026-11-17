@@ -159,6 +159,16 @@ function limparNome(texto) {
 
 const TOTAIS = ['obrigatorias', 'optativas', 'complementares', 'total']
 
+/** Marcas da legenda do SIGAA antes do código da disciplina. */
+const TIPO_PELA_MARCA = {
+  '*': 'optativa',
+  '&': 'optativa',
+  '§': 'optativa',
+  '#': 'eletiva',
+  '%': 'complementar',
+  '@': 'obrigatoria',
+}
+
 /** "Exigido 2130 h 930 h 0 h 3060 h" → { obrigatorias: 2130, ... }. */
 function lerTotais(texto, rotulo) {
   const inicio = texto.search(new RegExp(`\\b${rotulo}\\b`))
@@ -222,21 +232,27 @@ export function lerHistoricoGeral(texto) {
     pendentes.push({ codigo, nome: limparNome(nome), ch: Number(ch) })
   }
 
-  // Cursadas, com o nome quando ele vem na mesma linha do código.
+  // Cursadas, com o nome quando ele vem na mesma linha do código, e o tipo
+  // pela marca que o SIGAA põe antes do código (* optativa, # eletiva...).
   const { aprovados } = aprovadosDe(conteudo)
   const nomes = new Map()
+  const tipos = new Map()
 
-  for (const [, codigo, resto] of tabelaDeCursadas(conteudo).matchAll(
-    /\b([A-Z]{3}\d{4})[ \t]+([^\n]*)/g,
+  for (const [, marca, codigo, resto] of tabelaDeCursadas(conteudo).matchAll(
+    /(?:([*&#@§%])[ \t]*)?\b([A-Z]{3}\d{4})[ \t]+([^\n]*)/g,
   )) {
     const nome = limparNome(resto)
 
     if (!nomes.has(codigo) && /[A-ZÀ-Ú]{2}/.test(nome)) nomes.set(codigo, nome)
+    if (!tipos.has(codigo))
+      tipos.set(codigo, TIPO_PELA_MARCA[marca] ?? 'obrigatoria')
   }
 
-  const cursadas = [...aprovados]
-    .sort()
-    .map((codigo) => ({ codigo, nome: nomes.get(codigo) ?? '' }))
+  const cursadas = [...aprovados].sort().map((codigo) => ({
+    codigo,
+    nome: nomes.get(codigo) ?? '',
+    tipo: tipos.get(codigo) ?? 'obrigatoria',
+  }))
 
   if (!curso && !exigido && pendentes.length === 0) return null
   if (!exigido && pendentes.length === 0 && cursadas.length === 0) return null

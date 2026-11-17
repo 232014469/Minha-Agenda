@@ -99,7 +99,7 @@ describe('validarProgressoCurso', () => {
       curso: 'CIÊNCIAS CONTÁBEIS',
       exigido: { obrigatorias: 10, optativas: 5, complementares: 0, total: 15 },
       integralizado: null,
-      cursadas: [{ codigo: 'CCA0015', nome: 'X' }],
+      cursadas: [{ codigo: 'CCA0015', nome: 'X', tipo: 'obrigatoria' }],
       pendentes: [{ codigo: 'CCA0077', nome: 'Y', ch: 60 }],
       oculto: false,
       alteradoEm: 5,

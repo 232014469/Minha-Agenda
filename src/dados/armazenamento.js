@@ -65,6 +65,12 @@ export function nomeDoSemestre(semestre) {
 const texto = (valor) => typeof valor === 'string'
 
 const CODIGO_DE_DISCIPLINA = /^[A-Z]{3}\d{4}$/
+const TIPOS_DE_DISCIPLINA = [
+  'obrigatoria',
+  'optativa',
+  'eletiva',
+  'complementar',
+]
 const horas = (valor) =>
   Number.isInteger(valor) && valor >= 0 && valor <= 100000
 
@@ -93,6 +99,11 @@ function disciplinasValidas(lista, comCarga) {
       codigo: item.codigo,
       nome: item.nome.slice(0, 200),
       ...(comCarga && { ch: item.ch }),
+      ...(!comCarga && {
+        tipo: TIPOS_DE_DISCIPLINA.includes(item.tipo)
+          ? item.tipo
+          : 'obrigatoria',
+      }),
     }))
 }
 
