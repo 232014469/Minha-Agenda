@@ -53,70 +53,184 @@
   font-size: 0.875rem;
 }
 
-/* Três cartões de resumo */
-.inicio-resumos {
+/* Cartões do topo: Faltas grande à esquerda; Próxima prova e Créditos
+   (ou Entregas da semana) empilhados à direita. */
+.inicio-cartoes {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-areas:
+    'faltas prova'
+    'faltas extra';
   gap: 20px;
+  align-items: start;
 }
 
-.resumo {
-  position: relative;
+.inicio-cartoes > :nth-child(1) {
+  grid-area: faltas;
+}
+
+.inicio-cartoes > :nth-child(2) {
+  grid-area: prova;
+}
+
+.inicio-cartoes > :nth-child(3) {
+  grid-area: extra;
+}
+
+.inicio-cartoes h2,
+.inicio-caixa h2 {
+  margin: 0;
+}
+
+.inicio-dica {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+}
+
+.inicio-dica a {
+  color: var(--cor-texto);
+  font-weight: 700;
+}
+
+/* Faltas */
+.inicio-faltas-lista {
   display: grid;
-  align-content: start;
-  gap: 4px;
-  min-height: 190px;
-  padding: 20px 22px 64px;
-  border-radius: 14px;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inicio-faltas-lista li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inicio-faltas-link {
+  flex: 1;
+  min-width: 0;
   color: var(--cor-texto);
   text-decoration: none;
 }
 
-.resumo:hover {
-  filter: brightness(0.97);
+.inicio-faltas-link:hover .faltas-nome {
+  text-decoration: underline;
 }
 
-.resumo:focus-visible {
-  outline: 3px solid var(--cor-lilas-escuro);
-  outline-offset: 3px;
+.inicio-faltas-mais {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 50%;
+  background: var(--cor-papel);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-.resumo-lilas {
+.inicio-faltas-mais:hover {
   background: var(--cor-lilas);
 }
 
-.resumo-amarelo {
-  background: var(--cor-amarelo);
+.inicio-faltas-link:focus-visible,
+.inicio-faltas-mais:focus-visible,
+.inicio-prova-link:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
 }
 
-.resumo-verde {
-  background: var(--cor-verde);
-}
-
-.resumo-titulo {
-  margin-bottom: 16px;
-  font-size: 1.05rem;
-}
-
-.resumo-valor {
-  font-size: 2.6rem;
-  line-height: 1;
-}
-
-.resumo-legenda {
-  font-size: 1rem;
-}
-
-.resumo-seta {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
+/* Próxima prova */
+.inicio-prova-link {
   display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgb(67 45 30 / 0.18);
+  gap: 2px;
+  color: var(--cor-texto);
+  text-decoration: none;
+}
+
+.inicio-prova-quando {
+  font-family: var(--fonte-titulo);
+  font-size: 1.8rem;
+  line-height: 1.1;
+}
+
+.inicio-prova-perto .inicio-prova-quando {
+  color: var(--cor-alerta);
+}
+
+.inicio-prova-link strong {
+  overflow-wrap: break-word;
+}
+
+.inicio-prova-link span:not(.inicio-prova-quando),
+.inicio-prova-link small {
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+/* Créditos do curso */
+.inicio-creditos-numero {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.inicio-creditos-numero strong {
+  font-family: var(--fonte-titulo);
+  font-size: 1.8rem;
+}
+
+/* Entregas da semana: uma barrinha por dia */
+.inicio-semana-barras {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  height: 110px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inicio-semana-barras li {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-items: end;
+  justify-items: center;
+  gap: 2px;
+}
+
+.inicio-semana-barra {
+  width: 70%;
+  min-height: 3px;
+  border-radius: 4px 4px 0 0;
+  background: var(--cor-lilas);
+}
+
+.inicio-semana-hoje .inicio-semana-barra {
+  background: var(--cor-lilas-escuro);
+}
+
+.inicio-semana-total,
+.inicio-semana-dia {
+  font-size: 0.75rem;
+}
+
+.inicio-semana-hoje .inicio-semana-dia {
+  font-weight: 700;
+}
+
+/* Alerta de atrasadas em Próximas tarefas */
+.inicio-alerta {
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fbe3e1;
+  color: var(--cor-alerta);
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
 /* Minhas matérias */
@@ -277,7 +391,13 @@
 }
 
 .inicio-proxima-texto strong {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+}
+
+.inicio-proxima-texto .etiqueta {
+  justify-self: start;
+  margin-top: 2px;
+  font-size: 0.75rem;
 }
 
 .inicio-proxima-texto span,
@@ -358,18 +478,12 @@
 }
 
 @media (max-width: 600px) {
-  .inicio-resumos {
+  .inicio-cartoes {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .resumo {
-    min-height: 0;
-    padding-bottom: 20px;
-  }
-
-  .resumo-seta {
-    bottom: auto;
-    top: 16px;
+    grid-template-areas:
+      'prova'
+      'faltas'
+      'extra';
   }
 }
 

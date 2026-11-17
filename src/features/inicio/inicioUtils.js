@@ -95,3 +95,67 @@ export function mensagemDeProgresso({ total, percentual }) {
 
   return 'Vamos começar? A primeira entrega espera por você.'
 }
+
+function diaSemHora(data) {
+  return new Date(data.getFullYear(), data.getMonth(), data.getDate())
+}
+
+/** Próxima prova pendente, de hoje em diante (ou null). */
+export function proximaProva(tarefas, agora = new Date()) {
+  const hoje = diaSemHora(agora)
+
+  return (
+    tarefas
+      .filter(
+        (tarefa) =>
+          (tarefa.tipo ?? '').trim().toLowerCase().startsWith('prova') &&
+          !ehConcluida(tarefa.status) &&
+          !ehNaoRealizada(tarefa.status) &&
+          new Date(tarefa.prazo) >= hoje,
+      )
+      .sort(compararPrazo)[0] ?? null
+  )
+}
+
+/** Quantos dias faltam até o prazo, contando por dia (0 = hoje). */
+export function diasAte(prazo, agora = new Date()) {
+  return Math.round(
+    (diaSemHora(new Date(prazo)) - diaSemHora(agora)) / 86400000,
+  )
+}
+
+/** "hoje", "amanhã" ou "em 5 dias". */
+export function textoDosDias(dias) {
+  if (dias <= 0) return 'hoje'
+  if (dias === 1) return 'amanhã'
+
+  return `em ${dias} dias`
+}
+
+/**
+ * Quantas entregas pendentes há em cada dia da semana atual, de segunda a
+ * domingo: `[{ dia: 'Seg', total: 2, hoje: false }, ...]`.
+ */
+export function entregasPorDia(tarefas, agora = new Date()) {
+  const segunda = diaSemHora(agora)
+  const NOMES = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+
+  segunda.setDate(segunda.getDate() - ((agora.getDay() + 6) % 7))
+
+  return NOMES.map((dia, i) => {
+    const data = new Date(segunda)
+
+    data.setDate(segunda.getDate() + i)
+
+    return {
+      dia,
+      hoje: data.getTime() === diaSemHora(agora).getTime(),
+      total: tarefas.filter(
+        (tarefa) =>
+          !ehConcluida(tarefa.status) &&
+          !ehNaoRealizada(tarefa.status) &&
+          diaSemHora(new Date(tarefa.prazo)).getTime() === data.getTime(),
+      ).length,
+    }
+  })
+}

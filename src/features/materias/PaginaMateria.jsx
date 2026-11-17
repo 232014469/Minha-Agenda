@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { useDados } from '../../dados/useDados'
 import BarraProgresso from '../../shared/components/BarraProgresso'
+import BarraDeFaltas from '../faltas/BarraDeFaltas'
+import { CARGAS, HORAS_POR_ENCONTRO, cargaHorariaDe } from '../faltas/faltas'
 import '../../shared/cores.css'
 import {
   categoriaDaEntrega,
@@ -99,8 +101,15 @@ function Entrega({ entrega, numero, agora, aoAlternar, aoExcluir }) {
 export default function PaginaMateria() {
   const { id } = useParams()
   const navegar = useNavigate()
-  const { materias, tarefas, alterarStatus, removerTarefa, removerMateria } =
-    useDados()
+  const {
+    materias,
+    tarefas,
+    alterarStatus,
+    removerTarefa,
+    removerMateria,
+    registrarFalta,
+    definirCargaHoraria,
+  } = useDados()
   const [filtro, setFiltro] = useState('todas')
   const [confirmando, setConfirmando] = useState(false)
   const materia = materias.find((item) => String(item.id) === id)
@@ -154,6 +163,49 @@ export default function PaginaMateria() {
               )}
             </div>
           </header>
+
+          <section
+            className="disciplina-painel disciplina-faltas"
+            aria-labelledby="faltas-titulo"
+          >
+            <div className="disciplina-titulo">
+              <h2 id="faltas-titulo">Faltas</h2>
+              <span>Limite: 25% da carga horária</span>
+            </div>
+            <BarraDeFaltas materia={materia} comNome={false} />
+            <div className="disciplina-faltas-acoes">
+              <button
+                type="button"
+                onClick={() => registrarFalta(materia.id, HORAS_POR_ENCONTRO)}
+              >
+                +1 falta ({HORAS_POR_ENCONTRO} h)
+              </button>
+              <button
+                type="button"
+                disabled={!materia.faltas}
+                onClick={() => registrarFalta(materia.id, -HORAS_POR_ENCONTRO)}
+              >
+                Desfazer 1 falta
+              </button>
+              <label>
+                Carga horária
+                <select
+                  value={cargaHorariaDe(materia)}
+                  onChange={(evento) =>
+                    definirCargaHoraria(materia.id, Number(evento.target.value))
+                  }
+                >
+                  {[...new Set([...CARGAS, cargaHorariaDe(materia)])]
+                    .sort((a, b) => a - b)
+                    .map((horas) => (
+                      <option key={horas} value={horas}>
+                        {horas} h
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </div>
+          </section>
 
           <section
             className="disciplina-painel"

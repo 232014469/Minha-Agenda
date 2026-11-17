@@ -26,7 +26,8 @@
   flex: 1 1 100%;
 }
 
-.materias-nova input[type='text'] {
+.materias-nova input[type='text'],
+.materias-nova select {
   min-height: 44px;
   padding: 8px 12px;
   border: 1px solid var(--cor-borda-forte);

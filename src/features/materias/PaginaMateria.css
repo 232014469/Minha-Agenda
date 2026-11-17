@@ -307,3 +307,56 @@
   align-items: center;
   gap: 10px;
 }
+
+/* Faltas */
+.disciplina-faltas-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+}
+
+.disciplina-faltas-acoes button {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 999px;
+  background: var(--cor-lilas);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.disciplina-faltas-acoes button + button {
+  background: var(--cor-papel);
+}
+
+.disciplina-faltas-acoes button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.disciplina-faltas-acoes label {
+  display: grid;
+  gap: 4px;
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.disciplina-faltas-acoes select {
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cor-texto);
+  font: inherit;
+}
+
+.disciplina-faltas-acoes button:focus-visible,
+.disciplina-faltas-acoes select:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}

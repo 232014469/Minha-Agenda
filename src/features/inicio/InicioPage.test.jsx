@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { cleanup, render, screen, within } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { MemoryRouter } from 'react-router'
 import DadosProvider from '../../dados/DadosProvider'
@@ -42,15 +48,16 @@ afterEach(() => {
 })
 
 describe('Dashboard sem dados', () => {
-  it('mostra zero nos resumos e os avisos de vazio', () => {
+  it('mostra os avisos de vazio nos cartões', () => {
     abrir()
 
     expect(
-      screen.getByRole('link', { name: 'Matérias: 0 cursando' }),
-    ).toHaveAttribute('href', '/adicionar-materia')
+      screen.getByText('Cadastre as matérias para acompanhar as faltas.'),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Nenhuma prova marcada/)).toBeInTheDocument()
     expect(
-      screen.getByRole('link', { name: 'Tarefas: 0 pendentes' }),
-    ).toHaveAttribute('href', '/agenda')
+      screen.getByRole('heading', { name: 'Entregas da semana' }),
+    ).toBeInTheDocument()
     expect(screen.getByText('Você ainda não tem matérias.')).toBeInTheDocument()
     expect(
       screen.getByText('Nenhuma entrega pendente. Bom trabalho!'),
@@ -116,17 +123,39 @@ describe('Dashboard com dados', () => {
     expect(screen.queryByText('Titulação')).not.toBeInTheDocument()
   })
 
-  it('conta matérias, pendentes e atrasadas', () => {
+  it('avisa das atrasadas em Próximas tarefas', () => {
     abrir()
 
+    expect(screen.getByText('1 tarefa atrasada')).toBeInTheDocument()
+  })
+
+  it('mostra a contagem até a próxima prova', () => {
+    abrir()
+
+    const cartao = screen
+      .getByRole('heading', { name: 'Próxima prova' })
+      .closest('section')
+
+    expect(within(cartao).getByText('em 3 dias')).toBeInTheDocument()
+    expect(within(cartao).getByText('Prova 1')).toBeInTheDocument()
+  })
+
+  it('registra falta pelo Dashboard e mostra quanto ainda pode faltar', () => {
+    abrir()
+
+    const barra = screen.getByRole('progressbar', {
+      name: 'Faltas em Cálculo',
+    })
+
+    // 60 h → limite de 15 h → 7 encontros de 2 h.
+    expect(barra).toHaveAttribute('aria-valuetext', '0 de 15 horas de falta')
+
+    fireEvent.click(screen.getByRole('button', { name: '+1 falta em Cálculo' }))
+
+    expect(barra).toHaveAttribute('aria-valuetext', '2 de 15 horas de falta')
+    expect(JSON.parse(localStorage.getItem(CHAVE)).materias[0].faltas).toBe(2)
     expect(
-      screen.getByRole('link', { name: 'Matérias: 2 cursando' }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'Tarefas: 2 pendentes' }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: 'Atrasadas: 1' }),
+      screen.getByText('Ainda pode faltar 6 encontros'),
     ).toBeInTheDocument()
   })
 

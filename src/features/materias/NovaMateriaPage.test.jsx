@@ -105,4 +105,22 @@ describe('Cor da matéria', () => {
     expect(salvas()[0].cor).toBe('turquesa')
     expect(screen.getByRole('radio', { name: 'Lilás' })).toBeChecked()
   })
+
+  describe('Carga horária', () => {
+    it('começa em 60 h e vem dos créditos quando o nome está no fluxograma', () => {
+      abrir()
+
+      const carga = screen.getByLabelText('Carga horária')
+
+      expect(carga).toHaveValue('60')
+
+      fireEvent.change(screen.getByLabelText('Nome da matéria'), {
+        target: { value: 'Cálculo 1' },
+      })
+      expect(carga).toHaveValue('90')
+
+      fireEvent.click(screen.getByRole('button', { name: 'Adicionar matéria' }))
+      expect(salvas()[0].cargaHoraria).toBe(90)
+    })
+  })
 })

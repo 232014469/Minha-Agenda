@@ -4,6 +4,10 @@ import {
   formatarPrazoCurto,
   mensagemDeProgresso,
   proximasTarefas,
+  proximaProva,
+  diasAte,
+  textoDosDias,
+  entregasPorDia,
   resumirEntregas,
 } from './inicioUtils'
 
@@ -98,5 +102,54 @@ describe('mensagemDeProgresso', () => {
     expect(mensagemDeProgresso({ total: 4, percentual: 68 })).toBe(
       'Você está indo muito bem!',
     )
+  })
+})
+
+describe('cartões do Dashboard', () => {
+  // Quinta-feira, 12/11/2026.
+  const agora = new Date(2026, 10, 12, 10, 0)
+  const tarefa = (id, tipo, prazo, status = 'A_FAZER') => ({
+    id,
+    titulo: `T${id}`,
+    tipo,
+    prazo,
+    status,
+  })
+
+  it('próxima prova: a pendente mais próxima de hoje em diante', () => {
+    const tarefas = [
+      tarefa(1, 'Prova', '2026-11-10T23:59:00'),
+      tarefa(2, 'Prova', '2026-11-20T23:59:00'),
+      tarefa(3, 'Prova', '2026-11-13T23:59:00', 'CONCLUIDA'),
+      tarefa(4, 'Lista de exercícios', '2026-11-12T23:59:00'),
+      tarefa(5, 'Prova', '2026-11-16T23:59:00'),
+    ]
+
+    expect(proximaProva(tarefas, agora).id).toBe(5)
+    expect(proximaProva([], agora)).toBeNull()
+  })
+
+  it('conta os dias por data do calendário', () => {
+    expect(textoDosDias(diasAte('2026-11-12T23:59:00', agora))).toBe('hoje')
+    expect(textoDosDias(diasAte('2026-11-13T08:00:00', agora))).toBe('amanhã')
+    expect(textoDosDias(diasAte('2026-11-16T23:59:00', agora))).toBe(
+      'em 4 dias',
+    )
+  })
+
+  it('entregas pendentes por dia, de segunda a domingo', () => {
+    const dias = entregasPorDia(
+      [
+        tarefa(1, 'Prova', '2026-11-09T23:59:00'),
+        tarefa(2, 'Prova', '2026-11-12T10:00:00'),
+        tarefa(3, 'Prova', '2026-11-12T23:59:00'),
+        tarefa(4, 'Prova', '2026-11-13T23:59:00', 'CONCLUIDA'),
+        tarefa(5, 'Prova', '2026-11-16T23:59:00'),
+      ],
+      agora,
+    )
+
+    expect(dias.map((dia) => dia.total)).toEqual([1, 0, 0, 2, 0, 0, 0])
+    expect(dias.find((dia) => dia.hoje).dia).toBe('Qui')
   })
 })

@@ -12,21 +12,13 @@ import {
   proximasTarefas,
   resumirEntregas,
 } from './inicioUtils'
+import {
+  CartaoCreditosOuSemana,
+  CartaoFaltas,
+  CartaoProva,
+} from './CartoesDoPainel'
 import ProgressoGeral from './ProgressoGeral'
 import './InicioPage.css'
-
-function CartaoResumo({ cor, titulo, valor, legenda, para, rotulo }) {
-  return (
-    <Link className={`resumo resumo-${cor}`} to={para} aria-label={rotulo}>
-      <span className="resumo-titulo">{titulo}</span>
-      <span className="resumo-valor">{valor}</span>
-      <span className="resumo-legenda">{legenda}</span>
-      <span className="resumo-seta" aria-hidden="true">
-        →
-      </span>
-    </Link>
-  )
-}
 
 function Progresso({ resumo }) {
   const { concluidas, total, percentual } = resumo
@@ -57,13 +49,22 @@ function Progresso({ resumo }) {
   )
 }
 
-function Proximas({ proximas }) {
+function Proximas({ proximas, atrasadas }) {
   return (
     <section className="inicio-caixa inicio-proximas">
       <div className="inicio-caixa-topo">
         <h2>Próximas tarefas</h2>
         <Link to="/agenda">Ver tudo →</Link>
       </div>
+
+      {atrasadas > 0 && (
+        <p className="inicio-alerta" role="status">
+          <span aria-hidden="true">⚠ </span>
+          {atrasadas === 1
+            ? '1 tarefa atrasada'
+            : `${atrasadas} tarefas atrasadas`}
+        </p>
+      )}
 
       {proximas.length === 0 ? (
         <EstadoVazio mensagem="Nenhuma entrega pendente. Bom trabalho!" />
@@ -86,12 +87,14 @@ function Proximas({ proximas }) {
                     {formatarPrazoCurto(item.prazo)}
                     {item.atrasada && ' (atrasada)'}
                   </small>
+                  {item.tipo && (
+                    <span
+                      className={`etiqueta etiqueta-${corDoTipo(item.tipo)}`}
+                    >
+                      {item.tipo}
+                    </span>
+                  )}
                 </span>
-                {item.tipo && (
-                  <span className={`etiqueta etiqueta-${corDoTipo(item.tipo)}`}>
-                    {item.tipo}
-                  </span>
-                )}
               </Link>
             </li>
           ))}
@@ -155,31 +158,10 @@ export default function InicioPage() {
       <p className="inicio-semestre">Semestre {nomeDoSemestre(semestre)}</p>
       <div className="inicio-grade">
         <div className="inicio-principal">
-          <div className="inicio-resumos">
-            <CartaoResumo
-              cor="lilas"
-              titulo="Matérias"
-              valor={materias.length}
-              legenda="Cursando"
-              para="/adicionar-materia"
-              rotulo={`Matérias: ${materias.length} cursando`}
-            />
-            <CartaoResumo
-              cor="amarelo"
-              titulo="Tarefas"
-              valor={resumo.pendentes}
-              legenda="Pendentes"
-              para="/agenda"
-              rotulo={`Tarefas: ${resumo.pendentes} pendentes`}
-            />
-            <CartaoResumo
-              cor="verde"
-              titulo="Atrasadas"
-              valor={atrasadas}
-              legenda={atrasadas === 1 ? 'Tarefa' : 'Tarefas'}
-              para="/agenda"
-              rotulo={`Atrasadas: ${atrasadas}`}
-            />
+          <div className="inicio-cartoes">
+            <CartaoFaltas />
+            <CartaoProva />
+            <CartaoCreditosOuSemana />
           </div>
 
           <MinhasMaterias materias={materias} tarefas={tarefas} />
@@ -187,7 +169,10 @@ export default function InicioPage() {
 
         <aside className="inicio-lateral">
           <Progresso resumo={resumo} />
-          <Proximas proximas={proximasTarefas(tarefas, materias)} />
+          <Proximas
+            proximas={proximasTarefas(tarefas, materias)}
+            atrasadas={atrasadas}
+          />
         </aside>
       </div>
     </section>

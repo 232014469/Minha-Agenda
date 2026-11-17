@@ -4,6 +4,7 @@ import { CORES, nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import SeletorCor from '../../shared/components/SeletorCor'
 import '../../shared/secao.css'
+import { CARGAS, CARGA_PADRAO, creditosDoFluxograma } from '../faltas/faltas'
 import Fluxograma from './Fluxograma'
 import './NovaMateriaPage.css'
 
@@ -23,12 +24,14 @@ export default function NovaMateriaPage() {
   const [nome, setNome] = useState('')
   const [periodo, setPeriodo] = useState(semestre)
   const [cor, setCor] = useState(() => corSugerida(materias))
+  const [carga, setCarga] = useState(CARGA_PADRAO)
   const [adicionada, setAdicionada] = useState(null)
   const campoNome = useRef(null)
 
   /** O "+" do fluxograma traz a disciplina para o formulário. */
   function cursar(disciplina) {
     setNome(disciplina.codigo ? disciplina.nome : '')
+    setCarga(disciplina.creditos * 15)
     setAdicionada(null)
     campoNome.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
     campoNome.current?.focus({ preventScroll: true })
@@ -38,11 +41,28 @@ export default function NovaMateriaPage() {
     evento.preventDefault()
     if (!nome.trim() || !periodo.trim()) return
 
-    adicionarMateria({ nome: nome.trim(), periodo: periodo.trim(), cor })
+    adicionarMateria({
+      nome: nome.trim(),
+      periodo: periodo.trim(),
+      cor,
+      cargaHoraria: carga,
+    })
     setAdicionada({ nome: nome.trim(), periodo: periodo.trim() })
     setNome('')
     setCor(corSugerida([...materias, { cor }]))
+    setCarga(CARGA_PADRAO)
   }
+
+  /** Ao digitar um nome que existe no fluxograma, a carga vem dos créditos. */
+  function mudarNome(texto) {
+    setNome(texto)
+
+    const creditos = creditosDoFluxograma(texto)
+
+    if (creditos) setCarga(creditos * 15)
+  }
+
+  const opcoesDeCarga = [...new Set([...CARGAS, carga])].sort((a, b) => a - b)
 
   return (
     <div className="materias-pagina">
@@ -55,7 +75,10 @@ export default function NovaMateriaPage() {
       <section className="secao-caixa" aria-labelledby="nova-titulo">
         <header>
           <h2 id="nova-titulo">Nova matéria</h2>
-          <p>Escolha o nome, o semestre e a cor do bloco.</p>
+          <p>
+            Escolha o nome, o semestre, a carga horária (para contar as faltas)
+            e a cor do bloco.
+          </p>
         </header>
         <form className="materias-nova" onSubmit={enviar}>
           <label>
@@ -65,7 +88,7 @@ export default function NovaMateriaPage() {
               type="text"
               value={nome}
               maxLength={80}
-              onChange={(evento) => setNome(evento.target.value)}
+              onChange={(evento) => mudarNome(evento.target.value)}
             />
           </label>
           <label>
@@ -77,6 +100,19 @@ export default function NovaMateriaPage() {
               maxLength={20}
               onChange={(evento) => setPeriodo(evento.target.value)}
             />
+          </label>
+          <label>
+            Carga horária
+            <select
+              value={carga}
+              onChange={(evento) => setCarga(Number(evento.target.value))}
+            >
+              {opcoesDeCarga.map((horas) => (
+                <option key={horas} value={horas}>
+                  {horas} h ({horas / 15} créditos)
+                </option>
+              ))}
+            </select>
           </label>
 
           <SeletorCor

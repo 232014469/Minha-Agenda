@@ -1,0 +1,62 @@
+.faltas-barra {
+  --faltas-cor: #7f9a5f;
+
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.faltas-atencao {
+  --faltas-cor: #e3a937;
+}
+
+.faltas-perigo,
+.faltas-reprovado {
+  --faltas-cor: var(--cor-alerta);
+}
+
+.faltas-barra-topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.faltas-nome {
+  overflow: hidden;
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.faltas-numeros {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.faltas-trilho {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e1d4;
+}
+
+.faltas-trilho span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--faltas-cor);
+}
+
+.faltas-texto {
+  color: var(--cor-texto-suave);
+  font-size: 0.78rem;
+}
+
+.faltas-perigo .faltas-texto,
+.faltas-reprovado .faltas-texto {
+  color: var(--cor-alerta);
+  font-weight: 700;
+}

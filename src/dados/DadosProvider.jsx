@@ -32,24 +32,49 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
     setDados((atuais) => ({ ...atuais, semestre }))
   }, [])
 
-  /** Cadastra a matéria e passa a mostrar o semestre dela. */
-  const adicionarMateria = useCallback(({ nome, periodo, cor }) => {
+  /** Soma (ou tira, com número negativo) horas de falta numa matéria. */
+  const registrarFalta = useCallback((id, horas) => {
     setDados((atuais) => ({
       ...atuais,
-      semestre: periodo || '',
-      materias: [
-        ...atuais.materias,
-        {
-          id: proximoId(atuais.materias),
-          nome,
-          periodo: periodo || '',
-          cor: CORES.includes(cor)
-            ? cor
-            : CORES[atuais.materias.length % CORES.length],
-        },
-      ],
+      materias: atuais.materias.map((materia) =>
+        materia.id === id
+          ? { ...materia, faltas: Math.max(0, (materia.faltas ?? 0) + horas) }
+          : materia,
+      ),
     }))
   }, [])
+
+  const definirCargaHoraria = useCallback((id, horas) => {
+    setDados((atuais) => ({
+      ...atuais,
+      materias: atuais.materias.map((materia) =>
+        materia.id === id ? { ...materia, cargaHoraria: horas } : materia,
+      ),
+    }))
+  }, [])
+
+  /** Cadastra a matéria e passa a mostrar o semestre dela. */
+  const adicionarMateria = useCallback(
+    ({ nome, periodo, cor, cargaHoraria }) => {
+      setDados((atuais) => ({
+        ...atuais,
+        semestre: periodo || '',
+        materias: [
+          ...atuais.materias,
+          {
+            id: proximoId(atuais.materias),
+            nome,
+            periodo: periodo || '',
+            ...(cargaHoraria && { cargaHoraria }),
+            cor: CORES.includes(cor)
+              ? cor
+              : CORES[atuais.materias.length % CORES.length],
+          },
+        ],
+      }))
+    },
+    [],
+  )
 
   const removerMateria = useCallback((id) => {
     setDados((atuais) => ({
@@ -171,6 +196,8 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       semestres,
       escolherSemestre,
       salvou,
+      registrarFalta,
+      definirCargaHoraria,
       adicionarMateria,
       removerMateria,
       adicionarTarefa,
@@ -189,6 +216,8 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       alternarCursada,
       aplicarHistorico,
       esconderFluxograma,
+      registrarFalta,
+      definirCargaHoraria,
       adicionarMateria,
       removerMateria,
       adicionarTarefa,

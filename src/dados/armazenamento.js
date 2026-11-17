@@ -79,10 +79,26 @@ export function validarDados(dados) {
         texto(materia.nome) &&
         CORES.includes(materia.cor),
     )
-    .map((materia) => ({
-      ...materia,
-      periodo: texto(materia.periodo) ? materia.periodo.trim() : '',
-    }))
+    .map((materia) => {
+      const limpa = {
+        ...materia,
+        periodo: texto(materia.periodo) ? materia.periodo.trim() : '',
+      }
+
+      // Faltas (em horas) e carga horária: valores estranhos são ignorados.
+      if (!(Number.isInteger(limpa.faltas) && limpa.faltas >= 0)) {
+        delete limpa.faltas
+      }
+      if (!(
+        Number.isInteger(limpa.cargaHoraria) &&
+        limpa.cargaHoraria >= 15 &&
+        limpa.cargaHoraria <= 300
+      )) {
+        delete limpa.cargaHoraria
+      }
+
+      return limpa
+    })
   const semestre = texto(dados.semestre) ? dados.semestre : null
   const ids = new Set(materias.map((materia) => materia.id))
   const tarefas = dados.tarefas.filter(

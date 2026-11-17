@@ -47,14 +47,14 @@ describe('Semestre', () => {
   it('troca o que aparece e lembra a escolha', () => {
     abrir()
 
-    expect(screen.getByText('Cálculo')).toBeInTheDocument()
+    expect(screen.getAllByText('Cálculo').length).toBeGreaterThan(0)
     expect(screen.queryByText('Física')).not.toBeInTheDocument()
 
     fireEvent.change(screen.getByLabelText('Semestre'), {
       target: { value: '2026.2' },
     })
 
-    expect(screen.getByText('Física')).toBeInTheDocument()
+    expect(screen.getAllByText('Física').length).toBeGreaterThan(0)
     expect(screen.queryByText('Cálculo')).not.toBeInTheDocument()
     expect(salvos().semestre).toBe('2026.2')
   })
