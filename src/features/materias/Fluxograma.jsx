@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDados } from '../../dados/useDados'
+import BarraDividida from '../../shared/components/BarraDividida'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import '../../shared/cores.css'
 import '../../shared/secao.css'
@@ -245,6 +246,10 @@ export default function Fluxograma({ aoCursar }) {
                 concluidas={integralizacao.cumpridas}
                 total={integralizacao.exigidas}
                 rotulo="Integralização do curso no SIGAA"
+              />
+              <BarraDividida
+                exigido={progressoCurso.exigido}
+                integralizado={progressoCurso.integralizado}
               />
             </>
           )}

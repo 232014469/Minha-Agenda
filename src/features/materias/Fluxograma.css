@@ -225,26 +225,6 @@
 }
 
 /* Progresso no curso (qualquer curso, lido do histórico) */
-.curso-totais {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.curso-totais li {
-  display: grid;
-  gap: 6px;
-  padding: 10px 14px;
-  border-left: 6px solid var(--painel-forte);
-  border-radius: 10px;
-  background: var(--painel-fundo);
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
 .curso-legenda {
   display: flex;
   flex-wrap: wrap;

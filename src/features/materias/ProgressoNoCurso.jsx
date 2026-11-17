@@ -1,4 +1,5 @@
 import { useDados } from '../../dados/useDados'
+import BarraDividida from '../../shared/components/BarraDividida'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import { nomeBonito } from './historico'
 
@@ -12,29 +13,6 @@ const TIPOS = {
 
 const normalizar = (texto) =>
   texto.normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase()
-
-function Totais({ exigido, integralizado }) {
-  const linhas = [
-    ['Obrigatórias', 'obrigatorias', 'obrigatoria'],
-    ['Optativas', 'optativas', 'optativa'],
-    ['Complementares', 'complementares', 'complementar'],
-  ].filter(([, campo]) => exigido[campo] > 0)
-
-  return (
-    <ul className="curso-totais">
-      {linhas.map(([rotulo, campo, tipo]) => (
-        <li key={campo} className={`materia-cor-${TIPOS[tipo].cor}`}>
-          <span>{rotulo}</span>
-          <BarraProgresso
-            concluidas={integralizado?.[campo] ?? 0}
-            total={exigido[campo]}
-            rotulo={`Horas de ${rotulo.toLowerCase()} cumpridas`}
-          />
-        </li>
-      ))}
-    </ul>
-  )
-}
 
 /**
  * Progresso no curso, para qualquer curso: o que o histórico do SIGAA diz
@@ -89,13 +67,12 @@ export default function ProgressoNoCurso({
               total={exigido.total}
               rotulo="Horas cumpridas no curso"
             />
+            <BarraDividida exigido={exigido} integralizado={integralizado} />
           </div>
         )}
       </header>
 
       {importar}
-
-      {exigido && <Totais exigido={exigido} integralizado={integralizado} />}
 
       <ul className="curso-legenda" aria-label="Cores">
         {['obrigatoria', 'optativa', 'eletiva'].map((tipo) => (

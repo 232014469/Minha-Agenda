@@ -1,0 +1,60 @@
+.barra-dividida {
+  display: grid;
+  gap: 6px;
+}
+
+.barra-dividida-trilho {
+  display: flex;
+  gap: 3px;
+  height: 14px;
+}
+
+.barra-dividida-parte {
+  overflow: hidden;
+  border: 1px solid var(--painel-forte);
+  border-radius: 999px;
+  background: var(--painel-fundo);
+}
+
+.barra-dividida-cheio {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--painel-destaque);
+  transition: width 0.4s ease;
+}
+
+.barra-dividida-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+}
+
+.barra-dividida-legenda li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 6px;
+  align-items: center;
+}
+
+.barra-dividida-legenda li::before {
+  content: '';
+  grid-row: span 2;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--painel-destaque);
+}
+
+.barra-dividida-legenda span {
+  color: var(--cor-texto-suave);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barra-dividida-cheio {
+    transition: none;
+  }
+}
