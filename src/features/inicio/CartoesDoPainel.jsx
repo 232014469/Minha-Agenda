@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import { useDados } from '../../dados/useDados'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import { EstadoVazio } from '../../shared/components/Estados'
+import '../../shared/cores.css'
 import BarraDeFaltas from '../faltas/BarraDeFaltas'
 import {
   HORAS_POR_ENCONTRO,
@@ -89,8 +90,67 @@ export function CartaoProva({ agora = new Date() }) {
   )
 }
 
+/**
+ * Entregas pendentes de cada dia da semana. Cada barra é dividida nas cores
+ * das matérias, do tamanho de quantas entregas cada uma tem no dia.
+ */
+function GraficoDaSemana({ tarefas, materias, agora, titulo }) {
+  const dias = entregasPorDia(tarefas, agora)
+  const maior = Math.max(1, ...dias.map((dia) => dia.total))
+  const materiaDe = (id) => materias.find((materia) => materia.id === id)
+
+  return (
+    <>
+      {titulo}
+      <ol className="inicio-semana-barras">
+        {dias.map((dia) => {
+          const partes = dia.porMateria.map(({ materiaId, total }) => {
+            const materia = materiaDe(materiaId)
+
+            return {
+              materiaId,
+              total,
+              nome: materia?.nome ?? 'Matéria',
+              cor: materia?.cor ?? 'lilas',
+            }
+          })
+          const descricao = partes
+            .map((parte) => `${parte.total} de ${parte.nome}`)
+            .join(', ')
+
+          return (
+            <li
+              key={dia.dia}
+              className={dia.hoje ? 'inicio-semana-hoje' : undefined}
+              aria-label={`${dia.dia}: ${dia.total} ${
+                dia.total === 1 ? 'entrega' : 'entregas'
+              }${descricao ? ` (${descricao})` : ''}`}
+            >
+              <span className="inicio-semana-total">{dia.total || ''}</span>
+              <span
+                className="inicio-semana-barra"
+                style={{ height: `${(dia.total / maior) * 100}%` }}
+              >
+                {partes.map((parte) => (
+                  <span
+                    key={parte.materiaId}
+                    className={`inicio-semana-parte materia-cor-${parte.cor}`}
+                    style={{ flexGrow: parte.total }}
+                    title={`${parte.nome}: ${parte.total}`}
+                  />
+                ))}
+              </span>
+              <span className="inicio-semana-dia">{dia.dia}</span>
+            </li>
+          )
+        })}
+      </ol>
+    </>
+  )
+}
+
 /** Qualquer curso: horas cumpridas, e quanto as matérias deste semestre somam. */
-function CartaoHorasDoCurso({ progresso, materias }) {
+function CartaoHorasDoCurso({ progresso, materias, semana }) {
   const total = progresso.exigido.total
   const cumpridas = progresso.integralizado?.total ?? 0
   const nesteSemestre = materias.reduce(
@@ -115,45 +175,51 @@ function CartaoHorasDoCurso({ progresso, materias }) {
           {Math.round(((cumpridas + nesteSemestre) / total) * 100)}%).
         </p>
       )}
+      {semana}
     </section>
   )
 }
 
 /**
- * Com o fluxograma ativo: créditos do curso, e quanto este semestre soma.
- * Sem ele: quantas entregas há em cada dia da semana.
+ * Créditos (Engenharia de Software) ou horas do curso (qualquer curso), com
+ * as entregas da semana embaixo. Sem histórico importado: só as entregas.
  */
 export function CartaoCreditosOuSemana({ agora = new Date() }) {
   const { fluxogramaAtivo, progressoCurso, cursadas, materias, tarefas } =
     useDados()
 
+  const semana = (
+    <GraficoDaSemana
+      tarefas={tarefas}
+      materias={materias}
+      agora={agora}
+      titulo={
+        <h3 className="inicio-semana-titulo" id="semana-painel-titulo">
+          Entregas da semana
+        </h3>
+      }
+    />
+  )
+
   if (!fluxogramaAtivo && progressoCurso?.exigido) {
-    return <CartaoHorasDoCurso progresso={progressoCurso} materias={materias} />
+    return (
+      <CartaoHorasDoCurso
+        progresso={progressoCurso}
+        materias={materias}
+        semana={semana}
+      />
+    )
   }
 
   if (!fluxogramaAtivo) {
-    const dias = entregasPorDia(tarefas, agora)
-    const maior = Math.max(1, ...dias.map((dia) => dia.total))
-
     return (
       <section className="inicio-caixa" aria-labelledby="semana-painel-titulo">
-        <h2 id="semana-painel-titulo">Entregas da semana</h2>
-        <ol className="inicio-semana-barras">
-          {dias.map((dia) => (
-            <li
-              key={dia.dia}
-              className={dia.hoje ? 'inicio-semana-hoje' : undefined}
-              aria-label={`${dia.dia}: ${dia.total} ${dia.total === 1 ? 'entrega' : 'entregas'}`}
-            >
-              <span className="inicio-semana-total">{dia.total || ''}</span>
-              <span
-                className="inicio-semana-barra"
-                style={{ height: `${(dia.total / maior) * 100}%` }}
-              />
-              <span className="inicio-semana-dia">{dia.dia}</span>
-            </li>
-          ))}
-        </ol>
+        <GraficoDaSemana
+          tarefas={tarefas}
+          materias={materias}
+          agora={agora}
+          titulo={<h2 id="semana-painel-titulo">Entregas da semana</h2>}
+        />
       </section>
     )
   }
@@ -189,6 +255,7 @@ export function CartaoCreditosOuSemana({ agora = new Date() }) {
           {Math.round(((cursados + nesteSemestre) / total) * 100)}%).
         </p>
       )}
+      {semana}
     </section>
   )
 }

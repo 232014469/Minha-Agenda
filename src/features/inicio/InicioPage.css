@@ -217,15 +217,35 @@
   gap: 2px;
 }
 
+/* Uma barra por dia, empilhando as cores das matérias com entrega. */
 .inicio-semana-barra {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
   width: 70%;
   min-height: 3px;
-  border-radius: 4px 4px 0 0;
-  background: var(--cor-lilas);
+  border-radius: 5px 5px 0 0;
 }
 
-.inicio-semana-hoje .inicio-semana-barra {
-  background: var(--cor-lilas-escuro);
+/* Mesmo tom dos blocos de "Minhas matérias". */
+.inicio-semana-parte {
+  flex-basis: 0;
+  min-height: 4px;
+  border: 1.5px solid var(--painel-destaque);
+  border-radius: 3px;
+  background: var(--painel-fundo);
+}
+
+.inicio-semana-titulo {
+  margin: 6px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgb(67 45 30 / 0.15);
+  font-size: 0.95rem;
+}
+
+.inicio-semana-hoje .inicio-semana-dia {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .inicio-semana-total,
@@ -506,4 +526,9 @@
   .progresso-geral-anel {
     transition: none;
   }
+}
+
+/* Dia sem entrega: só um tracinho na base. */
+.inicio-semana-barra:empty {
+  background: rgb(255 255 255 / 0.45);
 }

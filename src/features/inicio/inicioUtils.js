@@ -147,15 +147,31 @@ export function entregasPorDia(tarefas, agora = new Date()) {
 
     data.setDate(segunda.getDate() + i)
 
+    const doDia = tarefas.filter(
+      (tarefa) =>
+        !ehConcluida(tarefa.status) &&
+        !ehNaoRealizada(tarefa.status) &&
+        diaSemHora(new Date(tarefa.prazo)).getTime() === data.getTime(),
+    )
+
+    // Quantas de cada matéria, na ordem em que aparecem no dia.
+    const porMateria = new Map()
+
+    for (const tarefa of doDia) {
+      porMateria.set(
+        tarefa.materiaId,
+        (porMateria.get(tarefa.materiaId) ?? 0) + 1,
+      )
+    }
+
     return {
       dia,
       hoje: data.getTime() === diaSemHora(agora).getTime(),
-      total: tarefas.filter(
-        (tarefa) =>
-          !ehConcluida(tarefa.status) &&
-          !ehNaoRealizada(tarefa.status) &&
-          diaSemHora(new Date(tarefa.prazo)).getTime() === data.getTime(),
-      ).length,
+      total: doDia.length,
+      porMateria: [...porMateria].map(([materiaId, total]) => ({
+        materiaId,
+        total,
+      })),
     }
   })
 }

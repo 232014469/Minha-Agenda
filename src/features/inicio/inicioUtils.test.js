@@ -141,8 +141,8 @@ describe('cartões do Dashboard', () => {
     const dias = entregasPorDia(
       [
         tarefa(1, 'Prova', '2026-11-09T23:59:00'),
-        tarefa(2, 'Prova', '2026-11-12T10:00:00'),
-        tarefa(3, 'Prova', '2026-11-12T23:59:00'),
+        { ...tarefa(2, 'Prova', '2026-11-12T10:00:00'), materiaId: 7 },
+        { ...tarefa(3, 'Prova', '2026-11-12T23:59:00'), materiaId: 8 },
         tarefa(4, 'Prova', '2026-11-13T23:59:00', 'CONCLUIDA'),
         tarefa(5, 'Prova', '2026-11-16T23:59:00'),
       ],
@@ -150,6 +150,11 @@ describe('cartões do Dashboard', () => {
     )
 
     expect(dias.map((dia) => dia.total)).toEqual([1, 0, 0, 2, 0, 0, 0])
+    expect(dias[3].porMateria).toEqual([
+      { materiaId: 7, total: 1 },
+      { materiaId: 8, total: 1 },
+    ])
+    expect(dias[1].porMateria).toEqual([])
     expect(dias.find((dia) => dia.hoje).dia).toBe('Qui')
   })
 })
