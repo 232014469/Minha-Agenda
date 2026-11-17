@@ -10,6 +10,6 @@
  * Com os dois vazios, a sincronização fica desligada e some da tela.
  */
 export const SUPABASE = {
-  url: '',
-  chavePublica: '',
+  url: 'https://euvvxdqdtnrdhpjgvoqg.supabase.co',
+  chavePublica: 'sb_publishable_Pb1rCM-qg4JNC_CLCE4CtQ_9EaOzo7-',
 }
