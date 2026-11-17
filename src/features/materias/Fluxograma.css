@@ -1,14 +1,22 @@
 .fluxo-topo {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: stretch;
   justify-content: space-between;
   gap: 16px;
 }
 
+/* Título e botões ficam embaixo; os quadros ao lado, da mesma altura. */
+.fluxo-topo > :first-child {
+  align-self: end;
+  margin-right: auto;
+}
+
 .fluxo-progresso {
   display: grid;
-  flex: 0 1 340px;
+  flex: 1 1 290px;
+  max-width: 380px;
+  align-content: start;
   gap: 6px;
   padding: 12px 14px;
   border-radius: 8px;
@@ -368,9 +376,10 @@
 /* Previsão, ao lado da integralização */
 .fluxo-previsao {
   display: grid;
-  flex: 1 1 260px;
+  flex: 1 1 290px;
+  max-width: 380px;
+  align-content: start;
   gap: 6px;
-  max-width: 420px;
   padding: 12px 14px;
   border-radius: 8px;
   background: var(--cor-menu);
