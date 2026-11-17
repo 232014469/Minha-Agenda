@@ -62,19 +62,34 @@
     'faltas prova'
     'faltas extra';
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
+}
+
+/* As cores dos cartões antigos: lilás, amarelo e verde. */
+.inicio-cartoes > .inicio-caixa {
+  align-content: start;
+  border-color: transparent;
+  color: var(--cor-texto);
+}
+
+.inicio-cartoes .inicio-dica {
+  color: var(--cor-texto);
+  opacity: 0.8;
 }
 
 .inicio-cartoes > :nth-child(1) {
   grid-area: faltas;
+  background: var(--cor-lilas);
 }
 
 .inicio-cartoes > :nth-child(2) {
   grid-area: prova;
+  background: var(--cor-amarelo);
 }
 
 .inicio-cartoes > :nth-child(3) {
   grid-area: extra;
+  background: var(--cor-verde);
 }
 
 .inicio-cartoes h2,
