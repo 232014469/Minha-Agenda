@@ -3,7 +3,11 @@ import { useDados } from '../../dados/useDados'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import { EstadoVazio } from '../../shared/components/Estados'
 import BarraDeFaltas from '../faltas/BarraDeFaltas'
-import { HORAS_POR_ENCONTRO, creditosDoFluxograma } from '../faltas/faltas'
+import {
+  HORAS_POR_ENCONTRO,
+  cargaDoHistorico,
+  creditosDoFluxograma,
+} from '../faltas/faltas'
 import { DISCIPLINAS, somarCreditos } from '../materias/dadosFluxograma'
 import {
   diasAte,
@@ -85,12 +89,47 @@ export function CartaoProva({ agora = new Date() }) {
   )
 }
 
+/** Qualquer curso: horas cumpridas, e quanto as matérias deste semestre somam. */
+function CartaoHorasDoCurso({ progresso, materias }) {
+  const total = progresso.exigido.total
+  const cumpridas = progresso.integralizado?.total ?? 0
+  const nesteSemestre = materias.reduce(
+    (soma, materia) => soma + (cargaDoHistorico(progresso, materia.nome) ?? 0),
+    0,
+  )
+
+  return (
+    <section className="inicio-caixa" aria-labelledby="horas-titulo">
+      <h2 id="horas-titulo">Horas do curso</h2>
+      <p className="inicio-creditos-numero">
+        <strong>{cumpridas}</strong> de {total} h
+      </p>
+      <BarraProgresso
+        concluidas={cumpridas}
+        total={total}
+        rotulo="Horas cumpridas no curso"
+      />
+      {nesteSemestre > 0 && (
+        <p className="inicio-dica">
+          +{nesteSemestre} h se passar em tudo neste semestre (
+          {Math.round(((cumpridas + nesteSemestre) / total) * 100)}%).
+        </p>
+      )}
+    </section>
+  )
+}
+
 /**
  * Com o fluxograma ativo: créditos do curso, e quanto este semestre soma.
  * Sem ele: quantas entregas há em cada dia da semana.
  */
 export function CartaoCreditosOuSemana({ agora = new Date() }) {
-  const { fluxogramaAtivo, cursadas, materias, tarefas } = useDados()
+  const { fluxogramaAtivo, progressoCurso, cursadas, materias, tarefas } =
+    useDados()
+
+  if (!fluxogramaAtivo && progressoCurso?.exigido) {
+    return <CartaoHorasDoCurso progresso={progressoCurso} materias={materias} />
+  }
 
   if (!fluxogramaAtivo) {
     const dias = entregasPorDia(tarefas, agora)

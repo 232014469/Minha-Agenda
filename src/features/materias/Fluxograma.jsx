@@ -9,7 +9,8 @@ import {
   FLUXOGRAMA,
   somarCreditos,
 } from './dadosFluxograma'
-import { lerHistorico } from './historico'
+import { lerHistorico, lerHistoricoGeral, nomeBonito } from './historico'
+import ProgressoNoCurso from './ProgressoNoCurso'
 import './Fluxograma.css'
 
 function nomeCompleto(disciplina, semestre, indice) {
@@ -64,7 +65,7 @@ function Disciplina({
 
 /** Colar o texto do histórico do SIGAA e marcar as aprovadas de uma vez. */
 function ImportarHistorico({ aoFechar }) {
-  const { cursadas, aplicarHistorico } = useDados()
+  const { cursadas, aplicarHistorico, guardarProgressoCurso } = useDados()
   const [texto, setTexto] = useState('')
   const [resultado, setResultado] = useState(null)
 
@@ -72,11 +73,14 @@ function ImportarHistorico({ aoFechar }) {
     evento.preventDefault()
 
     const lido = lerHistorico(texto)
+    const geral = lerHistoricoGeral(texto)
     const novas = lido.cursadas.filter((id) => !cursadas.includes(id))
 
-    // Só mostra o fluxograma se o histórico for de um aluno deste curso.
+    // Engenharia de Software tem o fluxograma completo; qualquer outro curso
+    // fica com o progresso lido do histórico.
     if (lido.doCurso) aplicarHistorico(lido.cursadas)
-    setResultado({ ...lido, novas: novas.length })
+    if (geral) guardarProgressoCurso(geral)
+    setResultado({ ...lido, geral, novas: novas.length })
     setTexto('')
   }
 
@@ -85,8 +89,9 @@ function ImportarHistorico({ aoFechar }) {
       <label htmlFor="fluxo-historico">Texto do histórico</label>
       <p className="fluxo-ajuda">
         No SIGAA, emita o histórico (Ensino → Emitir Histórico), abra o PDF,
-        selecione tudo (Cmd+A), copie (Cmd+C) e cole aqui. Só os códigos e as
-        situações são lidos, e o texto não fica guardado.
+        selecione tudo (Cmd+A), copie (Cmd+C) e cole aqui. Só o curso, as
+        disciplinas e as horas são guardados: nada de nome, matrícula, CPF ou
+        notas.
       </p>
       <textarea
         id="fluxo-historico"
@@ -96,7 +101,7 @@ function ImportarHistorico({ aoFechar }) {
       />
       <div className="fluxo-importar-acoes">
         <button type="submit" className="secao-botao" disabled={!texto.trim()}>
-          Marcar cursadas
+          Importar histórico
         </button>
         <button
           type="button"
@@ -109,7 +114,9 @@ function ImportarHistorico({ aoFechar }) {
       {resultado && (
         <p role="status" className="fluxo-importar-resultado">
           {!resultado.doCurso
-            ? `Esse texto não parece ser o histórico de um aluno de ${CURSO}. Por enquanto, o fluxograma só existe para esse curso.`
+            ? resultado.geral
+              ? `Histórico de ${nomeBonito(resultado.geral.curso || 'seu curso')} importado: ${resultado.geral.pendentes.length} ${resultado.geral.pendentes.length === 1 ? 'obrigatória falta' : 'obrigatórias faltam'}.`
+              : 'Esse texto não parece ser um histórico do SIGAA. Copie o PDF inteiro (Cmd+A, Cmd+C) e cole de novo.'
             : resultado.cursadas.length === 0
               ? 'Histórico reconhecido, mas nenhuma disciplina do fluxograma aparece como aprovada.'
               : resultado.cursadas.length === 1
@@ -133,10 +140,27 @@ export default function Fluxograma({ aoCursar }) {
     materias,
     cursadas,
     fluxogramaAtivo,
+    progressoCurso,
     alternarCursada,
     esconderFluxograma,
   } = useDados()
   const [importando, setImportando] = useState(false)
+
+  // Qualquer outro curso: o progresso lido do histórico.
+  if (!fluxogramaAtivo && progressoCurso) {
+    return (
+      <ProgressoNoCurso
+        progresso={progressoCurso}
+        importar={
+          importando && (
+            <ImportarHistorico aoFechar={() => setImportando(false)} />
+          )
+        }
+        aoAbrirImportar={() => setImportando(true)}
+        aoCursar={aoCursar}
+      />
+    )
+  }
 
   // Escondido até importar um histórico do curso: só o convite para importar.
   if (!fluxogramaAtivo) {
@@ -145,8 +169,9 @@ export default function Fluxograma({ aoCursar }) {
         <header>
           <h2 id="fluxo-titulo">Fluxograma</h2>
           <p>
-            Importe o seu histórico do SIGAA (UnB) para ver o fluxograma do seu
-            curso com as disciplinas que você já cursou. Por enquanto: {CURSO}.
+            Importe o seu histórico do SIGAA (UnB) para ver quanto do curso você
+            já cumpriu e as obrigatórias que faltam. Funciona com qualquer
+            curso; para {CURSO}, mostra o fluxograma completo por semestre.
           </p>
           {!importando && (
             <button

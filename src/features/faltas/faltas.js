@@ -22,6 +22,19 @@ export function creditosDoFluxograma(nome) {
   return achada ? achada.creditos : null
 }
 
+/** Carga horária de uma obrigatória pendente do histórico (ou null). */
+export function cargaDoHistorico(progressoCurso, nome) {
+  const alvo = normalizar(nome ?? '')
+
+  if (!alvo || !progressoCurso) return null
+
+  const achada = progressoCurso.pendentes.find(
+    (disciplina) => normalizar(disciplina.nome) === alvo,
+  )
+
+  return achada ? achada.ch : null
+}
+
 /**
  * Carga horária da matéria: a escolhida pela pessoa; senão a do fluxograma
  * (1 crédito = 15 h); senão 60 h.

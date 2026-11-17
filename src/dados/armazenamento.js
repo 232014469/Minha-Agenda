@@ -64,6 +64,56 @@ export function nomeDoSemestre(semestre) {
 
 const texto = (valor) => typeof valor === 'string'
 
+const CODIGO_DE_DISCIPLINA = /^[A-Z]{3}\d{4}$/
+const horas = (valor) =>
+  Number.isInteger(valor) && valor >= 0 && valor <= 100000
+
+function totaisValidos(totais) {
+  if (!totais || typeof totais !== 'object') return null
+
+  const campos = ['obrigatorias', 'optativas', 'complementares', 'total']
+
+  return campos.every((campo) => horas(totais[campo]))
+    ? Object.fromEntries(campos.map((campo) => [campo, totais[campo]]))
+    : null
+}
+
+function disciplinasValidas(lista, comCarga) {
+  if (!Array.isArray(lista)) return []
+
+  return lista
+    .filter(
+      (item) =>
+        CODIGO_DE_DISCIPLINA.test(item?.codigo) &&
+        texto(item.nome) &&
+        (!comCarga || horas(item.ch)),
+    )
+    .slice(0, 400)
+    .map((item) => ({
+      codigo: item.codigo,
+      nome: item.nome.slice(0, 200),
+      ...(comCarga && { ch: item.ch }),
+    }))
+}
+
+/**
+ * Progresso no curso lido do histórico (qualquer curso): só o nome do curso,
+ * os totais de horas e as disciplinas. Devolve `null` se não servir.
+ */
+export function validarProgressoCurso(valor) {
+  if (!valor || typeof valor !== 'object' || !texto(valor.curso)) return null
+
+  return {
+    curso: valor.curso.slice(0, 120),
+    exigido: totaisValidos(valor.exigido),
+    integralizado: totaisValidos(valor.integralizado),
+    cursadas: disciplinasValidas(valor.cursadas, false),
+    pendentes: disciplinasValidas(valor.pendentes, true),
+    oculto: valor.oculto === true,
+    alteradoEm: Number.isFinite(valor.alteradoEm) ? valor.alteradoEm : 0,
+  }
+}
+
 /**
  * Confere a forma dos dados lidos do navegador ou de um arquivo de backup.
  * Devolve os dados limpos ou `null` se o conteúdo não for válido.
@@ -124,6 +174,8 @@ export function validarDados(dados) {
     ? [...new Set(dados.removidos.filter(texto))].slice(-2000)
     : []
 
+  const progressoCurso = validarProgressoCurso(dados.progressoCurso)
+
   return {
     versao: 1,
     semestre,
@@ -132,6 +184,7 @@ export function validarDados(dados) {
     cursadas,
     fluxogramaAtivo,
     removidos,
+    ...(progressoCurso && { progressoCurso }),
   }
 }
 

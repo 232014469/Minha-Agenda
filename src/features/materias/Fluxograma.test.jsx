@@ -66,7 +66,7 @@ function colarHistorico(texto) {
   fireEvent.change(screen.getByLabelText('Texto do histórico'), {
     target: { value: texto },
   })
-  fireEvent.click(screen.getByRole('button', { name: 'Marcar cursadas' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Importar histórico' }))
 }
 
 describe('Fluxograma escondido até importar o histórico', () => {
@@ -95,22 +95,62 @@ describe('Fluxograma escondido até importar o histórico', () => {
     ).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('histórico de outro curso não mostra o fluxograma', () => {
+  it('histórico de outro curso mostra o progresso no curso', () => {
     abrir()
     colarHistorico(
-      HISTORICO_ES.replace(
-        'ENGENHARIA DE SOFTWARE/FCTE',
-        'CIÊNCIA DA COMPUTAÇÃO/CIC',
-      ),
+      [
+        'Curso:',
+        'CIÊNCIAS CONTÁBEIS/CCA - BACHARELADO - DIURNO',
+        'Componentes Curriculares Cursados/Cursando',
+        '2022.2 CCA0015 CONTABILIDADE GERAL 1',
+        '60 01 98,0 MM',
+        'APR',
+        'Legenda',
+        'Carga Horária Integralizada/Pendente',
+        'Exigido 2130 h 930 h 0 h 3060 h',
+        'Integralizado 60 h 0 h 0 h 60 h',
+        'Componentes Curriculares Obrigatórios Pendentes:1',
+        'CCA0111',
+        'METODOLOGIA DA PESQUISA EM CIÊNCIAS CONTÁBEIS 30 h',
+      ].join('\n'),
     )
 
-    expect(screen.getByRole('status')).toHaveTextContent(
-      'não parece ser o histórico de um aluno',
-    )
+    expect(
+      screen.getByRole('heading', { name: 'Progresso no curso' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Ciências Contábeis')).toBeInTheDocument()
+    expect(screen.getByText('60')).toBeInTheDocument()
     expect(
       screen.queryByRole('list', { name: '1º semestre' }),
     ).not.toBeInTheDocument()
     expect(salvos().cursadas).toEqual([])
+    expect(salvos().progressoCurso.curso).toBe('CIÊNCIAS CONTÁBEIS')
+
+    // O "+" traz a obrigatória para o formulário, com a carga horária dela.
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Cursar Metodologia da Pesquisa em Ciências Contábeis neste semestre',
+      }),
+    )
+    expect(screen.getByLabelText('Nome da matéria')).toHaveValue(
+      'Metodologia da Pesquisa em Ciências Contábeis',
+    )
+    expect(screen.getByLabelText('Carga horária')).toHaveValue('30')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Esconder progresso' }))
+    expect(
+      screen.queryByRole('heading', { name: 'Progresso no curso' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('texto que não é histórico avisa e não muda nada', () => {
+    abrir()
+    colarHistorico('lista de compras: arroz, feijão')
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'não parece ser um histórico do SIGAA',
+    )
+    expect(salvos()?.progressoCurso).toBeUndefined()
   })
 
   it('"Esconder fluxograma" volta ao convite, sem perder as marcações', () => {

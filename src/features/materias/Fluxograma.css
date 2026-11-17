@@ -223,3 +223,110 @@
   outline: 3px solid var(--cor-lilas-escuro);
   outline-offset: 2px;
 }
+
+/* Progresso no curso (qualquer curso, lido do histórico) */
+.curso-totais {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.curso-totais li {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--painel-fundo);
+  font-size: 0.85rem;
+}
+
+.curso-subtitulo,
+.curso-cursadas summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0;
+  font-size: 1rem;
+}
+
+.curso-subtitulo span,
+.curso-cursadas summary span {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--painel-forte);
+  font-size: 0.8rem;
+}
+
+.curso-cursadas summary {
+  cursor: pointer;
+}
+
+.curso-cursadas[open] summary {
+  margin-bottom: 10px;
+}
+
+.curso-vazio {
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+.curso-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.curso-disciplina {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 2px dashed var(--painel-forte);
+  border-radius: 4px 4px 10px 4px;
+  background: var(--painel-fundo);
+}
+
+.curso-nome {
+  font-size: 0.78rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.curso-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.curso-cursar {
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.7);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.curso-cursar:hover {
+  background: #fff;
+}
+
+.curso-cursar:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 1px;
+}

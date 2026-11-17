@@ -121,6 +121,27 @@ describe('mesclarDados com data de alteração', () => {
   })
 })
 
+describe('mesclarDados com progresso do curso', () => {
+  it('fica o histórico importado por último, de qualquer aparelho', () => {
+    const velho = { curso: 'A', cursadas: [], pendentes: [], alteradoEm: 1 }
+    const novo = { curso: 'B', cursadas: [], pendentes: [], alteradoEm: 2 }
+
+    expect(
+      mesclarDados(
+        { ...DADOS_VAZIOS, progressoCurso: velho },
+        { ...DADOS_VAZIOS, progressoCurso: novo },
+      ).progressoCurso.curso,
+    ).toBe('B')
+    expect(
+      mesclarDados(DADOS_VAZIOS, { ...DADOS_VAZIOS, progressoCurso: velho })
+        .progressoCurso.curso,
+    ).toBe('A')
+    expect(mesclarDados(DADOS_VAZIOS, DADOS_VAZIOS).progressoCurso).toBe(
+      undefined,
+    )
+  })
+})
+
 describe('sincronizar', () => {
   it('leva os dados de um aparelho para outro', async () => {
     const cofre = criarCofreDeTeste()

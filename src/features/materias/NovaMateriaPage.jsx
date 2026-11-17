@@ -4,7 +4,12 @@ import { CORES, nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import SeletorCor from '../../shared/components/SeletorCor'
 import '../../shared/secao.css'
-import { CARGAS, CARGA_PADRAO, creditosDoFluxograma } from '../faltas/faltas'
+import {
+  CARGAS,
+  CARGA_PADRAO,
+  cargaDoHistorico,
+  creditosDoFluxograma,
+} from '../faltas/faltas'
 import Fluxograma from './Fluxograma'
 import './NovaMateriaPage.css'
 
@@ -20,7 +25,7 @@ function corSugerida(materias) {
 
 /** Aba só para cadastrar matérias. Fica na tela para cadastrar várias seguidas. */
 export default function NovaMateriaPage() {
-  const { materias, semestre, adicionarMateria } = useDados()
+  const { materias, semestre, adicionarMateria, progressoCurso } = useDados()
   const [nome, setNome] = useState('')
   const [periodo, setPeriodo] = useState(semestre)
   const [cor, setCor] = useState(() => corSugerida(materias))
@@ -31,7 +36,7 @@ export default function NovaMateriaPage() {
   /** O "+" do fluxograma traz a disciplina para o formulário. */
   function cursar(disciplina) {
     setNome(disciplina.codigo ? disciplina.nome : '')
-    setCarga(disciplina.creditos * 15)
+    setCarga(disciplina.cargaHoraria ?? disciplina.creditos * 15)
     setAdicionada(null)
     campoNome.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
     campoNome.current?.focus({ preventScroll: true })
@@ -58,8 +63,10 @@ export default function NovaMateriaPage() {
     setNome(texto)
 
     const creditos = creditosDoFluxograma(texto)
+    const doHistorico = cargaDoHistorico(progressoCurso, texto)
 
     if (creditos) setCarga(creditos * 15)
+    else if (doHistorico) setCarga(doHistorico)
   }
 
   const opcoesDeCarga = [...new Set([...CARGAS, carga])].sort((a, b) => a - b)

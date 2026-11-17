@@ -7,6 +7,7 @@ import {
   salvarDados,
   semestreDaData,
   validarDados,
+  validarProgressoCurso,
 } from './armazenamento'
 import { useSincronizacao } from '../sync/useSincronizacao'
 
@@ -157,7 +158,30 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
 
   /** Esconde o fluxograma de novo. As marcações ficam guardadas. */
   const esconderFluxograma = useCallback(() => {
-    setDados((atuais) => ({ ...atuais, fluxogramaAtivo: false }))
+    setDados((atuais) => ({
+      ...atuais,
+      fluxogramaAtivo: false,
+      ...(atuais.progressoCurso && {
+        progressoCurso: {
+          ...atuais.progressoCurso,
+          oculto: true,
+          alteradoEm: agora(),
+        },
+      }),
+    }))
+  }, [])
+
+  /** Guarda o progresso no curso lido do histórico (qualquer curso). */
+  const guardarProgressoCurso = useCallback((lido) => {
+    setDados((atuais) => {
+      const progressoCurso = validarProgressoCurso({
+        ...lido,
+        oculto: false,
+        alteradoEm: agora(),
+      })
+
+      return progressoCurso ? { ...atuais, progressoCurso } : atuais
+    })
   }, [])
 
   /** Troca tudo pelo conteúdo de um backup. Devolve `false` se o arquivo não servir. */
@@ -204,6 +228,11 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       sincronizacao,
       cursadas: dados.cursadas,
       fluxogramaAtivo: dados.fluxogramaAtivo,
+      progressoCurso:
+        dados.progressoCurso && !dados.progressoCurso.oculto
+          ? dados.progressoCurso
+          : null,
+      guardarProgressoCurso,
       alternarCursada,
       aplicarHistorico,
       esconderFluxograma,
@@ -231,6 +260,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       alternarCursada,
       aplicarHistorico,
       esconderFluxograma,
+      guardarProgressoCurso,
       registrarFalta,
       definirCargaHoraria,
       adicionarMateria,

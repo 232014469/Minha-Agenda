@@ -9,6 +9,7 @@ import {
   salvarDados,
   semestreDaData,
   validarDados,
+  validarProgressoCurso,
 } from './armazenamento'
 
 const materia = { id: 1, nome: 'Cálculo', periodo: '2026.2', cor: 'lilas' }
@@ -76,6 +77,37 @@ describe('validarDados', () => {
 
     expect(resultado.materias).toEqual([materia])
     expect(resultado.tarefas).toEqual([tarefa])
+  })
+})
+
+describe('validarProgressoCurso', () => {
+  it('guarda só curso, horas e disciplinas, e descarta o que não serve', () => {
+    const limpo = validarProgressoCurso({
+      curso: 'CIÊNCIAS CONTÁBEIS',
+      nome: 'NÃO DEVIA FICAR',
+      exigido: { obrigatorias: 10, optativas: 5, complementares: 0, total: 15 },
+      integralizado: { obrigatorias: -1 },
+      cursadas: [{ codigo: 'CCA0015', nome: 'X' }, { codigo: 'errado' }],
+      pendentes: [
+        { codigo: 'CCA0077', nome: 'Y', ch: 60 },
+        { codigo: 'CCA0078', nome: 'Z' },
+      ],
+      alteradoEm: 5,
+    })
+
+    expect(limpo).toEqual({
+      curso: 'CIÊNCIAS CONTÁBEIS',
+      exigido: { obrigatorias: 10, optativas: 5, complementares: 0, total: 15 },
+      integralizado: null,
+      cursadas: [{ codigo: 'CCA0015', nome: 'X' }],
+      pendentes: [{ codigo: 'CCA0077', nome: 'Y', ch: 60 }],
+      oculto: false,
+      alteradoEm: 5,
+    })
+    expect(validarProgressoCurso({ curso: 3 })).toBeNull()
+    expect(validarDados({ materias: [], tarefas: [] }).progressoCurso).toBe(
+      undefined,
+    )
   })
 })
 

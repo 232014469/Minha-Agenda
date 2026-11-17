@@ -7,7 +7,20 @@
  * - O que foi excluído em qualquer um dos dois continua excluído.
  * - Disciplinas cursadas: as marcadas em qualquer um dos dois.
  * - Semestre escolhido: o deste aparelho.
+ * - Progresso do curso (histórico importado): o importado ou alterado por
+ *   último.
  */
+function maisRecente(daqui, deLa) {
+  if (!daqui && !deLa) return {}
+  if (!deLa) return { progressoCurso: daqui }
+  if (!daqui) return { progressoCurso: deLa }
+
+  return {
+    progressoCurso:
+      (deLa.alteradoEm ?? 0) > (daqui.alteradoEm ?? 0) ? deLa : daqui,
+  }
+}
+
 export function mesclarDados(local, remoto) {
   const removidos = [...new Set([...remoto.removidos, ...local.removidos])]
   const fora = new Set(removidos)
@@ -40,5 +53,6 @@ export function mesclarDados(local, remoto) {
     cursadas: [...new Set([...remoto.cursadas, ...local.cursadas])],
     fluxogramaAtivo: local.fluxogramaAtivo || remoto.fluxogramaAtivo,
     removidos,
+    ...maisRecente(local.progressoCurso, remoto.progressoCurso),
   }
 }
