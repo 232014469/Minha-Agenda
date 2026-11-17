@@ -10,6 +10,9 @@
   display: grid;
   flex: 0 1 340px;
   gap: 6px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--cor-menu);
   font-size: 0.9rem;
 }
 
@@ -369,8 +372,8 @@
   gap: 6px;
   max-width: 420px;
   padding: 12px 14px;
-  border-radius: 12px;
-  background: var(--cor-lilas-claro);
+  border-radius: 8px;
+  background: var(--cor-menu);
   font-size: 0.8rem;
 }
 
