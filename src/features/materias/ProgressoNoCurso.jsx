@@ -1,7 +1,9 @@
 import { useDados } from '../../dados/useDados'
 import BarraDividida from '../../shared/components/BarraDividida'
 import BarraProgresso from '../../shared/components/BarraProgresso'
+import { cargaDoHistorico } from '../faltas/faltas'
 import { nomeBonito } from './historico'
+import { vagasDeOptativas } from './previsao'
 import PrevisaoDoCurso from './PrevisaoDoCurso'
 
 /** Uma cor para cada tipo de disciplina, a mesma da legenda e das barras. */
@@ -31,6 +33,20 @@ export default function ProgressoNoCurso({
   const nomesNoSemestre = new Set(
     materias.map((materia) => normalizar(materia.nome)),
   )
+
+  // Optativas: o que falta das horas optativas, em vagas de 60 h. As matérias
+  // do semestre que não são obrigatórias pendentes ocupam as primeiras.
+  const vagas = exigido
+    ? vagasDeOptativas(
+        Math.max(0, exigido.optativas - (integralizado?.optativas ?? 0)),
+      )
+    : []
+  const faltamComplementares = exigido
+    ? Math.max(0, exigido.complementares - (integralizado?.complementares ?? 0))
+    : 0
+  const optativasCursando = materias.filter(
+    (materia) => cargaDoHistorico(progresso, materia.nome) === null,
+  ).length
 
   return (
     <section className="secao-caixa fluxo" aria-labelledby="fluxo-titulo">
@@ -126,6 +142,53 @@ export default function ProgressoNoCurso({
             )
           })}
         </ul>
+      )}
+
+      {vagas.length > 0 && (
+        <>
+          <h3 className="curso-subtitulo">
+            Optativas que faltam <span>{vagas.length}</span>
+          </h3>
+          <ul className="curso-lista" aria-label="Optativas que faltam">
+            {vagas.map((horas, indice) => {
+              const nome = `Optativa ${indice + 1}`
+
+              return (
+                <li
+                  key={nome}
+                  className="curso-disciplina curso-optativa materia-cor-amarelo"
+                >
+                  <span className="curso-cabeca">
+                    <span className="fluxo-codigo">{nome}</span>
+                    <span className="fluxo-creditos">{horas} h</span>
+                    <button
+                      type="button"
+                      className="curso-cursar"
+                      aria-label={`Cursar ${nome} neste semestre`}
+                      title="Cursar uma optativa neste semestre"
+                      onClick={() =>
+                        aoCursar({ codigo: '', nome: '', cargaHoraria: horas })
+                      }
+                    >
+                      +
+                    </button>
+                  </span>
+                  <span className="curso-nome">
+                    Qualquer optativa do currículo
+                  </span>
+                  {indice < optativasCursando && (
+                    <span className="fluxo-etiqueta">Cursando</span>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+          {faltamComplementares > 0 && (
+            <p className="curso-vazio">
+              E mais {faltamComplementares} h de atividades complementares.
+            </p>
+          )}
+        </>
       )}
 
       {cursadas.length > 0 && (

@@ -87,3 +87,14 @@ export function preverIntegralizacao({
         : somarSemestres(semestre, semestresDepois),
   }
 }
+
+/** Horas de optativa que faltam, em vagas de 60 h (a última com a sobra). */
+export function vagasDeOptativas(horas, tamanho = 60) {
+  const vagas = []
+
+  for (let resto = horas; resto > 0; resto -= tamanho) {
+    vagas.push(Math.min(tamanho, resto))
+  }
+
+  return vagas
+}

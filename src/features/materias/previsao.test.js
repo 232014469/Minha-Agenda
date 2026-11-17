@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { preverIntegralizacao, somarSemestres } from './previsao'
+import {
+  preverIntegralizacao,
+  somarSemestres,
+  vagasDeOptativas,
+} from './previsao'
 
 const progresso = {
   curso: 'CIÊNCIAS CONTÁBEIS',
@@ -82,5 +86,14 @@ describe('preverIntegralizacao', () => {
     expect(
       preverIntegralizacao({ progresso: { pendentes: [] }, materias: [] }),
     ).toBeNull()
+  })
+})
+
+describe('vagasDeOptativas', () => {
+  it('divide em vagas de 60 h, com a sobra na última', () => {
+    expect(vagasDeOptativas(930)).toHaveLength(16)
+    expect(vagasDeOptativas(930).at(-1)).toBe(30)
+    expect(vagasDeOptativas(120)).toEqual([60, 60])
+    expect(vagasDeOptativas(0)).toEqual([])
   })
 })
