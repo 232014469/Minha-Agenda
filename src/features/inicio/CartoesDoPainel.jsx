@@ -4,11 +4,7 @@ import BarraProgresso from '../../shared/components/BarraProgresso'
 import { EstadoVazio } from '../../shared/components/Estados'
 import '../../shared/cores.css'
 import BarraDeFaltas from '../faltas/BarraDeFaltas'
-import {
-  HORAS_POR_ENCONTRO,
-  cargaDoHistorico,
-  creditosDoFluxograma,
-} from '../faltas/faltas'
+import { HORAS_POR_ENCONTRO, creditosDoFluxograma } from '../faltas/faltas'
 import { DISCIPLINAS, somarCreditos } from '../materias/dadosFluxograma'
 import {
   diasAte,
@@ -149,44 +145,12 @@ function GraficoDaSemana({ tarefas, materias, agora, titulo }) {
   )
 }
 
-/** Qualquer curso: horas cumpridas, e quanto as matérias deste semestre somam. */
-function CartaoHorasDoCurso({ progresso, materias, semana }) {
-  const total = progresso.exigido.total
-  const cumpridas = progresso.integralizado?.total ?? 0
-  const nesteSemestre = materias.reduce(
-    (soma, materia) => soma + (cargaDoHistorico(progresso, materia.nome) ?? 0),
-    0,
-  )
-
-  return (
-    <section className="inicio-caixa" aria-labelledby="horas-titulo">
-      <h2 id="horas-titulo">Horas do curso</h2>
-      <p className="inicio-creditos-numero">
-        <strong>{cumpridas}</strong> de {total} h
-      </p>
-      <BarraProgresso
-        concluidas={cumpridas}
-        total={total}
-        rotulo="Horas cumpridas no curso"
-      />
-      {nesteSemestre > 0 && (
-        <p className="inicio-dica">
-          +{nesteSemestre} h se passar em tudo neste semestre (
-          {Math.round(((cumpridas + nesteSemestre) / total) * 100)}%).
-        </p>
-      )}
-      {semana}
-    </section>
-  )
-}
-
 /**
- * Créditos (Engenharia de Software) ou horas do curso (qualquer curso), com
- * as entregas da semana embaixo. Sem histórico importado: só as entregas.
+ * Com o fluxograma de Engenharia de Software: créditos do curso, com as
+ * entregas da semana embaixo. Sem ele: só as entregas da semana.
  */
 export function CartaoCreditosOuSemana({ agora = new Date() }) {
-  const { fluxogramaAtivo, progressoCurso, cursadas, materias, tarefas } =
-    useDados()
+  const { fluxogramaAtivo, cursadas, materias, tarefas } = useDados()
 
   const semana = (
     <GraficoDaSemana
@@ -200,16 +164,6 @@ export function CartaoCreditosOuSemana({ agora = new Date() }) {
       }
     />
   )
-
-  if (!fluxogramaAtivo && progressoCurso?.exigido) {
-    return (
-      <CartaoHorasDoCurso
-        progresso={progressoCurso}
-        materias={materias}
-        semana={semana}
-      />
-    )
-  }
 
   if (!fluxogramaAtivo) {
     return (
