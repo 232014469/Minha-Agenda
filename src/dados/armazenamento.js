@@ -48,6 +48,8 @@ export const DADOS_VAZIOS = {
   materias: [],
   tarefas: [],
   cursadas: [],
+  fluxogramaAtivo: false,
+  removidos: [],
 }
 
 /** Semestre de uma data: "2026.1" de janeiro a junho, "2026.2" de julho a dezembro. */
@@ -97,14 +99,53 @@ export function validarDados(dados) {
     ? [...new Set(dados.cursadas.filter(texto))]
     : []
 
-  return { versao: 1, semestre, materias, tarefas, cursadas }
+  // O fluxograma só aparece depois de importar um histórico do curso.
+  const fluxogramaAtivo = dados.fluxogramaAtivo === true
+
+  // O que foi excluído ("m:12" matéria, "t:40" tarefa), para a sincronização
+  // não trazer de volta de outro aparelho. Guarda só os mais recentes.
+  const removidos = Array.isArray(dados.removidos)
+    ? [...new Set(dados.removidos.filter(texto))].slice(-2000)
+    : []
+
+  return {
+    versao: 1,
+    semestre,
+    materias,
+    tarefas,
+    cursadas,
+    fluxogramaAtivo,
+    removidos,
+  }
 }
 
+function lerGaveta(chave) {
+  const salvo = window.localStorage.getItem(chave)
+
+  return salvo ? validarDados(JSON.parse(salvo)) : null
+}
+
+/**
+ * Lê os dados do navegador. Se a gaveta atual estiver vazia, traz os dados
+ * de uma versão anterior do app (Jeff Study, Study) para ela. A gaveta
+ * antiga fica como estava.
+ */
 export function lerDados() {
   try {
-    const salvo = window.localStorage.getItem(CHAVE)
+    const atuais = lerGaveta(CHAVE)
 
-    return (salvo && validarDados(JSON.parse(salvo))) || DADOS_VAZIOS
+    if (atuais) return atuais
+
+    for (const antiga of APP.chavesAntigas ?? []) {
+      const dados = lerGaveta(antiga)
+
+      if (dados) {
+        salvarDados(dados)
+        return dados
+      }
+    }
+
+    return DADOS_VAZIOS
   } catch {
     return DADOS_VAZIOS
   }
@@ -120,6 +161,14 @@ export function salvarDados(dados) {
   }
 }
 
-export function proximoId(lista) {
-  return lista.reduce((maior, item) => Math.max(maior, item.id), 0) + 1
+/**
+ * Id novo para matéria ou tarefa. Usa a hora atual com um sorteio no fim,
+ * para dois aparelhos sincronizados não criarem o mesmo id. Continua
+ * sendo um número inteiro e sempre maior que os ids que já existem.
+ */
+export function proximoId(lista, agora = Date.now()) {
+  const maior = lista.reduce((atual, item) => Math.max(atual, item.id), 0)
+  const unico = agora * 1000 + Math.floor(Math.random() * 1000)
+
+  return Math.max(maior + 1, unico)
 }

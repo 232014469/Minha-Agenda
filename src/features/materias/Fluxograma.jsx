@@ -9,7 +9,6 @@ import {
   FLUXOGRAMA,
   somarCreditos,
 } from './dadosFluxograma'
-import { IMPORTAR_HISTORICO_SIGAA } from '../../config/curso'
 import { lerHistorico } from './historico'
 import './Fluxograma.css'
 
@@ -65,7 +64,7 @@ function Disciplina({
 
 /** Colar o texto do histórico do SIGAA e marcar as aprovadas de uma vez. */
 function ImportarHistorico({ aoFechar }) {
-  const { cursadas, marcarCursadas } = useDados()
+  const { cursadas, aplicarHistorico } = useDados()
   const [texto, setTexto] = useState('')
   const [resultado, setResultado] = useState(null)
 
@@ -75,7 +74,8 @@ function ImportarHistorico({ aoFechar }) {
     const lido = lerHistorico(texto)
     const novas = lido.cursadas.filter((id) => !cursadas.includes(id))
 
-    marcarCursadas(lido.cursadas)
+    // Só mostra o fluxograma se o histórico for de um aluno deste curso.
+    if (lido.doCurso) aplicarHistorico(lido.cursadas)
     setResultado({ ...lido, novas: novas.length })
     setTexto('')
   }
@@ -108,10 +108,15 @@ function ImportarHistorico({ aoFechar }) {
       </div>
       {resultado && (
         <p role="status" className="fluxo-importar-resultado">
-          {resultado.cursadas.length === 0
-            ? 'Nenhuma disciplina aprovada do fluxograma foi encontrada nesse texto.'
-            : `${resultado.cursadas.length} disciplinas do fluxograma aprovadas no histórico (${resultado.novas} novas marcadas).`}
-          {resultado.fora.length > 0 &&
+          {!resultado.doCurso
+            ? `Esse texto não parece ser o histórico de um aluno de ${CURSO}. Por enquanto, o fluxograma só existe para esse curso.`
+            : resultado.cursadas.length === 0
+              ? 'Histórico reconhecido, mas nenhuma disciplina do fluxograma aparece como aprovada.'
+              : resultado.cursadas.length === 1
+                ? `1 disciplina do fluxograma aprovada no histórico (${resultado.novas === 1 ? '1 nova marcada' : 'já estava marcada'}).`
+                : `${resultado.cursadas.length} disciplinas do fluxograma aprovadas no histórico (${resultado.novas} novas marcadas).`}
+          {resultado.doCurso &&
+            resultado.fora.length > 0 &&
             ` Fora do fluxograma (optativas e eletivas): ${resultado.fora.join(', ')}.`}
         </p>
       )}
@@ -124,8 +129,42 @@ function ImportarHistorico({ aoFechar }) {
  * marcada como cursada; o "+" preenche o cadastro de matéria com ela.
  */
 export default function Fluxograma({ aoCursar }) {
-  const { materias, cursadas, alternarCursada } = useDados()
+  const {
+    materias,
+    cursadas,
+    fluxogramaAtivo,
+    alternarCursada,
+    esconderFluxograma,
+  } = useDados()
   const [importando, setImportando] = useState(false)
+
+  // Escondido até importar um histórico do curso: só o convite para importar.
+  if (!fluxogramaAtivo) {
+    return (
+      <section className="secao-caixa fluxo" aria-labelledby="fluxo-titulo">
+        <header>
+          <h2 id="fluxo-titulo">Fluxograma</h2>
+          <p>
+            Importe o seu histórico do SIGAA (UnB) para ver o fluxograma do seu
+            curso com as disciplinas que você já cursou. Por enquanto: {CURSO}.
+          </p>
+          {!importando && (
+            <button
+              type="button"
+              className="secao-botao fluxo-abrir-importar"
+              onClick={() => setImportando(true)}
+            >
+              Importar do histórico
+            </button>
+          )}
+        </header>
+        {importando && (
+          <ImportarHistorico aoFechar={() => setImportando(false)} />
+        )}
+      </section>
+    )
+  }
+
   const feitas = new Set(cursadas)
   const nomesNoSemestre = new Set(
     materias.map((materia) => materia.nome.trim().toLowerCase()),
@@ -141,15 +180,24 @@ export default function Fluxograma({ aoCursar }) {
         <div>
           <h2 id="fluxo-titulo">Fluxograma</h2>
           <p>{CURSO}</p>
-          {IMPORTAR_HISTORICO_SIGAA && !importando && (
+          <div className="fluxo-topo-acoes">
+            {!importando && (
+              <button
+                type="button"
+                className="secao-botao fluxo-abrir-importar"
+                onClick={() => setImportando(true)}
+              >
+                Importar do histórico
+              </button>
+            )}
             <button
               type="button"
-              className="secao-botao fluxo-abrir-importar"
-              onClick={() => setImportando(true)}
+              className="secao-botao fluxo-botao-claro fluxo-abrir-importar"
+              onClick={esconderFluxograma}
             >
-              Importar do histórico
+              Esconder fluxograma
             </button>
-          )}
+          </div>
         </div>
         <div className="fluxo-progresso">
           <span>

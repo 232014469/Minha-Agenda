@@ -52,7 +52,89 @@ describe('dados do fluxograma', () => {
   })
 })
 
+const HISTORICO_ES = [
+  'Curso: ENGENHARIA DE SOFTWARE/FCTE - BACHARELADO - DIURNO',
+  'Componentes Curriculares Cursados/Cursando',
+  '2023.2 MAT0025 CÁLCULO 1 90 -- -- - CUMP',
+  '2023.2 CIC0004 ALGORITMOS 90 09 90,0 MM APR',
+  '2024.1 FGA0085 MATEMÁTICA DISCRETA 1 60 01 92,0 MI REP',
+  'Legenda',
+].join('\n')
+
+function colarHistorico(texto) {
+  fireEvent.click(screen.getByRole('button', { name: 'Importar do histórico' }))
+  fireEvent.change(screen.getByLabelText('Texto do histórico'), {
+    target: { value: texto },
+  })
+  fireEvent.click(screen.getByRole('button', { name: 'Marcar cursadas' }))
+}
+
+describe('Fluxograma escondido até importar o histórico', () => {
+  it('começa só com o convite para importar', () => {
+    abrir()
+
+    expect(
+      screen.getByRole('button', { name: 'Importar do histórico' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('list', { name: '1º semestre' }),
+    ).not.toBeInTheDocument()
+  })
+
+  it('histórico de Engenharia de Software mostra o fluxograma marcado', () => {
+    abrir()
+    colarHistorico(HISTORICO_ES)
+
+    expect([...salvos().cursadas].sort()).toEqual(['CIC0004', 'MAT0025'])
+    expect(salvos().fluxogramaAtivo).toBe(true)
+    expect(
+      screen.getByRole('list', { name: '1º semestre' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'Cálculo 1: cursada' }),
+    ).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('histórico de outro curso não mostra o fluxograma', () => {
+    abrir()
+    colarHistorico(
+      HISTORICO_ES.replace(
+        'ENGENHARIA DE SOFTWARE/FCTE',
+        'CIÊNCIA DA COMPUTAÇÃO/CIC',
+      ),
+    )
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'não parece ser o histórico de um aluno',
+    )
+    expect(
+      screen.queryByRole('list', { name: '1º semestre' }),
+    ).not.toBeInTheDocument()
+    expect(salvos().cursadas).toEqual([])
+  })
+
+  it('"Esconder fluxograma" volta ao convite, sem perder as marcações', () => {
+    abrir()
+    colarHistorico(HISTORICO_ES)
+    fireEvent.click(screen.getByRole('button', { name: 'Esconder fluxograma' }))
+
+    expect(
+      screen.queryByRole('list', { name: '1º semestre' }),
+    ).not.toBeInTheDocument()
+    expect(salvos().fluxogramaAtivo).toBe(false)
+    expect(salvos().cursadas).toHaveLength(2)
+  })
+})
+
 describe('Fluxograma na aba Adicionar matéria', () => {
+  // Nestes testes o fluxograma já está à mostra.
+  beforeEach(() => {
+    localStorage.setItem(
+      CHAVE,
+      JSON.stringify({ materias: [], tarefas: [], fluxogramaAtivo: true }),
+    )
+  })
+
   it('mostra os 10 semestres', () => {
     abrir()
 
@@ -112,33 +194,5 @@ describe('Fluxograma na aba Adicionar matéria', () => {
     expect(screen.getByLabelText('Nome da matéria')).toHaveValue(
       'Paradigmas de Programação',
     )
-  })
-
-  it('importa as aprovadas a partir do texto do histórico', () => {
-    abrir()
-
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Importar do histórico' }),
-    )
-    fireEvent.change(screen.getByLabelText('Texto do histórico'), {
-      target: {
-        value: [
-          'Componentes Curriculares Cursados/Cursando',
-          '2023.2 MAT0025 CÁLCULO 1 90 -- -- - CUMP',
-          '2023.2 CIC0004 ALGORITMOS 90 09 90,0 MM APR',
-          '2024.1 FGA0085 MATEMÁTICA DISCRETA 1 60 01 92,0 MI REP',
-          'Legenda',
-        ].join('\n'),
-      },
-    })
-    fireEvent.click(screen.getByRole('button', { name: 'Marcar cursadas' }))
-
-    expect([...salvos().cursadas].sort()).toEqual(['CIC0004', 'MAT0025'])
-    expect(screen.getByRole('status')).toHaveTextContent(
-      '2 disciplinas do fluxograma aprovadas no histórico (2 novas marcadas).',
-    )
-    expect(
-      screen.getByRole('button', { name: 'Cálculo 1: cursada' }),
-    ).toHaveAttribute('aria-pressed', 'true')
   })
 })

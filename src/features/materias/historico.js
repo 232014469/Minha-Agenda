@@ -1,4 +1,4 @@
-import { CODIGOS_ANTIGOS } from '../../config/curso'
+import { CODIGOS_ANTIGOS, NOME_NO_HISTORICO } from '../../config/curso'
 import { DISCIPLINAS } from './dadosFluxograma'
 
 /** Situações do SIGAA: só as primeiras contam como cursada. */
@@ -28,7 +28,10 @@ function tabelaDeCursadas(texto) {
  * - `cursadas`: ids do fluxograma aprovados, dispensados ou cumpridos
  *   (inclusive por equivalência, "Cumpriu FGA0157 ... através de ...");
  * - `fora`: códigos aprovados que não estão no fluxograma (optativas,
- *   eletivas...), para a tela avisar.
+ *   eletivas...), para a tela avisar;
+ * - `doCurso`: se o histórico é de um aluno do curso do fluxograma. O SIGAA
+ *   escreve "Curso: ENGENHARIA DE SOFTWARE/FCTE - ..."; a barra depois do
+ *   nome separa o curso de uma disciplina com o mesmo nome.
  *
  * Cada linha da tabela tem um código e uma situação. Dependendo de onde o PDF
  * é copiado, as colunas vêm lado a lado ou uma depois da outra, mas sempre na
@@ -85,5 +88,9 @@ export function lerHistorico(texto) {
     else if (!usadosEmEquivalencia.has(codigo)) fora.push(codigo)
   }
 
-  return { cursadas: [...cursadas], fora: fora.sort() }
+  const doCurso = new RegExp(
+    `Curso:\\s*${NOME_NO_HISTORICO}\\s*/|${NOME_NO_HISTORICO}/`,
+  ).test(conteudo)
+
+  return { cursadas: [...cursadas], fora: fora.sort(), doCurso }
 }

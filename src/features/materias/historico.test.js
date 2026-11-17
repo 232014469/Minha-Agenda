@@ -4,6 +4,7 @@ import { lerHistorico } from './historico'
 // Histórico de mentira, no formato do SIGAA. Nenhum dado real.
 const COLUNAS_LADO_A_LADO = `
 Histórico Escolar
+Curso:   ENGENHARIA DE SOFTWARE/FCTE - BACHARELADO - DIURNO
 Componentes Curriculares Cursados/Cursando
 Ano/Período Componente Curricular CH Turma Freq % Nota Situação
  --     MAT0025  CÁLCULO 1                       90  --  --   -   CUMP
@@ -25,6 +26,8 @@ Cumpriu FGA0157 - PROBABILIDADE E ESTATÍSTICA APLICADO A ENGENHARIA (60h) atrav
 // O mesmo histórico copiado como o Preview do Mac às vezes faz: a coluna de
 // situações inteira primeiro, depois a de códigos.
 const COLUNAS_SEPARADAS = `
+Curso:
+ENGENHARIA DE SOFTWARE/FCTE - BACHARELADO - DIURNO
 Componentes Curriculares Cursados/Cursando
 Situação
 CUMP
@@ -60,10 +63,11 @@ describe('lerHistorico', () => {
     ['colunas lado a lado', COLUNAS_LADO_A_LADO],
     ['colunas separadas', COLUNAS_SEPARADAS],
   ])('marca só aprovadas, cumpridas e equivalências (%s)', (_, texto) => {
-    const { cursadas, fora } = lerHistorico(texto)
+    const { cursadas, fora, doCurso } = lerHistorico(texto)
 
     expect([...cursadas].sort()).toEqual(ESPERADO)
     expect(fora).toEqual(['ADM0192'])
+    expect(doCurso).toBe(true)
   })
 
   it('troca o código antigo pelo atual (FGA0147 → FGA0146)', () => {
@@ -79,7 +83,26 @@ describe('lerHistorico', () => {
   })
 
   it('texto vazio ou qualquer não quebra', () => {
-    expect(lerHistorico('')).toEqual({ cursadas: [], fora: [] })
-    expect(lerHistorico(undefined)).toEqual({ cursadas: [], fora: [] })
+    const vazio = { cursadas: [], fora: [], doCurso: false }
+
+    expect(lerHistorico('')).toEqual(vazio)
+    expect(lerHistorico(undefined)).toEqual(vazio)
+  })
+
+  it('reconhece de qual curso é o histórico', () => {
+    expect(
+      lerHistorico(
+        COLUNAS_LADO_A_LADO.replace(
+          'ENGENHARIA DE SOFTWARE/FCTE',
+          'CIÊNCIA DA COMPUTAÇÃO/CIC',
+        ),
+      ).doCurso,
+    ).toBe(false)
+    // Uma disciplina com o mesmo nome não confunde: falta a barra do curso.
+    expect(
+      lerHistorico(
+        'Curso: CIÊNCIA DA COMPUTAÇÃO/CIC\nFGA0001 ENGENHARIA DE SOFTWARE 60 APR',
+      ).doCurso,
+    ).toBe(false)
   })
 })

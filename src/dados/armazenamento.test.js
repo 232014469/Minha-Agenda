@@ -33,6 +33,8 @@ describe('validarDados', () => {
       materias: [materia],
       tarefas: [tarefa],
       cursadas: [],
+      fluxogramaAtivo: false,
+      removidos: [],
     })
   })
 
@@ -89,10 +91,33 @@ describe('lerDados e salvarDados', () => {
       materias: [materia],
       tarefas: [tarefa],
       cursadas: ['MAT0025'],
+      fluxogramaAtivo: true,
+      removidos: ['t:9'],
     }
 
     expect(salvarDados(dados)).toBe(true)
     expect(lerDados()).toEqual(dados)
+  })
+
+  it('traz os dados do Jeff Study ou do Study antigos e guarda na gaveta nova', () => {
+    const antigos = { materias: [materia], tarefas: [tarefa] }
+
+    localStorage.setItem('jeff-study.dados', JSON.stringify(antigos))
+
+    expect(lerDados().materias).toEqual([materia])
+    expect(JSON.parse(localStorage.getItem(CHAVE)).materias).toEqual([materia])
+    // A gaveta antiga continua lá, intacta.
+    expect(localStorage.getItem('jeff-study.dados')).not.toBeNull()
+  })
+
+  it('a gaveta nova tem prioridade sobre as antigas', () => {
+    localStorage.setItem(
+      'study.dados',
+      JSON.stringify({ materias: [materia], tarefas: [] }),
+    )
+    localStorage.setItem(CHAVE, JSON.stringify({ materias: [], tarefas: [] }))
+
+    expect(lerDados().materias).toEqual([])
   })
 
   it('ignora um conteúdo salvo que está corrompido', () => {
@@ -141,8 +166,17 @@ describe('cursadas', () => {
 })
 
 describe('proximoId', () => {
-  it('começa em 1 e segue o maior id', () => {
-    expect(proximoId([])).toBe(1)
-    expect(proximoId([{ id: 3 }, { id: 7 }])).toBe(8)
+  it('é sempre maior que os ids que já existem', () => {
+    expect(proximoId([{ id: 3 }, { id: 7 }])).toBeGreaterThan(7)
+    expect(proximoId([{ id: 9e15 }])).toBe(9e15 + 1)
+  })
+
+  it('dois aparelhos ao mesmo tempo dificilmente repetem o id', () => {
+    const ids = new Set(
+      Array.from({ length: 200 }, () => proximoId([], 1_700_000_000_000)),
+    )
+
+    expect(ids.size).toBeGreaterThan(150)
+    expect([...ids].every(Number.isSafeInteger)).toBe(true)
   })
 })

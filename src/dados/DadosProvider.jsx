@@ -8,14 +8,22 @@ import {
   semestreDaData,
   validarDados,
 } from './armazenamento'
+import { useSincronizacao } from '../sync/useSincronizacao'
 
 /**
  * Guarda as matérias e tarefas no navegador e entrega as ações para
  * as telas. As telas recebem só o que é do semestre escolhido; o backup usa
  * `todos`, com todos os semestres.
  */
-export default function DadosProvider({ children }) {
+export default function DadosProvider({ children, opcoesDaSincronizacao }) {
   const [dados, setDados] = useState(lerDados)
+  // Dados que chegam de outro aparelho pela sincronização.
+  const substituir = useCallback((novos) => setDados(novos), [])
+  const sincronizacao = useSincronizacao(
+    dados,
+    substituir,
+    opcoesDaSincronizacao,
+  )
   // Salva a cada mudança. Gravar de novo os mesmos dados não tem efeito
   // nenhum, então pode rodar durante a renderização.
   const salvou = useMemo(() => salvarDados(dados), [dados])
@@ -48,6 +56,13 @@ export default function DadosProvider({ children }) {
       ...atuais,
       materias: atuais.materias.filter((materia) => materia.id !== id),
       tarefas: atuais.tarefas.filter((tarefa) => tarefa.materiaId !== id),
+      removidos: [
+        ...atuais.removidos,
+        `m:${id}`,
+        ...atuais.tarefas
+          .filter((tarefa) => tarefa.materiaId === id)
+          .map((tarefa) => `t:${tarefa.id}`),
+      ],
     }))
   }, [])
 
@@ -74,6 +89,7 @@ export default function DadosProvider({ children }) {
     setDados((atuais) => ({
       ...atuais,
       tarefas: atuais.tarefas.filter((tarefa) => tarefa.id !== id),
+      removidos: [...atuais.removidos, `t:${id}`],
     }))
   }, [])
 
@@ -87,12 +103,21 @@ export default function DadosProvider({ children }) {
     }))
   }, [])
 
-  /** Marca várias de uma vez (importação do histórico), sem desmarcar nada. */
-  const marcarCursadas = useCallback((ids) => {
+  /**
+   * Resultado da importação do histórico: marca as aprovadas (sem desmarcar
+   * nada) e mostra o fluxograma.
+   */
+  const aplicarHistorico = useCallback((ids) => {
     setDados((atuais) => ({
       ...atuais,
       cursadas: [...new Set([...atuais.cursadas, ...ids])],
+      fluxogramaAtivo: true,
     }))
+  }, [])
+
+  /** Esconde o fluxograma de novo. As marcações ficam guardadas. */
+  const esconderFluxograma = useCallback(() => {
+    setDados((atuais) => ({ ...atuais, fluxogramaAtivo: false }))
   }, [])
 
   /** Troca tudo pelo conteúdo de um backup. Devolve `false` se o arquivo não servir. */
@@ -136,9 +161,12 @@ export default function DadosProvider({ children }) {
     () => ({
       ...doSemestre,
       todos: dados,
+      sincronizacao,
       cursadas: dados.cursadas,
+      fluxogramaAtivo: dados.fluxogramaAtivo,
       alternarCursada,
-      marcarCursadas,
+      aplicarHistorico,
+      esconderFluxograma,
       semestre,
       semestres,
       escolherSemestre,
@@ -153,12 +181,14 @@ export default function DadosProvider({ children }) {
     [
       doSemestre,
       dados,
+      sincronizacao,
       semestre,
       semestres,
       escolherSemestre,
       salvou,
       alternarCursada,
-      marcarCursadas,
+      aplicarHistorico,
+      esconderFluxograma,
       adicionarMateria,
       removerMateria,
       adicionarTarefa,

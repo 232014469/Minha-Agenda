@@ -4,7 +4,6 @@ import { CORES, nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import SeletorCor from '../../shared/components/SeletorCor'
 import '../../shared/secao.css'
-import { FLUXOGRAMA } from './dadosFluxograma'
 import Fluxograma from './Fluxograma'
 import './NovaMateriaPage.css'
 
@@ -105,7 +104,7 @@ export default function NovaMateriaPage() {
         )}
       </section>
 
-      {FLUXOGRAMA.length > 0 && <Fluxograma aoCursar={cursar} />}
+      <Fluxograma aoCursar={cursar} />
     </div>
   )
 }

@@ -2,14 +2,13 @@
 // na rede (e usam a guardada se estiver offline); os arquivos de código e
 // imagens, que mudam de nome a cada versão, vêm do cache.
 //
-// O site tem duas versões (Jeff Study na raiz e Study em study/), cada uma
-// com o seu sw.js. Por isso o nome do cache leva o endereço da versão: uma
-// nunca apaga nem usa o cache da outra.
+// O nome do cache leva o endereço do app. O antigo endereço study/ (de quando
+// havia duas versões) virou só um redirecionamento e fica de fora daqui.
 const ESCOPO = self.registration.scope
 const CACHE = `${ESCOPO}#v1`
 const BASICOS = ['./', './manifest.webmanifest']
 
-/** Pedidos da outra versão (study/ dentro da raiz) não são deste app. */
+/** O redirecionamento em study/ não é guardado como se fosse o app. */
 function eDaOutraVersao(url) {
   return url.startsWith(`${ESCOPO}study/`)
 }
