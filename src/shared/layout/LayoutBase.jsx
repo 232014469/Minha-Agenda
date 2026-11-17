@@ -65,6 +65,14 @@ export default function LayoutBase() {
               </option>
             ))}
           </select>
+          <NavLink
+            to="/configuracoes"
+            className="layout-config"
+            aria-label="Configurações"
+            title="Configurações"
+          >
+            <Icone nome="engrenagem" />
+          </NavLink>
         </div>
         {!salvou && (
           <p className="layout-aviso" role="alert">

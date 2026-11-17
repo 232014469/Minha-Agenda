@@ -12,8 +12,6 @@ import {
   proximasTarefas,
   resumirEntregas,
 } from './inicioUtils'
-import Backup from './Backup'
-import Sincronizacao from './Sincronizacao'
 import ProgressoGeral from './ProgressoGeral'
 import './InicioPage.css'
 
@@ -192,9 +190,6 @@ export default function InicioPage() {
           <Proximas proximas={proximasTarefas(tarefas, materias)} />
         </aside>
       </div>
-
-      <Sincronizacao />
-      <Backup />
     </section>
   )
 }

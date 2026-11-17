@@ -164,16 +164,12 @@ describe('Dashboard com dados', () => {
   })
 })
 
-describe('Backup no Dashboard', () => {
-  it('mostra os botões de baixar e restaurar', () => {
+describe('Dashboard sem sincronização nem backup', () => {
+  it('eles ficam na tela Configurações', () => {
     abrir()
 
-    expect(screen.getByRole('heading', { name: 'Backup' })).toBeInTheDocument()
     expect(
-      screen.getByRole('button', { name: 'Baixar backup' }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: 'Restaurar backup' }),
-    ).toBeInTheDocument()
+      screen.queryByRole('heading', { name: 'Backup' }),
+    ).not.toBeInTheDocument()
   })
 })

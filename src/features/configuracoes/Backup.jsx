@@ -49,16 +49,16 @@ export default function Backup() {
 
   return (
     <section
-      className="inicio-caixa inicio-backup"
+      className="secao-caixa config-secao"
       aria-labelledby="backup-titulo"
     >
       <h2 id="backup-titulo">Backup</h2>
       <p>
-        Seus dados ficam só neste navegador. Baixe um backup de vez em quando e
-        use-o para levar tudo para outro computador. O backup leva todos os
-        semestres.
+        Uma cópia de todos os seus dados, de todos os semestres, num arquivo.
+        Baixe de vez em quando: se algo for apagado por engano (a sincronização
+        apaga nos outros aparelhos também), é por aqui que você recupera.
       </p>
-      <div className="inicio-backup-acoes">
+      <div className="config-acoes">
         <button type="button" onClick={() => baixarBackup(todos)}>
           Baixar backup
         </button>

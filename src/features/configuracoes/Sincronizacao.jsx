@@ -83,7 +83,7 @@ export default function Sincronizacao() {
 
   return (
     <section
-      className="inicio-caixa inicio-backup inicio-sincronizar"
+      className="secao-caixa config-secao"
       aria-labelledby="sincronizar-titulo"
     >
       <h2 id="sincronizar-titulo">Sincronizar aparelhos</h2>
@@ -94,13 +94,13 @@ export default function Sincronizacao() {
             Este aparelho está sincronizado com a chave abaixo. Use a mesma
             chave no celular ou em outro computador para ver tudo lá.
           </p>
-          <p className="inicio-chave" aria-label="Sua chave de sincronização">
+          <p className="config-chave" aria-label="Sua chave de sincronização">
             {mostrar ? chave : esconder(chave)}
           </p>
-          <p role="status" className="inicio-sincronizar-situacao">
+          <p role="status" className="config-situacao">
             {textoDaSituacao(situacao)}
           </p>
-          <div className="inicio-backup-acoes">
+          <div className="config-acoes">
             <button type="button" onClick={() => setMostrar((m) => !m)}>
               {mostrar ? 'Esconder chave' : 'Mostrar chave'}
             </button>
@@ -117,7 +117,7 @@ export default function Sincronizacao() {
               Desligar neste aparelho
             </button>
           </div>
-          <p className="inicio-sincronizar-cuidado">
+          <p className="config-cuidado">
             Guarde a chave num lugar seguro: quem tiver a chave vê os seus
             dados, e ela não pode ser recuperada se você perder.
           </p>
@@ -130,7 +130,7 @@ export default function Sincronizacao() {
             criptografados e só abrem com a chave.
           </p>
           {entrando ? (
-            <form className="inicio-sincronizar-entrar" onSubmit={entrar}>
+            <form className="config-entrar" onSubmit={entrar}>
               <label htmlFor="sincronizar-chave">Chave de sincronização</label>
               <input
                 id="sincronizar-chave"
@@ -141,7 +141,7 @@ export default function Sincronizacao() {
                 placeholder="WOLF-XXXX-XXXX-XXXX-XXXX-XXXX"
                 onChange={(evento) => setDigitada(evento.target.value)}
               />
-              <div className="inicio-backup-acoes">
+              <div className="config-acoes">
                 <button type="submit" disabled={!digitada.trim()}>
                   Conectar
                 </button>
@@ -149,13 +149,13 @@ export default function Sincronizacao() {
                   Cancelar
                 </button>
               </div>
-              <p className="inicio-sincronizar-cuidado">
+              <p className="config-cuidado">
                 O que já existe neste aparelho é juntado com o que está na
                 chave.
               </p>
             </form>
           ) : (
-            <div className="inicio-backup-acoes">
+            <div className="config-acoes">
               <button type="button" onClick={criarChave}>
                 Criar chave
               </button>

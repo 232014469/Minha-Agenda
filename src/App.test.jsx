@@ -82,4 +82,15 @@ describe('Semestre', () => {
     expect(seletor).toHaveValue('2027.1')
     expect(salvos().semestre).toBe('2027.1')
   })
+
+  it('a engrenagem no topo abre as Configurações', () => {
+    abrir()
+
+    fireEvent.click(screen.getByRole('link', { name: 'Configurações' }))
+
+    expect(
+      screen.getByRole('heading', { name: 'Configurações' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Backup' })).toBeInTheDocument()
+  })
 })

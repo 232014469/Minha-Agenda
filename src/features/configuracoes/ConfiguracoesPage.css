@@ -1,0 +1,90 @@
+.config-pagina {
+  display: grid;
+  gap: 20px;
+  max-width: 900px;
+}
+
+.config-subtitulo {
+  margin: 8px 0 0;
+  color: var(--cor-texto-suave);
+}
+
+.config-secao h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.config-secao p {
+  margin: 0;
+}
+
+.config-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.config-secao button {
+  min-height: 40px;
+  padding: 6px 16px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 999px;
+  background: var(--cor-lilas);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.config-secao button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.config-secao button:focus-visible,
+.config-entrar input:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}
+
+/* Sincronizar aparelhos */
+.config-chave {
+  justify-self: start;
+  padding: 8px 14px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+
+.config-situacao,
+.config-cuidado {
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.config-entrar {
+  display: grid;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.config-entrar label {
+  font-weight: 700;
+}
+
+.config-entrar input {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cor-texto);
+  font: inherit;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

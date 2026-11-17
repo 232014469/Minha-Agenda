@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router'
 import AgendaPage from './features/agenda/AgendaPage'
+import ConfiguracoesPage from './features/configuracoes/ConfiguracoesPage'
 import InicioPage from './features/inicio/InicioPage'
 import NovaMateriaPage from './features/materias/NovaMateriaPage'
 import PaginaMateria from './features/materias/PaginaMateria'
@@ -16,6 +17,7 @@ function App() {
         <Route path="materias/:id" element={<PaginaMateria />} />
         <Route path="agenda" element={<AgendaPage />} />
         <Route path="post-it" element={<PostItPage />} />
+        <Route path="configuracoes" element={<ConfiguracoesPage />} />
         <Route path="adicionar-materia" element={<NovaMateriaPage />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>

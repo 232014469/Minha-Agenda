@@ -336,6 +336,29 @@
   appearance: none;
 }
 
+.layout-config {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--cor-texto);
+}
+
+.layout-config:hover {
+  background: rgb(67 45 30 / 0.08);
+}
+
+.layout-config.active {
+  background: var(--cor-verde);
+  color: #fff;
+}
+
+.layout-config:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}
+
 .layout-semestre select:hover {
   background-color: rgb(67 45 30 / 0.08);
 }
