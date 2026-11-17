@@ -2,6 +2,7 @@ import { useDados } from '../../dados/useDados'
 import BarraDividida from '../../shared/components/BarraDividida'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import { nomeBonito } from './historico'
+import PrevisaoDoCurso from './PrevisaoDoCurso'
 
 /** Uma cor para cada tipo de disciplina, a mesma da legenda e das barras. */
 const TIPOS = {
@@ -56,6 +57,7 @@ export default function ProgressoNoCurso({
             </button>
           </div>
         </div>
+        {exigido && <PrevisaoDoCurso progresso={progresso} />}
         {exigido && (
           <div className="fluxo-progresso">
             <span>

@@ -11,6 +11,7 @@ import {
   somarCreditos,
 } from './dadosFluxograma'
 import { lerHistorico, lerHistoricoGeral, nomeBonito } from './historico'
+import PrevisaoDoCurso from './PrevisaoDoCurso'
 import ProgressoNoCurso from './ProgressoNoCurso'
 import './Fluxograma.css'
 
@@ -233,6 +234,9 @@ export default function Fluxograma({ aoCursar }) {
             </button>
           </div>
         </div>
+        {integralizacao && (
+          <PrevisaoDoCurso progresso={progressoCurso} comFluxograma />
+        )}
         <div className="fluxo-progresso">
           {integralizacao && (
             <>

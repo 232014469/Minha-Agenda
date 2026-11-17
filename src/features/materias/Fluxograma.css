@@ -353,3 +353,42 @@
   color: var(--cor-texto-suave);
   font-size: 0.8rem;
 }
+
+/* Previsão, ao lado da integralização */
+.fluxo-previsao {
+  display: grid;
+  flex: 1 1 260px;
+  gap: 6px;
+  max-width: 420px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--cor-lilas-claro);
+  font-size: 0.8rem;
+}
+
+.fluxo-previsao h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.fluxo-previsao dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.fluxo-previsao dt {
+  color: var(--cor-texto-suave);
+  font-size: 0.72rem;
+}
+
+.fluxo-previsao dd {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.fluxo-previsao-nota {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.68rem;
+}
