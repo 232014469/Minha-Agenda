@@ -2,6 +2,7 @@
  * Junta os dados de dois aparelhos que mudaram ao mesmo tempo.
  *
  * - Matérias e tarefas: entra tudo dos dois; se o mesmo item mudou nos dois,
+ *   vale a mudança mais recente (`alteradoEm`). Empate ou item sem data:
  *   vale a versão deste aparelho.
  * - O que foi excluído em qualquer um dos dois continua excluído.
  * - Disciplinas cursadas: as marcadas em qualquer um dos dois.
@@ -14,7 +15,13 @@ export function mesclarDados(local, remoto) {
   const juntar = (deLa, daqui, letra) => {
     const porId = new Map(deLa.map((item) => [item.id, item]))
 
-    for (const item of daqui) porId.set(item.id, item)
+    for (const item of daqui) {
+      const outro = porId.get(item.id)
+
+      if (!outro || (item.alteradoEm ?? 0) >= (outro.alteradoEm ?? 0)) {
+        porId.set(item.id, item)
+      }
+    }
 
     return [...porId.values()].filter(
       (item) => !fora.has(`${letra}:${item.id}`),

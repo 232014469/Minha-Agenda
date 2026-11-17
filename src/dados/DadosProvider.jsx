@@ -10,6 +10,9 @@ import {
 } from './armazenamento'
 import { useSincronizacao } from '../sync/useSincronizacao'
 
+// Quando o item mudou, para a sincronização saber qual versão é a mais nova.
+const agora = () => Date.now()
+
 /**
  * Guarda as matérias e tarefas no navegador e entrega as ações para
  * as telas. As telas recebem só o que é do semestre escolhido; o backup usa
@@ -38,7 +41,11 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       ...atuais,
       materias: atuais.materias.map((materia) =>
         materia.id === id
-          ? { ...materia, faltas: Math.max(0, (materia.faltas ?? 0) + horas) }
+          ? {
+              ...materia,
+              faltas: Math.max(0, (materia.faltas ?? 0) + horas),
+              alteradoEm: agora(),
+            }
           : materia,
       ),
     }))
@@ -48,7 +55,9 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
     setDados((atuais) => ({
       ...atuais,
       materias: atuais.materias.map((materia) =>
-        materia.id === id ? { ...materia, cargaHoraria: horas } : materia,
+        materia.id === id
+          ? { ...materia, cargaHoraria: horas, alteradoEm: agora() }
+          : materia,
       ),
     }))
   }, [])
@@ -69,6 +78,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
             cor: CORES.includes(cor)
               ? cor
               : CORES[atuais.materias.length % CORES.length],
+            alteradoEm: agora(),
           },
         ],
       }))
@@ -96,7 +106,12 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       ...atuais,
       tarefas: [
         ...atuais.tarefas,
-        { ...tarefa, id: proximoId(atuais.tarefas), status: 'A_FAZER' },
+        {
+          ...tarefa,
+          id: proximoId(atuais.tarefas),
+          status: 'A_FAZER',
+          alteradoEm: agora(),
+        },
       ],
     }))
   }, [])
@@ -105,7 +120,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
     setDados((atuais) => ({
       ...atuais,
       tarefas: atuais.tarefas.map((tarefa) =>
-        tarefa.id === id ? { ...tarefa, status } : tarefa,
+        tarefa.id === id ? { ...tarefa, status, alteradoEm: agora() } : tarefa,
       ),
     }))
   }, [])

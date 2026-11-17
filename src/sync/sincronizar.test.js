@@ -91,6 +91,36 @@ describe('mesclarDados', () => {
   })
 })
 
+describe('mesclarDados com data de alteração', () => {
+  it('vale a mudança mais recente, mesmo que tenha vindo do outro aparelho', () => {
+    const antiga = { ...materia(1, 'Cálculo'), faltas: 8, alteradoEm: 1000 }
+    const zerada = { ...materia(1, 'Cálculo'), faltas: 0, alteradoEm: 2000 }
+
+    const aqui = { ...DADOS_VAZIOS, materias: [antiga] }
+    const la = { ...DADOS_VAZIOS, materias: [zerada] }
+
+    expect(mesclarDados(aqui, la).materias[0].faltas).toBe(0)
+    expect(mesclarDados(la, aqui).materias[0].faltas).toBe(0)
+  })
+
+  it('a tarefa marcada como concluída por último vence', () => {
+    const aFazer = { ...tarefa(5, 1, 'Lista'), alteradoEm: 10 }
+    const feita = {
+      ...tarefa(5, 1, 'Lista'),
+      status: 'CONCLUIDA',
+      alteradoEm: 20,
+    }
+    const base = { ...DADOS_VAZIOS, materias: [materia(1, 'Cálculo')] }
+
+    expect(
+      mesclarDados(
+        { ...base, tarefas: [aFazer] },
+        { ...base, tarefas: [feita] },
+      ).tarefas[0].status,
+    ).toBe('CONCLUIDA')
+  })
+})
+
 describe('sincronizar', () => {
   it('leva os dados de um aparelho para outro', async () => {
     const cofre = criarCofreDeTeste()
