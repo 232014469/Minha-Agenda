@@ -81,6 +81,24 @@ describe('Agenda com dados', () => {
     expect(screen.getAllByText(/Lista 1/).length).toBeGreaterThan(0)
   })
 
+  it('amplia o dia ao clicar no calendário do mês e fecha no Esc', () => {
+    abrir()
+
+    fireEvent.click(screen.getByRole('button', { name: /, 1 atividade$/ }))
+
+    const janela = screen.getByRole('dialog')
+
+    expect(janela).toHaveTextContent('Lista 1')
+    expect(janela).toHaveTextContent('Cálculo · Lista')
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /, 1 atividade$/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Fechar' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
   it('cadastra uma nova tarefa e guarda no navegador', () => {
     abrir()
 

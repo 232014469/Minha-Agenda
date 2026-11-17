@@ -178,6 +178,83 @@
   font-family: var(--fonte-titulo);
 }
 
+/* Cada dia do mês abre ampliado ao tocar ou clicar. */
+.agenda-dia:not(.agenda-dia-fora) {
+  cursor: pointer;
+}
+
+.agenda-dia:not(.agenda-dia-fora):hover {
+  background: rgb(0 0 0 / 0.04);
+}
+
+.agenda-dia-hoje:hover {
+  background: var(--cor-lilas-claro);
+}
+
+button.agenda-dia-numero {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+button.agenda-dia-numero:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.agenda-dia-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(40 28 20 / 0.45);
+}
+
+.agenda-dia-janela {
+  display: grid;
+  gap: 14px;
+  width: min(480px, 100%);
+  max-height: min(80vh, 640px);
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--cor-papel);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.25);
+}
+
+.agenda-dia-janela-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.agenda-dia-janela-topo h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.agenda-dia-fechar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cor-texto);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
 .agenda-dia-fora {
   background: rgb(0 0 0 / 0.03);
   color: var(--cor-texto-suave);
