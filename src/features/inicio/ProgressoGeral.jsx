@@ -14,7 +14,7 @@ export default function ProgressoGeral({ percentual }) {
     <div
       className="progresso-geral"
       role="img"
-      aria-label={`${valor}% do semestre concluído`}
+      aria-label={`${valor}% das atividades concluídas`}
     >
       <svg viewBox="0 0 140 140" aria-hidden="true">
         <circle className="progresso-geral-trilho" cx="70" cy="70" r={RAIO} />
@@ -29,7 +29,7 @@ export default function ProgressoGeral({ percentual }) {
       </svg>
       <p className="progresso-geral-centro">
         <strong>{valor}%</strong>
-        <span>do semestre concluído</span>
+        <span>das atividades concluídas</span>
       </p>
     </div>
   )

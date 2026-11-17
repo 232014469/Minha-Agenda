@@ -163,7 +163,7 @@ describe('Dashboard com dados', () => {
     abrir()
 
     expect(
-      screen.getByRole('img', { name: '33% do semestre concluído' }),
+      screen.getByRole('img', { name: '33% das atividades concluídas' }),
     ).toBeInTheDocument()
     expect(
       screen.getByRole('progressbar', { name: 'Progresso em Cálculo' }),
