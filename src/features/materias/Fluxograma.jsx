@@ -190,6 +190,14 @@ export default function Fluxograma({ aoCursar }) {
     )
   }
 
+  // O número oficial do SIGAA (horas integralizadas / exigidas), que conta
+  // também optativas fora do fluxograma, equivalências e complementares.
+  const integralizacao = progressoCurso?.exigido?.total
+    ? {
+        cumpridas: progressoCurso.integralizado?.total ?? 0,
+        exigidas: progressoCurso.exigido.total,
+      }
+    : null
   const feitas = new Set(cursadas)
   const nomesNoSemestre = new Set(
     materias.map((materia) => materia.nome.trim().toLowerCase()),
@@ -225,14 +233,32 @@ export default function Fluxograma({ aoCursar }) {
           </div>
         </div>
         <div className="fluxo-progresso">
-          <span>
-            <strong>{creditosFeitos}</strong> de {total} créditos cursados
+          {integralizacao && (
+            <>
+              <span>
+                Integralização no SIGAA:{' '}
+                <strong>
+                  {integralizacao.cumpridas} de {integralizacao.exigidas} h
+                </strong>
+              </span>
+              <BarraProgresso
+                concluidas={integralizacao.cumpridas}
+                total={integralizacao.exigidas}
+                rotulo="Integralização do curso no SIGAA"
+              />
+            </>
+          )}
+          <span className={integralizacao ? 'fluxo-progresso-menor' : ''}>
+            <strong>{creditosFeitos}</strong> de {total} créditos marcados no
+            fluxograma
           </span>
-          <BarraProgresso
-            concluidas={creditosFeitos}
-            total={total}
-            rotulo="Créditos cursados no curso"
-          />
+          {!integralizacao && (
+            <BarraProgresso
+              concluidas={creditosFeitos}
+              total={total}
+              rotulo="Créditos cursados no curso"
+            />
+          )}
         </div>
       </header>
 

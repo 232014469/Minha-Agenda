@@ -153,6 +153,28 @@ describe('Fluxograma escondido até importar o histórico', () => {
     expect(salvos()?.progressoCurso).toBeUndefined()
   })
 
+  it('mostra a integralização do SIGAA quando o histórico traz os totais', () => {
+    abrir()
+    colarHistorico(
+      HISTORICO_ES.replace(
+        'Legenda',
+        [
+          'Legenda',
+          'Carga Horária Integralizada/Pendente',
+          'Exigido 2700 h 600 h 225 h 3525 h',
+          'Integralizado 1200 h 240 h 0 h 1440 h',
+        ].join('\n'),
+      ),
+    )
+
+    expect(
+      screen.getByRole('progressbar', {
+        name: 'Integralização do curso no SIGAA',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('1440 de 3525 h')).toBeInTheDocument()
+  })
+
   it('"Esconder fluxograma" volta ao convite, sem perder as marcações', () => {
     abrir()
     colarHistorico(HISTORICO_ES)

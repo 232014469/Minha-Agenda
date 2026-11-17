@@ -368,3 +368,8 @@
   outline: 3px solid var(--cor-lilas-escuro);
   outline-offset: 1px;
 }
+
+.fluxo-progresso-menor {
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+}
