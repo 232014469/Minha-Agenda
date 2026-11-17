@@ -1,7 +1,7 @@
 import { useDados } from '../../dados/useDados'
 import { preverIntegralizacao } from './previsao'
 
-/** Quadro ao lado da integralização: se passar em tudo, o que falta e quando forma. */
+/** Quadro ao lado da integralização: se passar em tudo e o que falta. */
 export default function PrevisaoDoCurso({ progresso, comFluxograma = false }) {
   const { materias, semestre } = useDados()
   const previsao = preverIntegralizacao({
@@ -23,9 +23,6 @@ export default function PrevisaoDoCurso({ progresso, comFluxograma = false }) {
     faltamObrig,
     faltamLivres,
     obrigatoriasPendentes,
-    ritmo,
-    semestresDepois,
-    formatura,
   } = previsao
 
   return (
@@ -60,28 +57,7 @@ export default function PrevisaoDoCurso({ progresso, comFluxograma = false }) {
             e {faltamLivres} h de optativas e livres
           </dd>
         </div>
-        {formatura && (
-          <div>
-            <dt>No ritmo deste semestre ({ritmo} h)</dt>
-            <dd>
-              {semestresDepois === 0 ? (
-                <strong>Forma em {formatura}! 🎓</strong>
-              ) : semestresDepois > 16 ? (
-                'Mais de 8 anos. Cadastrou todas as matérias do semestre?'
-              ) : (
-                <>
-                  Formatura em <strong>{formatura}</strong> ({semestresDepois}{' '}
-                  {semestresDepois === 1 ? 'semestre' : 'semestres'} depois
-                  deste)
-                </>
-              )}
-            </dd>
-          </div>
-        )}
       </dl>
-      <p className="fluxo-previsao-nota">
-        Estimativa com a carga horária das matérias cadastradas.
-      </p>
     </aside>
   )
 }
