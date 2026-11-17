@@ -12,11 +12,7 @@ import {
   proximasTarefas,
   resumirEntregas,
 } from './inicioUtils'
-import {
-  CartaoCreditosOuSemana,
-  CartaoFaltas,
-  CartaoProva,
-} from './CartoesDoPainel'
+import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
 import ProgressoGeral from './ProgressoGeral'
 import './InicioPage.css'
 
@@ -161,7 +157,7 @@ export default function InicioPage() {
           <div className="inicio-cartoes">
             <CartaoFaltas />
             <CartaoProva />
-            <CartaoCreditosOuSemana />
+            <CartaoSemana />
           </div>
 
           <MinhasMaterias materias={materias} tarefas={tarefas} />

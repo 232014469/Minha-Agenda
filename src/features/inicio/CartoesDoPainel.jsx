@@ -1,11 +1,9 @@
 import { Link } from 'react-router'
 import { useDados } from '../../dados/useDados'
-import BarraProgresso from '../../shared/components/BarraProgresso'
 import { EstadoVazio } from '../../shared/components/Estados'
 import '../../shared/cores.css'
 import BarraDeFaltas from '../faltas/BarraDeFaltas'
-import { HORAS_POR_ENCONTRO, creditosDoFluxograma } from '../faltas/faltas'
-import { DISCIPLINAS, somarCreditos } from '../materias/dadosFluxograma'
+import { HORAS_POR_ENCONTRO } from '../faltas/faltas'
 import {
   diasAte,
   entregasPorDia,
@@ -145,71 +143,18 @@ function GraficoDaSemana({ tarefas, materias, agora, titulo }) {
   )
 }
 
-/**
- * Com o fluxograma de Engenharia de Software: créditos do curso, com as
- * entregas da semana embaixo. Sem ele: só as entregas da semana.
- */
-export function CartaoCreditosOuSemana({ agora = new Date() }) {
-  const { fluxogramaAtivo, cursadas, materias, tarefas } = useDados()
-
-  const semana = (
-    <GraficoDaSemana
-      tarefas={tarefas}
-      materias={materias}
-      agora={agora}
-      titulo={
-        <h3 className="inicio-semana-titulo" id="semana-painel-titulo">
-          Entregas da semana
-        </h3>
-      }
-    />
-  )
-
-  if (!fluxogramaAtivo) {
-    return (
-      <section className="inicio-caixa" aria-labelledby="semana-painel-titulo">
-        <GraficoDaSemana
-          tarefas={tarefas}
-          materias={materias}
-          agora={agora}
-          titulo={<h2 id="semana-painel-titulo">Entregas da semana</h2>}
-        />
-      </section>
-    )
-  }
-
-  const feitas = new Set(cursadas)
-  const total = somarCreditos(DISCIPLINAS)
-  const cursados = somarCreditos(
-    DISCIPLINAS.filter((item) => feitas.has(item.id)),
-  )
-  const nesteSemestre = materias.reduce((soma, materia) => {
-    const disciplina = DISCIPLINAS.find(
-      (item) => item.codigo && item.nome === materia.nome,
-    )
-
-    if (disciplina && feitas.has(disciplina.id)) return soma
-    return soma + (creditosDoFluxograma(materia.nome) ?? 0)
-  }, 0)
+/** Entregas da semana, com as cores das matérias. */
+export function CartaoSemana({ agora = new Date() }) {
+  const { materias, tarefas } = useDados()
 
   return (
-    <section className="inicio-caixa" aria-labelledby="creditos-titulo">
-      <h2 id="creditos-titulo">Créditos do curso</h2>
-      <p className="inicio-creditos-numero">
-        <strong>{cursados}</strong> de {total}
-      </p>
-      <BarraProgresso
-        concluidas={cursados}
-        total={total}
-        rotulo="Créditos cursados no curso"
+    <section className="inicio-caixa" aria-labelledby="semana-painel-titulo">
+      <GraficoDaSemana
+        tarefas={tarefas}
+        materias={materias}
+        agora={agora}
+        titulo={<h2 id="semana-painel-titulo">Entregas da semana</h2>}
       />
-      {nesteSemestre > 0 && (
-        <p className="inicio-dica">
-          +{nesteSemestre} créditos se passar em tudo neste semestre (
-          {Math.round(((cursados + nesteSemestre) / total) * 100)}%).
-        </p>
-      )}
-      {semana}
     </section>
   )
 }
