@@ -7,6 +7,7 @@ import {
   proximaProva,
   diasAte,
   textoDosDias,
+  entregasDoMes,
   entregasPorDia,
   resumirEntregas,
 } from './inicioUtils'
@@ -156,5 +157,48 @@ describe('cartões do Dashboard', () => {
     ])
     expect(dias[1].porMateria).toEqual([])
     expect(dias.find((dia) => dia.hoje).dia).toBe('Qui')
+  })
+})
+
+describe('entregasDoMes', () => {
+  const tarefa = (id, materiaId, prazo, status = 'A_FAZER') => ({
+    id,
+    materiaId,
+    titulo: `T${id}`,
+    prazo,
+    status,
+  })
+
+  it('um item por dia do mês, com as entregas de cada matéria', () => {
+    const dias = entregasDoMes(
+      [
+        tarefa(1, 1, '2026-11-05T23:59:00'),
+        tarefa(2, 2, '2026-11-05T10:00:00'),
+        tarefa(3, 1, '2026-11-05T12:00:00'),
+        tarefa(4, 1, '2026-11-20T23:59:00', 'CONCLUIDA'),
+        tarefa(5, 1, '2026-12-01T23:59:00'),
+      ],
+      2026,
+      10,
+      new Date(2026, 10, 18, 9),
+    )
+
+    expect(dias).toHaveLength(30)
+    expect(dias[4]).toMatchObject({
+      dia: 5,
+      inicial: 'Q',
+      total: 3,
+      porMateria: [
+        { materiaId: 1, total: 2 },
+        { materiaId: 2, total: 1 },
+      ],
+    })
+    expect(dias[19].total).toBe(0)
+    expect(dias[17].hoje).toBe(true)
+    expect(dias[0].fimDeSemana).toBe(true)
+  })
+
+  it('fevereiro de ano bissexto tem 29 dias', () => {
+    expect(entregasDoMes([], 2028, 1)).toHaveLength(29)
   })
 })

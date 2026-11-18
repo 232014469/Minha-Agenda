@@ -147,31 +147,62 @@ export function entregasPorDia(tarefas, agora = new Date()) {
 
     data.setDate(segunda.getDate() + i)
 
-    const doDia = tarefas.filter(
-      (tarefa) =>
-        !ehConcluida(tarefa.status) &&
-        !ehNaoRealizada(tarefa.status) &&
-        diaSemHora(new Date(tarefa.prazo)).getTime() === data.getTime(),
-    )
-
-    // Quantas de cada matéria, na ordem em que aparecem no dia.
-    const porMateria = new Map()
-
-    for (const tarefa of doDia) {
-      porMateria.set(
-        tarefa.materiaId,
-        (porMateria.get(tarefa.materiaId) ?? 0) + 1,
-      )
-    }
-
     return {
       dia,
       hoje: data.getTime() === diaSemHora(agora).getTime(),
-      total: doDia.length,
-      porMateria: [...porMateria].map(([materiaId, total]) => ({
-        materiaId,
-        total,
-      })),
+      ...contarEntregas(tarefas, data),
+    }
+  })
+}
+
+/**
+ * Entregas pendentes de um dia: o total e quantas de cada matéria, na ordem
+ * em que aparecem.
+ */
+function contarEntregas(tarefas, data) {
+  const doDia = tarefas.filter(
+    (tarefa) =>
+      !ehConcluida(tarefa.status) &&
+      !ehNaoRealizada(tarefa.status) &&
+      diaSemHora(new Date(tarefa.prazo)).getTime() === data.getTime(),
+  )
+  const porMateria = new Map()
+
+  for (const tarefa of doDia) {
+    porMateria.set(
+      tarefa.materiaId,
+      (porMateria.get(tarefa.materiaId) ?? 0) + 1,
+    )
+  }
+
+  return {
+    total: doDia.length,
+    porMateria: [...porMateria].map(([materiaId, total]) => ({
+      materiaId,
+      total,
+    })),
+  }
+}
+
+const INICIAIS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+
+/**
+ * Entregas pendentes de cada dia de um mês (`mes` de 0 a 11):
+ * `[{ dia: 1, inicial: 'D', fimDeSemana: true, hoje: false, total, porMateria }]`.
+ */
+export function entregasDoMes(tarefas, ano, mes, agora = new Date()) {
+  const hoje = diaSemHora(agora).getTime()
+  const dias = new Date(ano, mes + 1, 0).getDate()
+
+  return Array.from({ length: dias }, (_, i) => {
+    const data = new Date(ano, mes, i + 1)
+
+    return {
+      dia: i + 1,
+      inicial: INICIAIS[data.getDay()],
+      fimDeSemana: data.getDay() === 0 || data.getDay() === 6,
+      hoje: data.getTime() === hoje,
+      ...contarEntregas(tarefas, data),
     }
   })
 }

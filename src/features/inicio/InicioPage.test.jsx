@@ -123,6 +123,26 @@ describe('Dashboard com dados', () => {
     expect(screen.queryByText('Titulação')).not.toBeInTheDocument()
   })
 
+  it('amplia as entregas da semana para o mês, sem sair da página', () => {
+    abrir()
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Ver as entregas do mês' }),
+    )
+
+    const janela = screen.getByRole('dialog')
+    const titulo = within(janela).getByRole('heading').textContent
+
+    expect(titulo).toMatch(/^Entregas de /)
+    expect(within(janela).getAllByRole('listitem').length).toBeGreaterThan(27)
+
+    fireEvent.click(within(janela).getByRole('button', { name: 'Próximo mês' }))
+    expect(within(janela).getByRole('heading').textContent).not.toBe(titulo)
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
   it('avisa das atrasadas em Próximas tarefas', () => {
     abrir()
 

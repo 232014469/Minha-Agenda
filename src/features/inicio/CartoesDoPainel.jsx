@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useDados } from '../../dados/useDados'
 import { EstadoVazio } from '../../shared/components/Estados'
@@ -6,6 +7,7 @@ import BarraDeFaltas from '../faltas/BarraDeFaltas'
 import { HORAS_POR_ENCONTRO } from '../faltas/faltas'
 import {
   diasAte,
+  entregasDoMes,
   entregasPorDia,
   formatarPrazoCurto,
   proximaProva,
@@ -85,76 +87,234 @@ export function CartaoProva({ agora = new Date() }) {
 }
 
 /**
- * Entregas pendentes de cada dia da semana. Cada barra é dividida nas cores
+ * Barras de entregas pendentes, uma por dia. Cada barra é dividida nas cores
  * das matérias, do tamanho de quantas entregas cada uma tem no dia.
+ * `dias`: `[{ chave, rotulo, nome, hoje, fimDeSemana, total, porMateria }]`.
  */
-function GraficoDaSemana({ tarefas, materias, agora, titulo }) {
-  const dias = entregasPorDia(tarefas, agora)
+function BarrasDeEntregas({ dias, materias, classe = '' }) {
   const maior = Math.max(1, ...dias.map((dia) => dia.total))
   const materiaDe = (id) => materias.find((materia) => materia.id === id)
 
   return (
-    <>
-      {titulo}
-      <ol className="inicio-semana-barras">
-        {dias.map((dia) => {
-          const partes = dia.porMateria.map(({ materiaId, total }) => {
-            const materia = materiaDe(materiaId)
+    <ol className={`inicio-semana-barras ${classe}`.trim()}>
+      {dias.map((dia) => {
+        const partes = dia.porMateria.map(({ materiaId, total }) => {
+          const materia = materiaDe(materiaId)
 
-            return {
-              materiaId,
-              total,
-              nome: materia?.nome ?? 'Matéria',
-              cor: materia?.cor ?? 'lilas',
-            }
-          })
-          const descricao = partes
-            .map((parte) => `${parte.total} de ${parte.nome}`)
-            .join(', ')
+          return {
+            materiaId,
+            total,
+            nome: materia?.nome ?? 'Matéria',
+            cor: materia?.cor ?? 'lilas',
+          }
+        })
+        const descricao = partes
+          .map((parte) => `${parte.total} de ${parte.nome}`)
+          .join(', ')
+        const classes = [
+          dia.hoje && 'inicio-semana-hoje',
+          dia.fimDeSemana && 'inicio-semana-fds',
+          dia.marco && 'inicio-semana-marco',
+        ].filter(Boolean)
 
-          return (
-            <li
-              key={dia.dia}
-              className={dia.hoje ? 'inicio-semana-hoje' : undefined}
-              aria-label={`${dia.dia}: ${dia.total} ${
-                dia.total === 1 ? 'entrega' : 'entregas'
-              }${descricao ? ` (${descricao})` : ''}`}
+        return (
+          <li
+            key={dia.chave}
+            className={classes.join(' ') || undefined}
+            aria-label={`${dia.nome}: ${dia.total} ${
+              dia.total === 1 ? 'entrega' : 'entregas'
+            }${descricao ? ` (${descricao})` : ''}`}
+          >
+            <span className="inicio-semana-total">{dia.total || ''}</span>
+            <span
+              className="inicio-semana-barra"
+              style={{ height: `${(dia.total / maior) * 100}%` }}
             >
-              <span className="inicio-semana-total">{dia.total || ''}</span>
-              <span
-                className="inicio-semana-barra"
-                style={{ height: `${(dia.total / maior) * 100}%` }}
-              >
-                {partes.map((parte) => (
-                  <span
-                    key={parte.materiaId}
-                    className={`inicio-semana-parte materia-cor-${parte.cor}`}
-                    style={{ flexGrow: parte.total }}
-                    title={`${parte.nome}: ${parte.total}`}
-                  />
-                ))}
-              </span>
-              <span className="inicio-semana-dia">{dia.dia}</span>
-            </li>
-          )
-        })}
-      </ol>
-    </>
+              {partes.map((parte) => (
+                <span
+                  key={parte.materiaId}
+                  className={`inicio-semana-parte materia-cor-${parte.cor}`}
+                  style={{ flexGrow: parte.total }}
+                  title={`${parte.nome}: ${parte.total}`}
+                />
+              ))}
+            </span>
+            <span className="inicio-semana-dia">{dia.rotulo}</span>
+          </li>
+        )
+      })}
+    </ol>
   )
 }
 
-/** Entregas da semana, com as cores das matérias. */
-export function CartaoSemana({ agora = new Date() }) {
-  const { materias, tarefas } = useDados()
+const NOME_DO_MES = new Intl.DateTimeFormat('pt-BR', {
+  month: 'long',
+  year: 'numeric',
+})
+
+/**
+ * O cartão ampliado, por cima do Dashboard: as entregas do mês inteiro, com
+ * setas para os outros meses. Fecha no ×, no Esc ou clicando fora.
+ */
+function EntregasDoMes({ tarefas, materias, agora, aoFechar }) {
+  const [mes, setMes] = useState(
+    () => new Date(agora.getFullYear(), agora.getMonth(), 1),
+  )
+
+  useEffect(() => {
+    function tecla(evento) {
+      if (evento.key === 'Escape') aoFechar()
+    }
+
+    document.addEventListener('keydown', tecla)
+
+    return () => document.removeEventListener('keydown', tecla)
+  }, [aoFechar])
+
+  const dias = entregasDoMes(
+    tarefas,
+    mes.getFullYear(),
+    mes.getMonth(),
+    agora,
+  ).map((dia) => ({
+    ...dia,
+    chave: dia.dia,
+    rotulo: dia.dia,
+    nome: `Dia ${dia.dia}`,
+    // No celular, só estes dias mostram o número embaixo da barra.
+    marco: dia.dia === 1 || dia.dia % 5 === 0 || dia.hoje,
+  }))
+  const total = dias.reduce((soma, dia) => soma + dia.total, 0)
+  const doMes = new Map()
+
+  for (const dia of dias) {
+    for (const { materiaId, total: quantas } of dia.porMateria) {
+      doMes.set(materiaId, (doMes.get(materiaId) ?? 0) + quantas)
+    }
+  }
+
+  const titulo = NOME_DO_MES.format(mes)
+  const andar = (passo) =>
+    setMes(new Date(mes.getFullYear(), mes.getMonth() + passo, 1))
 
   return (
-    <section className="inicio-caixa" aria-labelledby="semana-painel-titulo">
-      <GraficoDaSemana
-        tarefas={tarefas}
-        materias={materias}
-        agora={agora}
-        titulo={<h2 id="semana-painel-titulo">Entregas da semana</h2>}
-      />
+    <div
+      className="inicio-mes-fundo"
+      onClick={(evento) => {
+        if (evento.target === evento.currentTarget) aoFechar()
+      }}
+    >
+      <section
+        className="inicio-mes-janela"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="inicio-mes-titulo"
+      >
+        <header className="inicio-mes-topo">
+          <button
+            type="button"
+            className="inicio-mes-seta"
+            aria-label="Mês anterior"
+            onClick={() => andar(-1)}
+          >
+            ‹
+          </button>
+          <h2 id="inicio-mes-titulo">
+            Entregas de {titulo}
+            <span>
+              {total === 0
+                ? 'Nada pendente'
+                : `${total} ${total === 1 ? 'pendente' : 'pendentes'}`}
+            </span>
+          </h2>
+          <button
+            type="button"
+            className="inicio-mes-seta"
+            aria-label="Próximo mês"
+            onClick={() => andar(1)}
+          >
+            ›
+          </button>
+          <button
+            type="button"
+            className="inicio-mes-fechar"
+            aria-label="Fechar"
+            onClick={aoFechar}
+            autoFocus
+          >
+            ×
+          </button>
+        </header>
+
+        <BarrasDeEntregas
+          dias={dias}
+          materias={materias}
+          classe="inicio-mes-barras"
+        />
+
+        {doMes.size > 0 && (
+          <ul className="inicio-mes-legenda" aria-label="Por matéria">
+            {[...doMes].map(([materiaId, quantas]) => {
+              const materia = materias.find((item) => item.id === materiaId)
+
+              return (
+                <li
+                  key={materiaId}
+                  className={`materia-cor-${materia?.cor ?? 'lilas'}`}
+                >
+                  {materia?.nome ?? 'Matéria'} <strong>{quantas}</strong>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </section>
+    </div>
+  )
+}
+
+/**
+ * Entregas da semana, com as cores das matérias. Um clique amplia o cartão
+ * para o mês inteiro, sem sair do Dashboard.
+ */
+export function CartaoSemana({ agora = new Date() }) {
+  const { materias, tarefas } = useDados()
+  const [ampliado, setAmpliado] = useState(false)
+  const dias = entregasPorDia(tarefas, agora).map((dia) => ({
+    ...dia,
+    chave: dia.dia,
+    rotulo: dia.dia,
+    nome: dia.dia,
+  }))
+
+  return (
+    <section
+      className="inicio-caixa inicio-semana-cartao"
+      aria-labelledby="semana-painel-titulo"
+      onClick={(evento) => {
+        if (!evento.target.closest('.inicio-mes-fundo')) setAmpliado(true)
+      }}
+    >
+      <div className="inicio-caixa-topo">
+        <h2 id="semana-painel-titulo">Entregas da semana</h2>
+        <button
+          type="button"
+          className="inicio-ampliar"
+          aria-label="Ver as entregas do mês"
+          title="Ver o mês"
+        >
+          ⤢
+        </button>
+      </div>
+      <BarrasDeEntregas dias={dias} materias={materias} />
+      {ampliado && (
+        <EntregasDoMes
+          tarefas={tarefas}
+          materias={materias}
+          agora={agora}
+          aoFechar={() => setAmpliado(false)}
+        />
+      )}
     </section>
   )
 }

@@ -517,3 +517,158 @@
 .inicio-semana-barra:empty {
   background: rgb(255 255 255 / 0.45);
 }
+
+/* O cartão da semana abre o mês ampliado ao clicar. */
+.inicio-semana-cartao {
+  cursor: pointer;
+}
+
+.inicio-semana-cartao:hover {
+  box-shadow: 0 4px 14px rgb(67 45 30 / 0.12);
+}
+
+.inicio-ampliar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.5);
+  color: var(--cor-texto);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.inicio-ampliar:hover,
+.inicio-ampliar:focus-visible {
+  background: rgb(255 255 255 / 0.85);
+}
+
+.inicio-mes-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(40 28 20 / 0.45);
+  cursor: default;
+}
+
+.inicio-mes-janela {
+  display: grid;
+  gap: 16px;
+  width: min(960px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px 22px;
+  border-radius: 16px;
+  background: var(--cor-verde);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.25);
+}
+
+.inicio-mes-topo {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.inicio-mes-topo h2 {
+  display: grid;
+  margin: 0;
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.inicio-mes-topo h2 span {
+  font-family: var(--fonte-texto);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+.inicio-mes-seta,
+.inicio-mes-fechar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  color: var(--cor-texto);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.inicio-mes-seta:hover,
+.inicio-mes-fechar:hover {
+  background: rgb(255 255 255 / 0.85);
+}
+
+/* Mês: uma barra por dia, mais finas e mais altas que as da semana. */
+.inicio-mes-barras {
+  grid-template-columns: none;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 3px;
+  height: 260px;
+}
+
+.inicio-mes-barras .inicio-semana-barra {
+  width: 100%;
+}
+
+.inicio-mes-barras .inicio-semana-dia,
+.inicio-mes-barras .inicio-semana-total {
+  font-size: 0.68rem;
+}
+
+.inicio-semana-fds .inicio-semana-dia {
+  opacity: 0.55;
+}
+
+.inicio-mes-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+}
+
+.inicio-mes-legenda li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inicio-mes-legenda li::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--painel-destaque);
+  border-radius: 3px;
+  background: var(--painel-fundo);
+}
+
+@media (max-width: 600px) {
+  .inicio-mes-barras {
+    gap: 1px;
+    height: 200px;
+  }
+
+  .inicio-mes-barras .inicio-semana-dia,
+  .inicio-mes-barras .inicio-semana-total {
+    font-size: 0.6rem;
+  }
+
+  .inicio-mes-barras li:not(.inicio-semana-marco) .inicio-semana-dia {
+    visibility: hidden;
+  }
+}
