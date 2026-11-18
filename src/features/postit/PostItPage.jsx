@@ -271,7 +271,7 @@ export default function PostItPage() {
     return (
       <div className="postit-pagina">
         <h1 className="titulo-pagina">Post it</h1>
-        <p className="postit-subtitulo">
+        <p className="subtitulo-pagina">
           Cadastre uma matéria primeiro, em{' '}
           <Link to="/adicionar-materia">Adicionar matéria</Link>. Cada matéria
           ganha um bloco de post-it na cor dela.
@@ -283,7 +283,7 @@ export default function PostItPage() {
   return (
     <div className="postit-pagina">
       <h1 className="titulo-pagina">Post it</h1>
-      <p className="postit-subtitulo">
+      <p className="subtitulo-pagina">
         Arraste o bloco de uma matéria para Atividades (ou clique nele) e
         escreva a atividade no post-it. Tudo aparece também na Agenda.
       </p>

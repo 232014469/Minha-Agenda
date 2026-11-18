@@ -60,7 +60,7 @@
 
 .layout-links {
   display: grid;
-  gap: 14px;
+  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -70,9 +70,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 18px;
-  border: 2px solid #d7cfbd;
-  border-radius: 18px;
+  padding: 11px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
   color: inherit;
   font-family: var(--fonte-titulo);
   font-weight: 700;
@@ -80,7 +80,8 @@
 }
 
 .layout-links a:hover {
-  background: #f1e6d2;
+  border-color: var(--cor-borda-forte);
+  background: #f6e9d3;
 }
 
 .layout-links a.active {
@@ -111,12 +112,12 @@
   gap: 10px;
   min-height: 0;
   padding-top: 18px;
-  border-top: 2px dashed #d7cfbd;
+  border-top: 1px dashed var(--cor-borda-forte);
 }
 
 .semana h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .semana-vazia {
@@ -384,7 +385,7 @@
     margin-block: 0;
     padding: 8px 12px;
     border: 0;
-    border-top: 3px solid var(--cor-borda-forte);
+    border-top: 1px solid var(--cor-borda-forte);
     border-radius: 0;
   }
 
@@ -430,7 +431,7 @@
     padding: 4px;
     border-width: 1px;
     border-radius: 12px;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
   }
 
   .layout-coluna::before {

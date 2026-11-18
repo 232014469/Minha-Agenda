@@ -54,3 +54,92 @@ img {
   display: block;
   max-width: 100%;
 }
+
+/* Caixas de seleção e rádios na cor do app */
+input[type='checkbox'],
+input[type='radio'] {
+  accent-color: var(--cor-lilas-escuro);
+}
+
+/* Subtítulo embaixo do título de cada tela: o mesmo em todas */
+.subtitulo-pagina {
+  max-width: 72ch;
+  margin: 6px 0 18px;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Nas telas montadas em grade, o espaço já vem do `gap` */
+.materias-pagina > .subtitulo-pagina,
+.config-pagina > .subtitulo-pagina,
+.postit-pagina > .subtitulo-pagina {
+  margin: -10px 0 2px;
+}
+
+/* Campos de formulário: mesma altura, borda e tamanho de letra em todas as
+   telas */
+.campo {
+  display: grid;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.campo input:not([type='checkbox'], [type='radio']),
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible,
+.campo textarea:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 1px;
+}
+
+/* Abas pequenas (Mês/Semana/Lista/Quadro, filtros): pílulas num trilho bege */
+.abas {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 14px;
+  background: var(--cor-menu);
+}
+
+.abas button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+}
+
+.abas button:hover {
+  color: var(--cor-texto);
+}
+
+.abas button[aria-pressed='true'] {
+  background: var(--cor-lilas);
+  color: var(--cor-texto);
+  font-weight: 700;
+}

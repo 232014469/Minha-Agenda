@@ -74,7 +74,7 @@ export default function NovaMateriaPage() {
   return (
     <div className="materias-pagina">
       <h1 className="titulo-pagina">Adicionar matéria</h1>
-      <p className="materias-subtitulo">
+      <p className="subtitulo-pagina">
         Cadastre as matérias do semestre. Depois é só lançar as tarefas na
         Agenda.
       </p>

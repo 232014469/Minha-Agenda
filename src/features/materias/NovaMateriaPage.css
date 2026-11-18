@@ -1,11 +1,6 @@
 .materias-pagina {
   display: grid;
-  gap: 20px;
-}
-
-.materias-subtitulo {
-  margin: 0;
-  color: var(--cor-texto-suave);
+  gap: 16px;
 }
 
 .materias-nova {
@@ -18,7 +13,8 @@
 .materias-nova > label {
   display: grid;
   flex: 1 1 200px;
-  gap: 6px;
+  gap: 5px;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -28,12 +24,15 @@
 
 .materias-nova input[type='text'],
 .materias-nova select {
-  min-height: 44px;
-  padding: 8px 12px;
+  min-height: 38px;
+  padding: 7px 10px;
   border: 1px solid var(--cor-borda-forte);
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
   color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 400;
 }
 
 .materias-adicionada {

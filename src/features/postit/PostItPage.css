@@ -1,20 +1,14 @@
 .postit-pagina {
   display: grid;
-  gap: 20px;
+  gap: 16px;
 }
 
 .postit-pagina h2 {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
 }
 
-.postit-subtitulo {
-  max-width: 70ch;
-  margin: 0;
-  color: var(--cor-texto-suave);
-}
-
-.postit-subtitulo a {
+.postit-pagina .subtitulo-pagina a {
   color: var(--cor-texto);
   font-weight: 700;
 }
@@ -89,23 +83,24 @@
 .postit-areas {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
-  gap: 18px;
+  gap: 12px;
   align-items: stretch;
 }
 
 .postit-area {
   display: grid;
   align-content: start;
-  gap: 14px;
+  gap: 12px;
   min-height: 200px;
-  padding: 14px;
-  border: 2px dashed var(--cor-borda-forte);
-  border-radius: 16px;
+  padding: 12px 14px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: 14px;
   background: var(--cor-papel);
 }
 
 .postit-area h2 span {
   color: var(--cor-texto-suave);
+  font-size: 0.8rem;
   font-weight: 400;
 }
 

@@ -1,21 +1,17 @@
 .config-pagina {
   display: grid;
-  gap: 20px;
-  max-width: 900px;
-}
-
-.config-subtitulo {
-  margin: 8px 0 0;
-  color: var(--cor-texto-suave);
+  gap: 16px;
 }
 
 .config-secao h2 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
 }
 
 .config-secao p {
   margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 .config-acoes {
@@ -25,15 +21,19 @@
 }
 
 .config-secao button {
-  min-height: 40px;
-  padding: 6px 16px;
-  border: 1px solid var(--cor-borda-forte);
+  padding: 6px 14px;
+  border: 1px solid var(--cor-lilas);
   border-radius: 999px;
   background: var(--cor-lilas);
   color: var(--cor-texto);
   font: inherit;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+.config-secao button:hover:not(:disabled) {
+  border-color: var(--cor-lilas-escuro);
 }
 
 .config-secao button:disabled {
@@ -61,10 +61,10 @@
   overflow-wrap: anywhere;
 }
 
-.config-situacao,
-.config-cuidado {
+.config-secao .config-situacao,
+.config-secao .config-cuidado {
   color: var(--cor-texto-suave);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
 }
 
 .config-entrar {
@@ -74,14 +74,15 @@
 }
 
 .config-entrar label {
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
 .config-entrar input {
-  min-height: 44px;
-  padding: 8px 12px;
+  min-height: 38px;
+  padding: 7px 10px;
   border: 1px solid var(--cor-borda-forte);
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
   color: var(--cor-texto);
   font: inherit;

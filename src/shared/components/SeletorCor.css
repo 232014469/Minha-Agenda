@@ -11,6 +11,7 @@
 .seletor-cor legend {
   margin-bottom: 6px;
   padding: 0;
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -30,9 +31,9 @@
 
 .seletor-cor-opcao span {
   display: block;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--cor-borda-forte);
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--cor-borda-forte);
   border-radius: 50%;
   background: var(--painel-forte);
 }

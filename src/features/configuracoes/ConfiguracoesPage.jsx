@@ -8,7 +8,7 @@ export default function ConfiguracoesPage() {
   return (
     <div className="config-pagina">
       <h1 className="titulo-pagina">Configurações</h1>
-      <p className="config-subtitulo">
+      <p className="subtitulo-pagina">
         Leve seus dados para outros aparelhos e guarde cópias de segurança.
       </p>
       <Sincronizacao />

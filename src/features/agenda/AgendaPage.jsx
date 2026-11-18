@@ -276,7 +276,7 @@ function ListaDoMes({ itens, corDe }) {
           key={item.id}
           className={`agenda-lista-item agenda-chip-${corDe(item.disciplina)}${
             ehAtrasada(item) ? ' agenda-chip-atrasada' : ''
-          }`}
+          }${ehConcluida(item.status) ? ' agenda-chip-concluida' : ''}`}
         >
           <strong>{formatarPrazoDdMm(item.prazo)}</strong>
           <span className="agenda-lista-titulo">{item.titulo}</span>
@@ -776,7 +776,7 @@ export default function AgendaPage() {
   return (
     <div className="agenda-pagina">
       <h1 className="titulo-pagina">Agenda</h1>
-      <p className="agenda-subtitulo">
+      <p className="subtitulo-pagina">
         Organize seus compromissos acadêmicos e nunca perca um prazo.
       </p>
       {conteudo}

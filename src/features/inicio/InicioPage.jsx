@@ -173,7 +173,7 @@ function MinhasMaterias({ materias, tarefas }) {
       ) : (
         <ul className="inicio-materias">
           {materias.map((materia) => {
-            const { total, concluidas } = resumirEntregas(
+            const { total, concluidas, pendentes } = resumirEntregas(
               tarefas.filter((tarefa) => tarefa.materiaId === materia.id),
             )
 
@@ -184,8 +184,12 @@ function MinhasMaterias({ materias, tarefas }) {
                   to={`/materias/${materia.id}`}
                 >
                   <strong>{materia.nome}</strong>
-                  <span>
-                    {concluidas}/{total} Tarefas
+                  <span className="inicio-materia-situacao">
+                    {total === 0
+                      ? 'Sem entregas ainda'
+                      : pendentes === 0
+                        ? 'Tudo em dia'
+                        : `${pendentes} ${pendentes === 1 ? 'pendente' : 'pendentes'}`}
                   </span>
                   <BarraProgresso
                     concluidas={concluidas}
@@ -211,7 +215,7 @@ export default function InicioPage() {
   return (
     <section className="inicio">
       <h1 className="titulo-pagina">Olá!</h1>
-      <p className="inicio-semestre">Semestre {nomeDoSemestre(semestre)}</p>
+      <p className="subtitulo-pagina">Semestre {nomeDoSemestre(semestre)}</p>
       <div className="inicio-grade">
         <div className="inicio-principal">
           <div className="inicio-cartoes">

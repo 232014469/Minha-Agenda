@@ -2,33 +2,41 @@
    para todas terem a mesma borda, o mesmo título e o mesmo botão. */
 .secao-caixa {
   display: grid;
-  gap: 16px;
-  padding: 20px;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px 18px;
   border: 1px solid var(--cor-borda);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--cor-papel);
 }
 
 .secao-caixa > header h2 {
   margin: 0;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
 }
 
 .secao-caixa > header p {
   margin: 4px 0 0;
   color: var(--cor-texto-suave);
+  font-size: 0.8rem;
+  line-height: 1.45;
 }
 
 .secao-botao {
   justify-self: start;
   padding: 6px 14px;
-  border: 1px solid var(--cor-borda-forte);
+  border: 1px solid var(--cor-lilas);
   border-radius: 999px;
   background: var(--cor-lilas);
   color: var(--cor-texto);
   font: inherit;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+.secao-botao:hover:not(:disabled) {
+  border-color: var(--cor-lilas-escuro);
 }
 
 .secao-botao:disabled {
