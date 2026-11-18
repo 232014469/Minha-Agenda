@@ -7,17 +7,18 @@ import { EstadoVazio } from '../../shared/components/Estados'
 import '../../shared/cores.css'
 import {
   corDoTipo,
-  formatarPrazoCurto,
+  diasAte,
   mensagemDeProgresso,
   proximasTarefas,
   resumirEntregas,
+  textoDosDias,
 } from './inicioUtils'
 import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
 import ProgressoGeral from './ProgressoGeral'
 import './InicioPage.css'
 
-function Progresso({ resumo }) {
-  const { concluidas, total, percentual } = resumo
+function Progresso({ resumo, atrasadas }) {
+  const { concluidas, total, pendentes, percentual } = resumo
 
   return (
     <section className="inicio-caixa inicio-progresso">
@@ -28,12 +29,23 @@ function Progresso({ resumo }) {
         <>
           <div className="inicio-progresso-corpo">
             <ProgressoGeral percentual={percentual} />
-            <p className="inicio-progresso-contagem">
-              <strong>
-                {concluidas}/{total}
-              </strong>
-              <span>Tarefas feitas</span>
-            </p>
+            <dl className="inicio-progresso-numeros">
+              <div>
+                <dt>Feitas</dt>
+                <dd>
+                  {concluidas}
+                  <small> de {total}</small>
+                </dd>
+              </div>
+              <div>
+                <dt>Pendentes</dt>
+                <dd>{pendentes}</dd>
+              </div>
+              <div className={atrasadas > 0 ? 'inicio-numero-alerta' : ''}>
+                <dt>Atrasadas</dt>
+                <dd>{atrasadas}</dd>
+              </div>
+            </dl>
           </div>
           <p className="inicio-progresso-mensagem">
             <span aria-hidden="true">★ </span>
@@ -43,6 +55,34 @@ function Progresso({ resumo }) {
       )}
     </section>
   )
+}
+
+const MES_CURTO = [
+  'jan',
+  'fev',
+  'mar',
+  'abr',
+  'mai',
+  'jun',
+  'jul',
+  'ago',
+  'set',
+  'out',
+  'nov',
+  'dez',
+]
+
+/** "23:59 · em 2 dias" ou "08:00 · (atrasada)". */
+function quandoVence(item) {
+  const data = new Date(item.prazo)
+  const hora = data.toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+  return `${hora} · ${
+    item.atrasada ? '(atrasada)' : textoDosDias(diasAte(item.prazo))
+  }`
 }
 
 function Proximas({ proximas, atrasadas }) {
@@ -66,34 +106,45 @@ function Proximas({ proximas, atrasadas }) {
         <EstadoVazio mensagem="Nenhuma entrega pendente. Bom trabalho!" />
       ) : (
         <ul>
-          {proximas.map((item) => (
-            <li key={item.id}>
-              <Link
-                className="inicio-proxima"
-                to={`/materias/${item.materiaId}`}
-              >
-                <span
-                  className={`ponto ponto-${corDoTipo(item.tipo)}`}
-                  aria-hidden="true"
-                />
-                <span className="inicio-proxima-texto">
-                  <strong>{item.titulo}</strong>
-                  <span>{item.materiaNome}</span>
-                  <small className={item.atrasada ? 'atrasada' : undefined}>
-                    {formatarPrazoCurto(item.prazo)}
-                    {item.atrasada && ' (atrasada)'}
-                  </small>
-                  {item.tipo && (
-                    <span
-                      className={`etiqueta etiqueta-${corDoTipo(item.tipo)}`}
-                    >
-                      {item.tipo}
+          {proximas.map((item) => {
+            const data = new Date(item.prazo)
+
+            return (
+              <li key={item.id}>
+                <Link
+                  className={`inicio-proxima${
+                    item.atrasada ? ' inicio-proxima-atrasada' : ''
+                  }`}
+                  to={`/materias/${item.materiaId}`}
+                >
+                  <span
+                    className={`inicio-proxima-data materia-cor-${item.materiaCor}`}
+                    aria-hidden="true"
+                  >
+                    <strong>{data.getDate()}</strong>
+                    {MES_CURTO[data.getMonth()]}
+                  </span>
+                  <span className="inicio-proxima-texto">
+                    <strong>{item.titulo}</strong>
+                    <span className="inicio-proxima-materia">
+                      {item.materiaNome}
                     </span>
-                  )}
-                </span>
-              </Link>
-            </li>
-          ))}
+                    <small>
+                      <span className="inicio-proxima-quando">
+                        {quandoVence(item)}
+                      </span>
+                      {item.tipo && (
+                        <span className={`etiqueta-${corDoTipo(item.tipo)}`}>
+                          {' '}
+                          · {item.tipo}
+                        </span>
+                      )}
+                    </small>
+                  </span>
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       )}
     </section>
@@ -164,7 +215,7 @@ export default function InicioPage() {
         </div>
 
         <aside className="inicio-lateral">
-          <Progresso resumo={resumo} />
+          <Progresso resumo={resumo} atrasadas={atrasadas} />
           <Proximas
             proximas={proximasTarefas(tarefas, materias)}
             atrasadas={atrasadas}

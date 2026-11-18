@@ -32,6 +32,7 @@ export function resumirEntregas(entregas) {
  */
 export function proximasTarefas(tarefas, materias, limite = 5) {
   const nomes = new Map(materias.map((materia) => [materia.id, materia.nome]))
+  const cores = new Map(materias.map((materia) => [materia.id, materia.cor]))
 
   return tarefas
     .filter(
@@ -42,6 +43,7 @@ export function proximasTarefas(tarefas, materias, limite = 5) {
     .map((tarefa) => ({
       ...tarefa,
       materiaNome: nomes.get(tarefa.materiaId) ?? '',
+      materiaCor: cores.get(tarefa.materiaId) ?? 'lilas',
       atrasada: ehAtrasada(tarefa),
     }))
 }

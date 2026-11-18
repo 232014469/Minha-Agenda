@@ -1,4 +1,4 @@
-const RAIO = 54
+const RAIO = 58
 const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 /**
@@ -29,7 +29,7 @@ export default function ProgressoGeral({ percentual }) {
       </svg>
       <p className="progresso-geral-centro">
         <strong>{valor}%</strong>
-        <span>das atividades concluídas</span>
+        <span>concluído</span>
       </p>
     </div>
   )

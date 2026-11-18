@@ -295,19 +295,18 @@
   height: 8px;
 }
 
-/* Meu progresso: donut */
+/* Meu progresso: anel com a porcentagem e três números ao lado */
 .inicio-progresso-corpo {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 18px;
 }
 
 .progresso-geral {
   position: relative;
-  flex: 0 0 150px;
-  width: 150px;
-  height: 150px;
+  flex: 0 0 116px;
+  width: 116px;
+  height: 116px;
 }
 
 .progresso-geral svg {
@@ -318,11 +317,12 @@
 
 .progresso-geral circle {
   fill: none;
-  stroke-width: 14;
+  stroke-width: 10;
+  stroke-linecap: round;
 }
 
 .progresso-geral-trilho {
-  stroke: #b3b1ad;
+  stroke: var(--cor-borda);
 }
 
 .progresso-geral-anel {
@@ -336,66 +336,93 @@
   display: grid;
   place-content: center;
   margin: 0;
-  padding: 0 26px;
   text-align: center;
 }
 
 .progresso-geral-centro strong {
-  font-size: 1.5rem;
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  line-height: 1.1;
 }
 
 .progresso-geral-centro span {
-  font-size: 0.72rem;
-  line-height: 1.2;
+  color: var(--cor-texto-suave);
+  font-size: 0.66rem;
 }
 
-.inicio-progresso-contagem {
+.inicio-progresso-numeros {
   display: grid;
-  gap: 2px;
+  flex: 1;
+  gap: 6px;
   margin: 0;
-  text-align: center;
 }
 
-.inicio-progresso-contagem strong {
-  font-size: 1.4rem;
+.inicio-progresso-numeros div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--cor-menu);
 }
 
-.inicio-progresso-contagem span {
-  font-size: 0.875rem;
+.inicio-progresso-numeros dt {
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+}
+
+.inicio-progresso-numeros dd {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+}
+
+.inicio-progresso-numeros small {
+  font-family: var(--fonte-texto);
+  font-size: 0.7rem;
+  color: var(--cor-texto-suave);
+}
+
+.inicio-numero-alerta {
+  background: #fbe3e1 !important;
+}
+
+.inicio-numero-alerta dd {
+  color: var(--cor-alerta);
 }
 
 .inicio-progresso-mensagem {
   margin: 0;
-  font-size: 0.95rem;
+  color: var(--cor-texto-suave);
+  font-size: 0.8rem;
 }
 
 .inicio-progresso-mensagem span {
   color: #e8b923;
 }
 
-/* Próximas atividades */
+/* Próximas tarefas: folhinha de calendário na cor da matéria */
 .inicio-proximas ul {
   display: grid;
+  gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.inicio-proximas li {
-  border-top: 1px solid var(--cor-borda);
-}
-
 .inicio-proxima {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
-  padding: 12px 0;
+  padding: 8px;
+  border-radius: 10px;
   color: var(--cor-texto);
   text-decoration: none;
 }
 
-.inicio-proxima:hover .inicio-proxima-texto strong {
-  text-decoration: underline;
+.inicio-proxima:hover {
+  background: var(--cor-menu);
 }
 
 .inicio-proxima:focus-visible {
@@ -403,63 +430,56 @@
   outline-offset: 2px;
 }
 
+.inicio-proxima-data {
+  display: grid;
+  flex: 0 0 44px;
+  place-items: center;
+  width: 44px;
+  height: 46px;
+  border-radius: 8px;
+  background: var(--painel-fundo);
+  border-top: 5px solid var(--painel-forte);
+  font-size: 0.62rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.inicio-proxima-data strong {
+  font-family: var(--fonte-titulo);
+  font-size: 1.15rem;
+}
+
+.inicio-proxima-atrasada .inicio-proxima-data {
+  border-top-color: var(--cor-alerta);
+}
+
 .inicio-proxima-texto {
   display: grid;
   flex: 1;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 }
 
-.inicio-proxima-texto strong {
+.inicio-proxima-texto > strong {
+  font-size: 0.9rem;
   overflow-wrap: break-word;
 }
 
-.inicio-proxima-texto .etiqueta {
-  justify-self: start;
-  margin-top: 2px;
-  font-size: 0.75rem;
-}
-
-.inicio-proxima-texto span,
-.inicio-proxima-texto small {
-  font-size: 0.875rem;
+.inicio-proxima-materia {
+  overflow: hidden;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .inicio-proxima-texto small {
   color: var(--cor-texto-suave);
+  font-size: 0.72rem;
 }
 
-.inicio-proxima-texto .atrasada {
+.inicio-proxima-atrasada .inicio-proxima-quando {
   color: var(--cor-alerta);
   font-weight: 700;
-}
-
-.ponto {
-  flex: 0 0 16px;
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-  border-radius: 50%;
-}
-
-.ponto-lilas {
-  background: var(--ponto-lilas);
-}
-
-.ponto-azul {
-  background: var(--ponto-azul);
-}
-
-.ponto-verde {
-  background: var(--ponto-verde);
-}
-
-.ponto-amarelo {
-  background: var(--ponto-amarelo);
-}
-
-.ponto-rosa {
-  background: var(--ponto-rosa);
 }
 
 .etiqueta {
