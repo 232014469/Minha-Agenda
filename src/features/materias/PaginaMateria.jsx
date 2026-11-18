@@ -3,7 +3,13 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { useDados } from '../../dados/useDados'
 import BarraProgresso from '../../shared/components/BarraProgresso'
 import BarraDeFaltas from '../faltas/BarraDeFaltas'
-import { CARGAS, HORAS_POR_ENCONTRO, cargaHorariaDe } from '../faltas/faltas'
+import {
+  CARGAS,
+  HORAS_POR_ENCONTRO,
+  cargaHorariaDe,
+  situacaoDasFaltas,
+} from '../faltas/faltas'
+import Icone from '../../shared/layout/Icone'
 import '../../shared/cores.css'
 import {
   categoriaDaEntrega,
@@ -30,14 +36,19 @@ const SITUACAO = {
   naorealizada: { texto: 'Não realizada', classe: 'cinza' },
 }
 
-const formatarData = (prazo) =>
-  new Date(prazo).toLocaleDateString('pt-BR', {
+/** "24/11", com o ano só quando não é o ano corrente. */
+function formatarData(prazo, agora) {
+  const data = new Date(prazo)
+  const mesmoAno = data.getFullYear() === agora.getFullYear()
+
+  return data.toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric',
+    ...(!mesmoAno && { year: 'numeric' }),
   })
+}
 
-function Entrega({ entrega, numero, agora, aoAlternar, aoExcluir }) {
+function Entrega({ entrega, agora, aoAlternar, aoExcluir }) {
   const categoria = categoriaDaEntrega(entrega)
   const atrasada = estaAtrasada(entrega, agora)
   const situacao = SITUACAO[categoria]
@@ -49,49 +60,49 @@ function Entrega({ entrega, numero, agora, aoAlternar, aoExcluir }) {
         atrasada ? ' entrega-atrasada' : ''
       }`}
     >
-      <span className="entrega-numero" aria-hidden="true">
-        {numero}
-      </span>
       <div className="entrega-conteudo">
-        <h3>{entrega.titulo}</h3>
-        {entrega.descricao && <p>{entrega.descricao}</p>}
-        <div className="entrega-meta">
-          {entrega.tipo && <span>{entrega.tipo}</span>}
-          <span>
-            Prazo:{' '}
-            <time dateTime={entrega.prazo}>{formatarData(entrega.prazo)}</time>
+        <div className="entrega-linha">
+          <h3>{entrega.titulo}</h3>
+          <span className={`entrega-status entrega-status-${situacao.classe}`}>
+            {situacao.texto}
           </span>
+          {atrasada && <span className="entrega-aviso">Atrasada</span>}
+        </div>
+        {entrega.descricao && <p>{entrega.descricao}</p>}
+        <p className="entrega-meta">
+          {entrega.tipo && <span>{entrega.tipo}</span>}
+          <time dateTime={entrega.prazo}>
+            {formatarData(entrega.prazo, agora)}
+          </time>
           {!feita && (
             <strong className="entrega-prazo-texto">
               {descreverPrazo(entrega.prazo, agora)}
             </strong>
           )}
-        </div>
+        </p>
       </div>
-      <div className="entrega-selos">
-        <span className={`entrega-status entrega-status-${situacao.classe}`}>
-          {situacao.texto}
-        </span>
-        {atrasada && <span className="entrega-aviso">Atrasada</span>}
+      <div className="entrega-acoes">
         <button
           type="button"
-          className="entrega-botao"
+          className="entrega-icone entrega-icone-principal"
           onClick={() => aoAlternar(entrega)}
           aria-label={
             feita
               ? `Desfazer conclusão de ${entrega.titulo}`
               : `Concluir ${entrega.titulo}`
           }
+          title={feita ? 'Desfazer conclusão' : 'Concluir'}
         >
-          {feita ? 'Desfazer' : 'Concluir'}
+          <Icone nome={feita ? 'desfazer' : 'check'} tamanho={16} />
         </button>
         <button
           type="button"
-          className="entrega-botao"
+          className="entrega-icone"
           onClick={() => aoExcluir(entrega)}
           aria-label={`Excluir ${entrega.titulo}`}
+          title="Excluir"
         >
-          Excluir
+          <Icone nome="lixo" tamanho={16} />
         </button>
       </div>
     </li>
@@ -120,6 +131,8 @@ export default function PaginaMateria() {
   const agora = new Date()
   const contagem = contarPorCategoria(entregas)
   const pendencias = resumirPendencias(entregas, agora)
+  const faltas = situacaoDasFaltas(materia)
+  const pendentes = contagem.afazer + contagem.andamento
   const visiveis = ordenarPorUrgencia(
     entregas.filter(
       (entrega) => filtro === 'todas' || categoriaDaEntrega(entrega) === filtro,
@@ -140,83 +153,50 @@ export default function PaginaMateria() {
   }
 
   return (
-    <div className="disciplina-layout">
-      <div className="disciplina-main">
-        <Link className="disciplina-voltar" to="/dashboard">
-          ← Voltar para o Dashboard
-        </Link>
-        <div className={`disciplina-pagina materia-cor-${materia.cor}`}>
-          <header className="disciplina-cabecalho">
-            <span className="disciplina-icone" aria-hidden="true">
-              ▤
-            </span>
-            <div className="disciplina-cabecalho-texto">
-              <h1>{materia.nome}</h1>
-              {materia.periodo && <p>Semestre · {materia.periodo}</p>}
-              <BarraProgresso
-                concluidas={contagem.concluida}
-                total={contagem.todas}
-                rotulo={`Progresso em ${materia.nome}`}
-              />
-              {pendencias && (
-                <p className="disciplina-pendencias">{pendencias}</p>
-              )}
-            </div>
-          </header>
+    <div className={`materia-pagina materia-cor-${materia.cor}`}>
+      <Link className="materia-voltar" to="/dashboard">
+        ← Dashboard
+      </Link>
 
-          <section
-            className="disciplina-painel disciplina-faltas"
-            aria-labelledby="faltas-titulo"
-          >
-            <div className="disciplina-titulo">
-              <h2 id="faltas-titulo">Faltas</h2>
-              <span>Limite: 25% da carga horária</span>
-            </div>
-            <BarraDeFaltas materia={materia} comNome={false} />
-            <div className="disciplina-faltas-acoes">
-              <button
-                type="button"
-                onClick={() => registrarFalta(materia.id, HORAS_POR_ENCONTRO)}
-              >
-                +1 falta ({HORAS_POR_ENCONTRO} h)
-              </button>
-              <button
-                type="button"
-                disabled={!materia.faltas}
-                onClick={() => registrarFalta(materia.id, -HORAS_POR_ENCONTRO)}
-              >
-                Desfazer 1 falta
-              </button>
-              <label>
-                Carga horária
-                <select
-                  value={cargaHorariaDe(materia)}
-                  onChange={(evento) =>
-                    definirCargaHoraria(materia.id, Number(evento.target.value))
-                  }
-                >
-                  {[...new Set([...CARGAS, cargaHorariaDe(materia)])]
-                    .sort((a, b) => a - b)
-                    .map((horas) => (
-                      <option key={horas} value={horas}>
-                        {horas} h
-                      </option>
-                    ))}
-                </select>
-              </label>
-            </div>
-          </section>
+      <header className="materia-topo">
+        <div className="materia-topo-titulo">
+          <h1>{materia.nome}</h1>
+          <div className="materia-etiquetas">
+            {materia.periodo && <span>Semestre {materia.periodo}</span>}
+            <span>{faltas.carga} h</span>
+          </div>
+        </div>
+        <dl className="materia-resumo">
+          <div>
+            <dt>Pendentes</dt>
+            <dd>{pendentes}</dd>
+          </div>
+          <div>
+            <dt>Concluídas</dt>
+            <dd>{contagem.concluida}</dd>
+          </div>
+          <div>
+            <dt>Faltas</dt>
+            <dd>
+              {faltas.faltas}
+              <small> / {faltas.limite} h</small>
+            </dd>
+          </div>
+        </dl>
+        <BarraProgresso
+          concluidas={contagem.concluida}
+          total={contagem.todas}
+          rotulo={`Progresso em ${materia.nome}`}
+        />
+        {pendencias && <p className="materia-pendencias">{pendencias}</p>}
+      </header>
 
-          <section
-            className="disciplina-painel"
-            aria-labelledby="entregas-titulo"
-          >
-            <div className="disciplina-titulo">
-              <h2 id="entregas-titulo">Entregas</h2>
-              <span>{entregas.length} atividades</span>
-            </div>
+      <div className="materia-grade">
+        <section className="materia-caixa" aria-labelledby="entregas-titulo">
+          <div className="materia-caixa-topo">
+            <h2 id="entregas-titulo">Entregas</h2>
             <div
-              className="disciplina-filtros"
+              className="materia-filtros"
               role="group"
               aria-label="Filtrar entregas"
             >
@@ -227,57 +207,113 @@ export default function PaginaMateria() {
                   aria-pressed={filtro === opcao.chave}
                   onClick={() => setFiltro(opcao.chave)}
                 >
-                  {opcao.titulo} ({contagem[opcao.chave]})
+                  {opcao.titulo}
+                  <span>{contagem[opcao.chave]}</span>
                 </button>
               ))}
             </div>
-            {visiveis.length === 0 ? (
-              <p className="disciplina-vazio">
-                {entregas.length === 0
-                  ? 'Nenhuma entrega ainda. Adicione na Agenda.'
-                  : 'Nenhuma entrega neste filtro.'}
-              </p>
-            ) : (
-              <ul className="disciplina-entregas">
-                {visiveis.map((entrega, posicao) => (
-                  <Entrega
-                    key={entrega.id}
-                    entrega={entrega}
-                    numero={posicao + 1}
-                    agora={agora}
-                    aoAlternar={alternar}
-                    aoExcluir={(item) => removerTarefa(item.id)}
-                  />
-                ))}
-              </ul>
-            )}
+          </div>
+          {visiveis.length === 0 ? (
+            <p className="materia-vazio">
+              {entregas.length === 0
+                ? 'Nenhuma entrega ainda. Adicione na Agenda ou no Post it.'
+                : 'Nenhuma entrega neste filtro.'}
+            </p>
+          ) : (
+            <ul className="materia-entregas">
+              {visiveis.map((entrega) => (
+                <Entrega
+                  key={entrega.id}
+                  entrega={entrega}
+                  agora={agora}
+                  aoAlternar={alternar}
+                  aoExcluir={(item) => removerTarefa(item.id)}
+                />
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <aside className="materia-lateral">
+          <section
+            className="materia-caixa materia-faltas"
+            aria-labelledby="faltas-titulo"
+          >
+            <div className="materia-caixa-topo">
+              <h2 id="faltas-titulo">Faltas</h2>
+              <span className="materia-dica">limite de 25%</span>
+            </div>
+            <BarraDeFaltas materia={materia} comNome={false} />
+            <div className="materia-faltas-acoes">
+              <button
+                type="button"
+                className="materia-botao materia-botao-forte"
+                onClick={() => registrarFalta(materia.id, HORAS_POR_ENCONTRO)}
+              >
+                +1 falta ({HORAS_POR_ENCONTRO} h)
+              </button>
+              <button
+                type="button"
+                className="materia-botao"
+                disabled={!materia.faltas}
+                onClick={() => registrarFalta(materia.id, -HORAS_POR_ENCONTRO)}
+              >
+                Desfazer 1 falta
+              </button>
+            </div>
+            <label className="materia-carga">
+              Carga horária
+              <select
+                value={cargaHorariaDe(materia)}
+                onChange={(evento) =>
+                  definirCargaHoraria(materia.id, Number(evento.target.value))
+                }
+              >
+                {[...new Set([...CARGAS, cargaHorariaDe(materia)])]
+                  .sort((a, b) => a - b)
+                  .map((horas) => (
+                    <option key={horas} value={horas}>
+                      {horas} h
+                    </option>
+                  ))}
+              </select>
+            </label>
           </section>
 
-          <section
-            className="disciplina-painel"
-            aria-label="Ajustes da matéria"
-          >
-            <div className="disciplina-ajustes">
-              {confirmando ? (
-                <div className="disciplina-confirmar" role="alert">
-                  <span>
-                    Excluir “{materia.nome}” e as {entregas.length} entregas?
-                  </span>
-                  <button type="button" onClick={excluirMateria}>
+          <div className="materia-excluir">
+            {confirmando ? (
+              <div className="materia-confirmar" role="alert">
+                <span>
+                  Excluir “{materia.nome}” e as {entregas.length} entregas?
+                </span>
+                <div>
+                  <button
+                    type="button"
+                    className="materia-botao materia-botao-perigo"
+                    onClick={excluirMateria}
+                  >
                     Confirmar exclusão
                   </button>
-                  <button type="button" onClick={() => setConfirmando(false)}>
+                  <button
+                    type="button"
+                    className="materia-botao"
+                    onClick={() => setConfirmando(false)}
+                  >
                     Cancelar
                   </button>
                 </div>
-              ) : (
-                <button type="button" onClick={() => setConfirmando(true)}>
-                  Excluir matéria
-                </button>
-              )}
-            </div>
-          </section>
-        </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="materia-link-perigo"
+                onClick={() => setConfirmando(true)}
+              >
+                Excluir matéria
+              </button>
+            )}
+          </div>
+        </aside>
       </div>
     </div>
   )

@@ -10,6 +10,9 @@ const caminhos = {
   mais: 'M12 5v14M5 12h14',
   mover: 'M4 8h14l-4-4M20 16H6l4 4',
   lapis: 'M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',
+  check: 'M5 12.5l4.5 4.5L19 7',
+  lixo: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6',
+  desfazer: 'M9 14L4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3',
   lupa: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
 }
 
