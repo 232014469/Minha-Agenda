@@ -192,4 +192,51 @@ describe('Post it', () => {
       within(area('Não realizadas')).getByText('Lista 3'),
     ).toBeInTheDocument()
   })
+
+  it('edita um post-it já colado, mudando a data de entrega', () => {
+    guardar([{ ...lista, prazo: '2030-01-10T18:00:00' }])
+    abrir()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Editar Lista 3' }))
+
+    const formulario = screen.getByRole('form', { name: 'Editar Lista 3' })
+
+    expect(within(formulario).getByLabelText('Atividade')).toHaveValue(
+      'Lista 3',
+    )
+    expect(within(formulario).getByLabelText('Data de entrega')).toHaveValue(
+      '2030-01-10',
+    )
+
+    fireEvent.change(within(formulario).getByLabelText('Atividade'), {
+      target: { value: 'Lista 3 (nova data)' },
+    })
+    fireEvent.change(within(formulario).getByLabelText('Data de entrega'), {
+      target: { value: '2030-01-17' },
+    })
+    fireEvent.click(within(formulario).getByRole('button', { name: 'Salvar' }))
+
+    expect(salvas()[0]).toMatchObject({
+      id: 1,
+      titulo: 'Lista 3 (nova data)',
+      prazo: '2030-01-17T18:00:00',
+      status: 'A_FAZER',
+    })
+    expect(screen.queryByRole('form')).not.toBeInTheDocument()
+    expect(screen.getByText('Lista 3 (nova data)')).toBeInTheDocument()
+  })
+
+  it('cancelar a edição não muda nada, e dois cliques também abrem', () => {
+    guardar([lista])
+    abrir()
+
+    fireEvent.doubleClick(screen.getByText('Lista 3'))
+    fireEvent.change(screen.getByLabelText('Atividade'), {
+      target: { value: 'Outra coisa' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
+
+    expect(salvas()[0].titulo).toBe('Lista 3')
+    expect(screen.getByText('Lista 3')).toBeInTheDocument()
+  })
 })

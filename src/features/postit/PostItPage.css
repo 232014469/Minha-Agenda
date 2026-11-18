@@ -224,6 +224,24 @@
   margin: auto -3px -3px 0;
 }
 
+.postit-editar {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.postit-editar:hover,
+.postit-editar:focus-visible {
+  background: rgb(255 255 255 / 0.6);
+}
+
 .postit-mover .menu-opcoes {
   width: 22px;
   height: 22px;

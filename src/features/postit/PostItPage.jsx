@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import MenuDeOpcoes from '../../shared/components/MenuDeOpcoes'
+import Icone from '../../shared/layout/Icone'
 import '../../shared/cores.css'
 import {
   compararPrazo,
@@ -37,26 +38,80 @@ function arrastar(evento, valor) {
   evento.dataTransfer.effectAllowed = 'copyMove'
 }
 
-/** Post-it em branco: ao clicar, vira o formulário da nova atividade. */
-function PostItEmBranco({ rascunho, materia, aoSalvar, aoDescartar }) {
-  const [aberto, setAberto] = useState(false)
-  const [titulo, setTitulo] = useState('')
-  const [tipo, setTipo] = useState(TIPOS[0])
-  const [data, setData] = useState('')
-  const id = `rascunho-${rascunho.chave}`
+/**
+ * Formulário do post-it: o mesmo para escrever uma atividade nova e para
+ * editar uma já colada (com os campos preenchidos).
+ */
+function FormularioDoPostIt({
+  id,
+  materia,
+  rotulo,
+  inicial = {},
+  textoSalvar,
+  textoCancelar,
+  aoSalvar,
+  aoCancelar,
+}) {
+  const [titulo, setTitulo] = useState(inicial.titulo ?? '')
+  const [tipo, setTipo] = useState(
+    TIPOS.includes(inicial.tipo) ? inicial.tipo : TIPOS[0],
+  )
+  const [data, setData] = useState(inicial.prazo?.slice(0, 10) ?? '')
 
   function salvar(evento) {
     evento.preventDefault()
     if (!titulo.trim() || !data) return
 
-    aoSalvar({
-      materiaId: materia.id,
-      titulo: titulo.trim(),
-      tipo,
-      prazo: `${data}T23:59:00`,
-      descricao: '',
-    })
+    // Ao editar, mantém a hora que já estava; post-it novo vence às 23:59.
+    const hora = inicial.prazo?.slice(10) || 'T23:59:00'
+
+    aoSalvar({ titulo: titulo.trim(), tipo, prazo: `${data}${hora}` })
   }
+
+  return (
+    <form className="postit-form" onSubmit={salvar} aria-label={rotulo}>
+      <span className="postit-materia">{materia.nome}</span>
+      <label htmlFor={`${id}-titulo`}>Atividade</label>
+      <input
+        id={`${id}-titulo`}
+        type="text"
+        value={titulo}
+        maxLength={120}
+        autoFocus
+        onChange={(evento) => setTitulo(evento.target.value)}
+      />
+      <label htmlFor={`${id}-tipo`}>Tipo</label>
+      <select
+        id={`${id}-tipo`}
+        value={tipo}
+        onChange={(evento) => setTipo(evento.target.value)}
+      >
+        {TIPOS.map((opcao) => (
+          <option key={opcao}>{opcao}</option>
+        ))}
+      </select>
+      <label htmlFor={`${id}-data`}>Data de entrega</label>
+      <input
+        id={`${id}-data`}
+        type="date"
+        value={data}
+        onChange={(evento) => setData(evento.target.value)}
+      />
+      <div className="postit-acoes">
+        <button type="submit" disabled={!titulo.trim() || !data}>
+          {textoSalvar}
+        </button>
+        <button type="button" onClick={aoCancelar}>
+          {textoCancelar}
+        </button>
+      </div>
+    </form>
+  )
+}
+
+/** Post-it em branco: ao clicar, vira o formulário da nova atividade. */
+function PostItEmBranco({ rascunho, materia, aoSalvar, aoDescartar }) {
+  const [aberto, setAberto] = useState(false)
 
   if (!aberto) {
     return (
@@ -78,53 +133,48 @@ function PostItEmBranco({ rascunho, materia, aoSalvar, aoDescartar }) {
     <li
       className={`postit postit-branco postit-aberto materia-cor-${materia.cor}`}
     >
-      <form
-        className="postit-form"
-        onSubmit={salvar}
-        aria-label={`Nova atividade de ${materia.nome}`}
-      >
-        <span className="postit-materia">{materia.nome}</span>
-        <label htmlFor={`${id}-titulo`}>Atividade</label>
-        <input
-          id={`${id}-titulo`}
-          type="text"
-          value={titulo}
-          maxLength={120}
-          autoFocus
-          onChange={(evento) => setTitulo(evento.target.value)}
-        />
-        <label htmlFor={`${id}-tipo`}>Tipo</label>
-        <select
-          id={`${id}-tipo`}
-          value={tipo}
-          onChange={(evento) => setTipo(evento.target.value)}
-        >
-          {TIPOS.map((opcao) => (
-            <option key={opcao}>{opcao}</option>
-          ))}
-        </select>
-        <label htmlFor={`${id}-data`}>Data de entrega</label>
-        <input
-          id={`${id}-data`}
-          type="date"
-          value={data}
-          onChange={(evento) => setData(evento.target.value)}
-        />
-        <div className="postit-acoes">
-          <button type="submit" disabled={!titulo.trim() || !data}>
-            Colar
-          </button>
-          <button type="button" onClick={aoDescartar}>
-            Descartar
-          </button>
-        </div>
-      </form>
+      <FormularioDoPostIt
+        id={`rascunho-${rascunho.chave}`}
+        materia={materia}
+        rotulo={`Nova atividade de ${materia.nome}`}
+        textoSalvar="Colar"
+        textoCancelar="Descartar"
+        aoSalvar={(campos) =>
+          aoSalvar({ ...campos, materiaId: materia.id, descricao: '' })
+        }
+        aoCancelar={aoDescartar}
+      />
     </li>
   )
 }
 
-function PostIt({ tarefa, materia, area, aoMover }) {
+function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
+  const [editando, setEditando] = useState(false)
   const atrasada = ehAtrasada(tarefa)
+
+  if (editando) {
+    return (
+      <li
+        className={`postit postit-branco postit-aberto materia-cor-${
+          materia?.cor ?? 'amarelo'
+        }`}
+      >
+        <FormularioDoPostIt
+          id={`editar-${tarefa.id}`}
+          materia={materia ?? { nome: '' }}
+          rotulo={`Editar ${tarefa.titulo}`}
+          inicial={tarefa}
+          textoSalvar="Salvar"
+          textoCancelar="Cancelar"
+          aoSalvar={(campos) => {
+            aoEditar(campos)
+            setEditando(false)
+          }}
+          aoCancelar={() => setEditando(false)}
+        />
+      </li>
+    )
+  }
 
   return (
     <li
@@ -133,6 +183,7 @@ function PostIt({ tarefa, materia, area, aoMover }) {
       }`}
       draggable
       onDragStart={(evento) => arrastar(evento, `tarefa:${tarefa.id}`)}
+      onDoubleClick={() => setEditando(true)}
       title={`${tarefa.titulo} · ${materia?.nome ?? ''} · ${tarefa.tipo ?? ''}`}
     >
       <span className="postit-escondido">
@@ -145,6 +196,15 @@ function PostIt({ tarefa, materia, area, aoMover }) {
         {atrasada && <span className="postit-escondido">atrasada</span>}
       </p>
       <span className="postit-mover">
+        <button
+          type="button"
+          className="postit-editar"
+          aria-label={`Editar ${tarefa.titulo}`}
+          title="Editar (ou dê dois cliques no post-it)"
+          onClick={() => setEditando(true)}
+        >
+          <Icone nome="lapis" tamanho={13} />
+        </button>
         <MenuDeOpcoes
           rotulo={`Mover ${tarefa.titulo} para`}
           valor={area}
@@ -166,7 +226,8 @@ function PostIt({ tarefa, materia, area, aoMover }) {
  * post-it em branco aparece para você escrever a atividade e a data.
  */
 export default function PostItPage() {
-  const { materias, tarefas, adicionarTarefa, alterarStatus } = useDados()
+  const { materias, tarefas, adicionarTarefa, alterarStatus, editarTarefa } =
+    useDados()
   const [rascunhos, setRascunhos] = useState([])
   const [alvo, setAlvo] = useState(null)
   const [proximaChave, setProximaChave] = useState(1)
@@ -327,6 +388,9 @@ export default function PostItPage() {
                             materia={materia}
                             area={area.chave}
                             aoMover={(destino) => mover(tarefa, destino)}
+                            aoEditar={(campos) =>
+                              editarTarefa(tarefa.id, campos)
+                            }
                           />
                         ))}
                       </ul>

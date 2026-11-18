@@ -126,6 +126,23 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
     }))
   }, [])
 
+  /** Muda título, tipo, data ou descrição de uma tarefa já salva. */
+  const editarTarefa = useCallback((id, mudancas) => {
+    const permitidas = ['titulo', 'tipo', 'prazo', 'descricao']
+    const limpas = Object.fromEntries(
+      Object.entries(mudancas).filter(([campo]) => permitidas.includes(campo)),
+    )
+
+    setDados((atuais) => ({
+      ...atuais,
+      tarefas: atuais.tarefas.map((tarefa) =>
+        tarefa.id === id
+          ? { ...tarefa, ...limpas, alteradoEm: agora() }
+          : tarefa,
+      ),
+    }))
+  }, [])
+
   const removerTarefa = useCallback((id) => {
     setDados((atuais) => ({
       ...atuais,
@@ -246,6 +263,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       removerMateria,
       adicionarTarefa,
       alterarStatus,
+      editarTarefa,
       removerTarefa,
       importar,
     }),
@@ -267,6 +285,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       removerMateria,
       adicionarTarefa,
       alterarStatus,
+      editarTarefa,
       removerTarefa,
       importar,
     ],
