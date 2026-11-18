@@ -8,14 +8,26 @@ import '../../shared/cores.css'
 import {
   corDoTipo,
   diasAte,
-  mensagemDeProgresso,
   proximasTarefas,
   resumirEntregas,
   textoDosDias,
 } from './inicioUtils'
 import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
+import { fraseDoDia } from '../../config/frases'
 import ProgressoGeral from './ProgressoGeral'
 import './InicioPage.css'
+
+/** Uma frase por dia, alternando na ordem da lista. */
+function FraseDoDia() {
+  const { grupo, texto } = fraseDoDia()
+
+  return (
+    <figure className="inicio-frase">
+      <span aria-hidden="true">{grupo}</span>
+      <blockquote>“{texto}”</blockquote>
+    </figure>
+  )
+}
 
 function Progresso({ resumo, atrasadas }) {
   const { concluidas, total, pendentes, percentual } = resumo
@@ -47,10 +59,7 @@ function Progresso({ resumo, atrasadas }) {
               </div>
             </dl>
           </div>
-          <p className="inicio-progresso-mensagem">
-            <span aria-hidden="true">★ </span>
-            {mensagemDeProgresso({ total, percentual })}
-          </p>
+          <FraseDoDia />
         </>
       )}
     </section>

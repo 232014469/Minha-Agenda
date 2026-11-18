@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   corDoTipo,
   formatarPrazoCurto,
-  mensagemDeProgresso,
   proximasTarefas,
   proximaProva,
   diasAte,
@@ -92,17 +91,6 @@ describe('corDoTipo', () => {
     expect(corDoTipo('Seminário')).toBe('rosa')
     expect(corDoTipo('Trabalho')).toBe('lilas')
     expect(corDoTipo(undefined)).toBe('lilas')
-  })
-})
-
-describe('mensagemDeProgresso', () => {
-  it('muda o incentivo conforme o progresso', () => {
-    expect(mensagemDeProgresso({ total: 0, percentual: 0 })).toMatch(/Nenhuma/)
-    expect(mensagemDeProgresso({ total: 4, percentual: 0 })).toMatch(/começar/)
-    expect(mensagemDeProgresso({ total: 4, percentual: 25 })).toMatch(/começo/)
-    expect(mensagemDeProgresso({ total: 4, percentual: 68 })).toBe(
-      'Você está indo muito bem!',
-    )
   })
 })
 

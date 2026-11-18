@@ -89,15 +89,6 @@ export function corDoTipo(tipo) {
   return 'lilas'
 }
 
-/** Mensagem de incentivo abaixo do donut de progresso. */
-export function mensagemDeProgresso({ total, percentual }) {
-  if (total === 0) return 'Nenhuma tarefa por aqui ainda.'
-  if (percentual >= 50) return 'Você está indo muito bem!'
-  if (percentual > 0) return 'Bom começo, continue assim!'
-
-  return 'Vamos começar? A primeira entrega espera por você.'
-}
-
 function diaSemHora(data) {
   return new Date(data.getFullYear(), data.getMonth(), data.getDate())
 }

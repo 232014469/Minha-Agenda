@@ -392,14 +392,28 @@
   color: var(--cor-alerta);
 }
 
-.inicio-progresso-mensagem {
+/* Frase do dia */
+.inicio-frase {
+  display: flex;
+  gap: 8px;
   margin: 0;
-  color: var(--cor-texto-suave);
-  font-size: 0.8rem;
+  padding: 10px 12px;
+  border-left: 3px solid var(--cor-lilas);
+  border-radius: 0 10px 10px 0;
+  background: var(--cor-menu);
 }
 
-.inicio-progresso-mensagem span {
-  color: #e8b923;
+.inicio-frase span {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.inicio-frase blockquote {
+  margin: 0;
+  color: var(--cor-texto);
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.45;
 }
 
 /* Próximas tarefas: folhinha de calendário na cor da matéria */
