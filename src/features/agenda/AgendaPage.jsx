@@ -20,6 +20,7 @@ import {
   nomeDoMes,
   rotuloDoStatus,
 } from './agendaUtils'
+import '../../shared/cores.css'
 import './AgendaPage.css'
 
 const DIAS_DA_SEMANA = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM']
@@ -428,8 +429,7 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
   return (
     <>
       <p className="agenda-dica">
-        Arraste um cartão para outra coluna ou use o seletor “Mover para” para
-        mudar a situação da entrega.
+        Arraste um cartão para outra coluna, ou use o ícone ⇄ do cartão.
       </p>
       {erroAcao && (
         <p className="agenda-erro-acao" role="alert">
@@ -445,11 +445,9 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
           return (
             <section
               key={coluna.chave}
-              className={
-                alvo === coluna.chave
-                  ? 'agenda-coluna agenda-coluna-alvo'
-                  : 'agenda-coluna'
-              }
+              className={`agenda-coluna agenda-coluna-${coluna.chave.toLowerCase()}${
+                alvo === coluna.chave ? ' agenda-coluna-alvo' : ''
+              }`}
               aria-labelledby={`coluna-titulo-${coluna.chave}`}
               onDragOver={(evento) => {
                 evento.preventDefault()
@@ -470,7 +468,7 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
 
               {atividadesDaColuna.length === 0 ? (
                 <p className="agenda-coluna-vazio">
-                  Nenhuma atividade nesta coluna.
+                  Arraste um cartão para cá.
                 </p>
               ) : (
                 <ul className="agenda-coluna-lista">
@@ -488,37 +486,36 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
                           evento.dataTransfer.effectAllowed = 'move'
                         }}
                         onDragEnd={() => setAlvo(null)}
-                        className={
-                          atrasada ? 'agenda-card atrasada' : 'agenda-card'
-                        }
+                        className={`agenda-card materia-cor-${corDe(
+                          item.disciplina,
+                        )}${atrasada ? ' atrasada' : ''}`}
                       >
                         <h3>{item.titulo}</h3>
+                        {item.disciplina && (
+                          <span className="agenda-card-materia">
+                            {item.disciplina}
+                          </span>
+                        )}
                         {item.descricao && <p>{item.descricao}</p>}
                         <div className="agenda-card-meta">
-                          {item.disciplina && (
-                            <span
-                              className={`agenda-badge-disciplina agenda-chip-${corDe(item.disciplina)}`}
-                            >
-                              {item.disciplina}
-                            </span>
-                          )}
-                          {item.tipo && (
-                            <span className="agenda-badge-tipo">
-                              {item.tipo}
-                            </span>
-                          )}
                           {item.prazo && (
                             <span className="agenda-prazo">
-                              Prazo: {formatarPrazoDdMm(item.prazo)}
+                              {formatarPrazoDdMm(item.prazo)}
                               {atrasada && (
                                 <span
                                   className="agenda-alerta-atraso"
                                   role="status"
                                   aria-label="Atividade atrasada"
                                 >
+                                  {' '}
                                   (Atrasada)
                                 </span>
                               )}
+                            </span>
+                          )}
+                          {item.tipo && (
+                            <span className="agenda-badge-tipo">
+                              {item.tipo}
                             </span>
                           )}
                         </div>
