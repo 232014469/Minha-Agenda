@@ -18,10 +18,10 @@ describe('Mascote e sons', () => {
   it('escolhe o mascote e liga ou desliga sons e gatinhos', () => {
     render(<MascoteESons />)
 
-    expect(screen.getByRole('radio', { name: 'Lobinho' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeChecked()
 
     fireEvent.click(screen.getByRole('radio', { name: 'Gatinho preto' }))
-    fireEvent.click(screen.getByRole('checkbox', { name: /Sons/ }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /Miados/ }))
     fireEvent.click(
       screen.getByRole('checkbox', { name: /Gatinhos pela tela/ }),
     )

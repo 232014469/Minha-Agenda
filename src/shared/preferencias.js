@@ -1,19 +1,26 @@
 import { useSyncExternalStore } from 'react'
 import { APP } from '../config/app'
+import { ehGato } from './gatinhos/gatos'
 
 /**
  * Preferências deste aparelho (não vão na sincronização): o mascote do menu,
  * se os sons tocam e se os gatinhos aparecem pela tela.
  */
-const PADRAO = { mascote: 'lobo', sons: true, gatinhos: true }
+const PADRAO = { mascote: 'gato01', sons: true, gatinhos: true }
 const CHAVE = `${APP.chaveDosDados}.preferencias`
 const ouvintes = new Set()
 
 function ler() {
   try {
-    const salvas = JSON.parse(localStorage.getItem(CHAVE) ?? '{}')
+    const salvas = {
+      ...PADRAO,
+      ...JSON.parse(localStorage.getItem(CHAVE) ?? '{}'),
+    }
 
-    return { ...PADRAO, ...salvas }
+    // O lobinho saiu: quem tinha escolhido ele fica com o gatinho padrão.
+    if (!ehGato(salvas.mascote)) salvas.mascote = PADRAO.mascote
+
+    return salvas
   } catch {
     return { ...PADRAO }
   }

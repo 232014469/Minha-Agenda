@@ -266,10 +266,6 @@
   outline-offset: 2px;
 }
 
-.config-mascote-lobo {
-  font-size: 1.5rem;
-}
-
 /* Primeiro quadro do sprite, 2 vezes maior, centrado no gatinho */
 .config-mascote-gato {
   width: 64px;

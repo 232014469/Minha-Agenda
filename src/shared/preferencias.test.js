@@ -12,12 +12,22 @@ afterEach(() => {
 })
 
 describe('preferências do aparelho', () => {
-  it('começa com o lobinho, sons e gatinhos ligados', () => {
+  it('começa com o gatinho marrom, sons e gatinhos ligados', () => {
     expect(lerPreferencias()).toEqual({
-      mascote: 'lobo',
+      mascote: 'gato01',
       sons: true,
       gatinhos: true,
     })
+  })
+
+  it('quem tinha escolhido o lobinho fica com o gatinho marrom', () => {
+    localStorage.setItem(
+      'wolf-study.dados.preferencias',
+      JSON.stringify({ mascote: 'lobo', sons: false }),
+    )
+    recarregarPreferencias()
+
+    expect(lerPreferencias()).toMatchObject({ mascote: 'gato01', sons: false })
   })
 
   it('guarda a escolha e relê do armazenamento', () => {

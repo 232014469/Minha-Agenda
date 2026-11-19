@@ -34,7 +34,7 @@ export function urlDoSprite(gato, animacao) {
 
 export const ehGato = (id) => GATOS.some((gato) => gato.id === id)
 
-/** O gatinho escolhido como mascote ou, se o mascote é o lobinho, um sorteado. */
+/** O gatinho escolhido como mascote ou, se não houver um, um sorteado. */
 export function gatoDaVez(mascote) {
   return ehGato(mascote)
     ? mascote

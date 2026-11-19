@@ -17,5 +17,3 @@ volume igualado:
 - `miado-fome.mp3`: "Domestic cat hungry meow"
 - `miado-pedindo.mp3`: "Cartoon kitty begging meow"
 - `miado-triste.mp3`: "Little cat pain meow"
-
-O uivo do lobinho não usa arquivo: é sintetizado em `src/shared/sons.js`.

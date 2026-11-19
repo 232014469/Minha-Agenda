@@ -14,17 +14,12 @@ afterEach(() => {
 })
 
 describe('Mascote', () => {
-  it('uiva ao clicar e volta ao normal depois', () => {
-    vi.useFakeTimers()
+  it('começa com o gatinho marrom', () => {
     render(<Mascote />)
 
-    const lobinho = screen.getByRole('button', { name: /Lobinho/ })
-
-    fireEvent.click(lobinho)
-    expect(lobinho).toHaveClass('mascote-uivando')
-
-    act(() => vi.advanceTimersByTime(1700))
-    expect(lobinho).not.toHaveClass('mascote-uivando')
+    expect(
+      screen.getByRole('button', { name: /Gatinho marrom/ }),
+    ).toBeInTheDocument()
   })
 
   it('vira o gatinho escolhido nas Configurações, que pula e mia', () => {
@@ -34,7 +29,7 @@ describe('Mascote', () => {
     const gatinho = screen.getByRole('button', { name: /Gatinho laranja/ })
 
     fireEvent.click(gatinho)
-    expect(gatinho).toHaveClass('mascote-uivando')
+    expect(gatinho).toHaveClass('mascote-reagindo')
     expect(gatinho).toHaveTextContent('Miau!')
   })
 
@@ -46,19 +41,9 @@ describe('Mascote', () => {
 
     const gatinho = screen.getByRole('button', { name: /Gatinho preto/ })
 
-    expect(gatinho).toHaveClass('mascote-uivando')
+    expect(gatinho).toHaveClass('mascote-reagindo')
     expect(gatinho).toHaveTextContent('Feito! 🎉')
     expect(screen.getByRole('status')).toHaveTextContent('Tarefa concluída!')
-  })
-
-  it('o lobinho também comemora', () => {
-    render(<Mascote />)
-
-    act(() => window.dispatchEvent(new CustomEvent(EVENTO_CONCLUIU)))
-
-    expect(screen.getByRole('button', { name: /Lobinho/ })).toHaveTextContent(
-      'Feito! 🎉',
-    )
   })
 
   it('fica triste quando uma tarefa não é realizada ou é excluída', () => {
