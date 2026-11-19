@@ -84,4 +84,34 @@ describe('Mascote', () => {
     fireEvent.click(gatinho)
     expect(gatinho).toHaveTextContent('Miaaau! 🥺')
   })
+
+  it('o gatinho tem rotina: depois de um tempo parado, senta', () => {
+    vi.useFakeTimers()
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+    mudarPreferencia('mascote', 'gato03')
+    const { container } = render(<Mascote />)
+    const desenho = () =>
+      container.querySelector('.sprite').style.backgroundImage
+
+    expect(desenho()).toContain('idle_blink')
+
+    act(() => vi.advanceTimersByTime(5000))
+    expect(desenho()).toContain('-sit')
+
+    vi.restoreAllMocks()
+  })
+
+  it('sem rotina para quem prefere menos movimento', () => {
+    vi.useFakeTimers()
+    window.matchMedia = vi.fn(() => ({ matches: true }))
+    mudarPreferencia('mascote', 'gato03')
+    const { container } = render(<Mascote />)
+
+    act(() => vi.advanceTimersByTime(60000))
+    expect(container.querySelector('.sprite').style.backgroundImage).toContain(
+      'idle_blink',
+    )
+
+    delete window.matchMedia
+  })
 })

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import Sprite from '../gatinhos/Sprite'
+import { avancar, iniciarRotina } from '../gatinhos/rotina'
 import {
   EVENTO_CONCLUIU,
   EVENTO_TRISTE,
@@ -72,20 +73,43 @@ const CENAS = {
 /** Quantos cliques rápidos deixam o gatinho pedindo atenção. */
 const CLIQUES_SEGUIDOS = 5
 
+/** Quem prefere menos movimento vê o gatinho só parado, piscando. */
+function prefereMenosMovimento() {
+  return Boolean(
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  )
+}
+
+/** Onde o gatinho fica: no meio do menu ou escondido além da borda esquerda. */
+const POSICAO = { meio: '50%', fora: '-48px' }
+
 /**
- * Gatinho em pixel art: abana o rabo e pisca. Um clique faz ele pular e
- * miar; ao concluir uma tarefa ele comemora, e fica triste quando uma
+ * Gatinho em pixel art com uma rotina própria: fica parado piscando, senta,
+ * deita e se levanta, ou sai andando pela esquerda e volta. Um clique faz ele
+ * pular e miar; ao concluir uma tarefa ele comemora, e fica triste quando uma
  * tarefa não é realizada ou é excluída. Muitos cliques seguidos: ele pede
- * atenção.
+ * atenção. As reações interrompem a rotina, que recomeça depois.
  */
 function MascoteGato({ gato, sons, comemora }) {
   const [cena, setCena] = useState(null)
+  const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
+  const [semRotina] = useState(prefereMenosMovimento)
+  const passo = rotina.passos[rotina.indice]
+
+  useEffect(() => {
+    if (cena || semRotina) return undefined
+
+    const espera = setTimeout(() => setRotina(avancar), passo.ms)
+
+    return () => clearTimeout(espera)
+  }, [cena, semRotina, passo])
   const [cliques, setCliques] = useState([])
   const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
 
   const encenar = useCallback(
     (acao) => {
       setCena({ acao, vez: Date.now() })
+      setRotina(iniciarRotina('parado'))
       if (sons) miar(CENAS[acao].miado, { volume: acao === 'miau' ? 0.8 : 0.6 })
     },
     [sons],
@@ -110,29 +134,56 @@ function MascoteGato({ gato, sons, comemora }) {
   }
 
   const atual = cena ? CENAS[cena.acao] : null
+  const emCena = Boolean(atual)
+  const onde = emCena || semRotina ? 'meio' : passo.onde
+  const anda = !emCena && !semRotina && passo.anda
+
+  let desenho = null
+
+  if (atual) {
+    desenho = (
+      <Sprite
+        key={cena.vez}
+        gato={gato}
+        animacao={atual.animacao}
+        fps={atual.fps}
+        vezes={atual.vezes}
+        aoTerminar={() => setCena(null)}
+      />
+    )
+  } else if (semRotina) {
+    desenho = <Sprite gato={gato} animacao="idle_blink" fps={7} />
+  } else if (passo.animacao) {
+    desenho = (
+      <Sprite
+        key={`${rotina.vez}-${rotina.indice}`}
+        gato={gato}
+        animacao={passo.animacao}
+        fps={passo.fps}
+        vezes={passo.vezes}
+        reverso={passo.reverso}
+        className={passo.virado ? 'sprite-virado' : ''}
+      />
+    )
+  }
 
   return (
-    <button
-      type="button"
-      className={`mascote mascote-gato${cena ? ' mascote-uivando' : ''}`}
-      aria-label={`${nome}, o mascote. Clique para ele miar`}
-      title="Miau?"
-      onClick={clicar}
-    >
-      {atual ? (
-        <Sprite
-          key={cena.vez}
-          gato={gato}
-          animacao={atual.animacao}
-          fps={atual.fps}
-          vezes={atual.vezes}
-          aoTerminar={() => setCena(null)}
-        />
-      ) : (
-        <Sprite key="parado" gato={gato} animacao="idle_blink" fps={7} />
-      )}
-      <Balao acao={cena?.acao} padrao="Miau!" />
-    </button>
+    <div className="mascote-palco">
+      <button
+        type="button"
+        className={`mascote mascote-gato${emCena ? ' mascote-uivando' : ''}`}
+        aria-label={`${nome}, o mascote. Clique para ele miar`}
+        title="Miau?"
+        style={{
+          left: POSICAO[onde],
+          transition: anda ? `left ${passo.ms}ms linear` : 'none',
+        }}
+        onClick={clicar}
+      >
+        {desenho}
+        <Balao acao={cena?.acao} padrao="Miau!" />
+      </button>
+    </div>
   )
 }
 

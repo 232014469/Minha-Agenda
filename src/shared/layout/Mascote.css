@@ -212,3 +212,24 @@
 .mascote-gato .sprite {
   margin-top: -32px;
 }
+
+/* Palco do gatinho: a largura do menu, para ele poder sair andando pela
+   borda esquerda e voltar. O que passa da borda fica escondido. */
+.mascote-palco {
+  position: relative;
+  height: 64px;
+  margin-top: 6px;
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.mascote-palco .mascote-gato {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  transform: translateX(-50%);
+}
+
+.mascote-gato .sprite-virado {
+  transform: scaleX(-1);
+}

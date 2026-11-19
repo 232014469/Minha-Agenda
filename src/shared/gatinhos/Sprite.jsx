@@ -11,6 +11,7 @@ export default function Sprite({
   fps = 8,
   escala = 3,
   vezes = 'infinite',
+  reverso = false,
   className = '',
   aoTerminar,
 }) {
@@ -28,7 +29,9 @@ export default function Sprite({
         backgroundImage: `url(${urlDoSprite(gato, animacao)})`,
         backgroundSize: `${quadros * lado}px ${lado}px`,
         '--sprite-fim': `${-quadros * lado}px`,
-        animation: `sprite-quadros ${quadros / fps}s steps(${quadros}) ${vezes}`,
+        animation: `sprite-quadros ${quadros / fps}s steps(${quadros}) ${vezes}${
+          reverso ? ' reverse' : ''
+        }`,
       }}
     />
   )

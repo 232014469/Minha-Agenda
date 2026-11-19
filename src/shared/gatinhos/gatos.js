@@ -14,7 +14,14 @@ export const EVENTO_CONCLUIU = 'wolf-study:concluiu'
 export const EVENTO_TRISTE = 'wolf-study:triste'
 
 /** Quantos quadros cada animação tem. */
-export const QUADROS = { idle_blink: 8, walk: 8, jump: 5, liedown: 24 }
+export const QUADROS = {
+  idle_blink: 8,
+  walk: 8,
+  jump: 5,
+  liedown: 24,
+  sit: 8,
+  crouch: 8,
+}
 
 const imagens = import.meta.glob('../../assets/gatinhos/*.png', {
   eager: true,
