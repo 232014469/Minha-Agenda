@@ -13,6 +13,14 @@ export const EVENTO_CONCLUIU = 'wolf-study:concluiu'
 /** Avisado quando uma tarefa vai para "Não realizadas" ou é excluída. */
 export const EVENTO_TRISTE = 'wolf-study:triste'
 
+/**
+ * O passeio pela borda de baixo é do próprio mascote: ele sai do menu pela
+ * esquerda antes (EVENTO_SAIU_PASSEAR) e só volta quando o passeio termina
+ * (EVENTO_VOLTOU_DO_PASSEIO). Assim nunca há dois gatinhos iguais na tela.
+ */
+export const EVENTO_SAIU_PASSEAR = 'wolf-study:saiu-passear'
+export const EVENTO_VOLTOU_DO_PASSEIO = 'wolf-study:voltou-do-passeio'
+
 /** Quantos quadros cada animação tem. */
 export const QUADROS = {
   idle_blink: 8,
@@ -21,6 +29,7 @@ export const QUADROS = {
   liedown: 24,
   sit: 8,
   crouch: 8,
+  hurt: 5,
 }
 
 const imagens = import.meta.glob('../../assets/gatinhos/*.png', {

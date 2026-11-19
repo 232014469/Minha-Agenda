@@ -35,4 +35,16 @@ describe('rotina do gatinho', () => {
     expect(passos[1].animacao).toBeNull()
     expect(passos[2]).toMatchObject({ animacao: 'walk', anda: true })
   })
+
+  it('passeio pela tela: sai pela esquerda e espera fora até voltar', () => {
+    const sair = iniciarRotina('sair').passos
+
+    expect(sair[0]).toMatchObject({ onde: 'fora', virado: true, anda: true })
+    expect(sair[1]).toMatchObject({ animacao: null, ms: null, onde: 'fora' })
+
+    const voltar = iniciarRotina('voltar')
+
+    expect(voltar.passos[0]).toMatchObject({ onde: 'meio', anda: true })
+    expect(avancar(voltar).nome).toBe('parado')
+  })
 })

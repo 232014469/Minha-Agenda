@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import Sprite from '../gatinhos/Sprite'
 import { avancar, iniciarRotina } from '../gatinhos/rotina'
-import { EVENTO_CONCLUIU, EVENTO_TRISTE, GATOS } from '../gatinhos/gatos'
+import {
+  EVENTO_CONCLUIU,
+  EVENTO_SAIU_PASSEAR,
+  EVENTO_TRISTE,
+  EVENTO_VOLTOU_DO_PASSEIO,
+  GATOS,
+} from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
 import { miar } from '../sons'
 import './Mascote.css'
@@ -33,7 +39,7 @@ const TEXTO_DO_BALAO = {
   miau: 'Miau!',
   festa: 'Feito! 🎉',
   triste: 'Ah… 😿',
-  pedindo: 'Miaaau! 🥺',
+  ai: 'Ai! 😾',
 }
 
 /** Balão de fala e o aviso para leitores de tela quando comemora. */
@@ -56,11 +62,11 @@ function Balao({ acao, padrao }) {
 const CENAS = {
   miau: { animacao: 'jump', fps: 9, vezes: '2', miado: 'clique' },
   festa: { animacao: 'jump', fps: 9, vezes: '3', miado: 'fofo' },
-  pedindo: { animacao: 'jump', fps: 11, vezes: '5', miado: 'pedindo' },
+  ai: { animacao: 'hurt', fps: 10, vezes: '3', miado: 'pedindo' },
   triste: { animacao: 'liedown', fps: 15, vezes: '1', miado: 'triste' },
 }
 
-/** Quantos cliques rápidos deixam o gatinho pedindo atenção. */
+/** Quantos cliques rápidos deixam o gatinho machucado (fica vermelho). */
 const CLIQUES_SEGUIDOS = 5
 
 /** Quem prefere menos movimento vê o gatinho só parado, piscando. */
@@ -77,17 +83,20 @@ const POSICAO = { meio: '50%', fora: '-48px' }
  * Gatinho em pixel art com uma rotina própria: fica parado piscando, senta,
  * deita e se levanta, ou sai andando pela esquerda e volta. Um clique faz ele
  * pular e miar; ao concluir uma tarefa ele comemora, e fica triste quando uma
- * tarefa não é realizada ou é excluída. Muitos cliques seguidos: ele pede
- * atenção. As reações interrompem a rotina, que recomeça depois.
+ * tarefa não é realizada ou é excluída. Muitos cliques seguidos: ele se
+ * machuca e fica vermelho. As reações interrompem a rotina, que recomeça
+ * depois. Quando sai para passear pela borda de baixo da tela, deixa o menu
+ * e só volta no fim do passeio.
  */
 function MascoteGato({ gato, sons, comemora }) {
   const [cena, setCena] = useState(null)
   const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
   const [semRotina] = useState(prefereMenosMovimento)
+  const [passeando, setPasseando] = useState(false)
   const passo = rotina.passos[rotina.indice]
 
   useEffect(() => {
-    if (cena || semRotina) return undefined
+    if (cena || semRotina || passo.ms === null) return undefined
 
     const espera = setTimeout(() => setRotina(avancar), passo.ms)
 
@@ -98,17 +107,30 @@ function MascoteGato({ gato, sons, comemora }) {
 
   const encenar = useCallback(
     (acao) => {
+      if (passeando) return
+
       setCena({ acao, vez: Date.now() })
       setRotina(iniciarRotina('parado'))
       if (sons) miar(CENAS[acao].miado, { volume: acao === 'miau' ? 0.8 : 0.6 })
     },
-    [sons],
+    [sons, passeando],
   )
+  const sairPassear = useCallback(() => {
+    setPasseando(true)
+    setCena(null)
+    setRotina(iniciarRotina('sair'))
+  }, [])
+  const voltarDoPasseio = useCallback(() => {
+    setPasseando(false)
+    setRotina(iniciarRotina('voltar'))
+  }, [])
   const comemorar = useCallback(() => encenar('festa'), [encenar])
   const entristecer = useCallback(() => encenar('triste'), [encenar])
 
   useEvento(comemora, EVENTO_CONCLUIU, comemorar)
   useEvento(comemora, EVENTO_TRISTE, entristecer)
+  useEvento(true, EVENTO_SAIU_PASSEAR, sairPassear)
+  useEvento(true, EVENTO_VOLTOU_DO_PASSEIO, voltarDoPasseio)
 
   function clicar() {
     const agora = Date.now()
@@ -116,7 +138,7 @@ function MascoteGato({ gato, sons, comemora }) {
 
     if (recentes.length >= CLIQUES_SEGUIDOS) {
       setCliques([])
-      encenar('pedindo')
+      encenar('ai')
     } else {
       setCliques(recentes)
       encenar('miau')
@@ -164,6 +186,7 @@ function MascoteGato({ gato, sons, comemora }) {
         className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}`}
         aria-label={`${nome}, o mascote. Clique para ele miar`}
         title="Miau?"
+        tabIndex={passeando ? -1 : undefined}
         style={{
           left: POSICAO[onde],
           transition: anda ? `left ${passo.ms}ms linear` : 'none',

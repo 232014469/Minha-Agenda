@@ -4,6 +4,7 @@
  * é uma lista de passos; os tempos são sorteados para não ficar repetitivo.
  *
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
+ * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' ou 'fora' (escondido além da borda esquerda);
  * - anda: o gatinho caminha até `onde` durante o passo.
  */
@@ -40,7 +41,26 @@ export const ROTINAS = {
     { animacao: null, ms: entre(2000, 4500, s), onde: 'fora' },
     { animacao: 'walk', fps: 10, ms: 2400, onde: 'meio', anda: true },
   ],
+  // Passeio pela borda de baixo da tela: sai pela esquerda e espera fora...
+  sair: () => [
+    {
+      animacao: 'walk',
+      fps: 10,
+      ms: 2200,
+      virado: true,
+      onde: 'fora',
+      anda: true,
+    },
+    { animacao: null, ms: null, onde: 'fora' },
+  ],
+  // ...e, quando o passeio termina, volta andando até o meio.
+  voltar: () => [
+    { animacao: 'walk', fps: 10, ms: 2400, onde: 'meio', anda: true },
+  ],
 }
+
+/** Quanto tempo o mascote leva para sair do menu antes do passeio. */
+export const TEMPO_PARA_SAIR = 2200
 
 const SORTEAVEIS = [
   ['sentado', 2],
