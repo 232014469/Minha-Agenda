@@ -60,12 +60,13 @@
   margin-top: -32px;
 }
 
-/* Palco do gatinho: a largura do menu, para ele poder sair andando pela
-   borda esquerda e voltar. O que passa da borda fica escondido. */
+/* Palco do gatinho: toda a largura do menu, passando por cima do espaçamento
+   lateral (24px), para ele sair andando pela borda da tela e voltar. O que
+   passa da borda fica escondido. */
 .mascote-palco {
   position: relative;
   height: 64px;
-  margin-top: 6px;
+  margin: 6px -24px 0;
   overflow-x: clip;
   overflow-y: visible;
 }
