@@ -1,7 +1,9 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import { APP } from '../../config/app'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
+import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import Icone from './Icone'
 import QuadroDaSemana from './QuadroDaSemana'
 import './LayoutBase.css'
@@ -21,6 +23,22 @@ const itens = [
 /** Moldura das telas: menu de caderno na lateral (barra inferior no celular). */
 export default function LayoutBase() {
   const { salvou, semestre, semestres, escolherSemestre } = useDados()
+  const [configAberta, setConfigAberta] = useState(false)
+  const cantoRef = useRef(null)
+  const fecharConfig = useCallback(() => setConfigAberta(false), [])
+
+  // Fecha o painel ao clicar fora dele (e fora da engrenagem).
+  useEffect(() => {
+    if (!configAberta) return undefined
+
+    function clique(evento) {
+      if (!cantoRef.current?.contains(evento.target)) setConfigAberta(false)
+    }
+
+    document.addEventListener('mousedown', clique)
+
+    return () => document.removeEventListener('mousedown', clique)
+  }, [configAberta])
 
   return (
     <div className="layout">
@@ -52,7 +70,7 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
-        <div className="layout-semestre">
+        <div className="layout-semestre" ref={cantoRef}>
           <label htmlFor="layout-semestre">Semestre</label>
           <select
             id="layout-semestre"
@@ -65,19 +83,23 @@ export default function LayoutBase() {
               </option>
             ))}
           </select>
-          <NavLink
-            to="/configuracoes"
-            className="layout-config"
+          <button
+            type="button"
+            className={`layout-config${configAberta ? ' active' : ''}`}
             aria-label="Configurações"
+            aria-expanded={configAberta}
+            aria-controls="config-painel"
             title="Configurações"
+            onClick={() => setConfigAberta((aberta) => !aberta)}
           >
             <Icone nome="engrenagem" />
-          </NavLink>
+          </button>
+          {configAberta && <ConfiguracoesPage aoFechar={fecharConfig} />}
         </div>
         {!salvou && (
           <p className="layout-aviso" role="alert">
-            Não foi possível guardar os dados neste navegador. Faça um backup no
-            Dashboard antes de fechar a página.
+            Não foi possível guardar os dados neste navegador. Faça um backup
+            nas Configurações (engrenagem no topo) antes de fechar a página.
           </p>
         )}
         <main className="layout-conteudo">

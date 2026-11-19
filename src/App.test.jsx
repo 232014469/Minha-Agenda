@@ -83,14 +83,25 @@ describe('Semestre', () => {
     expect(salvos().semestre).toBe('2027.1')
   })
 
-  it('a engrenagem no topo abre as Configurações', () => {
+  it('a engrenagem abre as Configurações num painel, sem trocar de tela', () => {
     abrir()
 
-    fireEvent.click(screen.getByRole('link', { name: 'Configurações' }))
+    const engrenagem = screen.getByRole('button', { name: 'Configurações' })
 
-    expect(
-      screen.getByRole('heading', { name: 'Configurações' }),
-    ).toBeInTheDocument()
+    fireEvent.click(engrenagem)
+
+    expect(engrenagem).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Backup' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /Olá|Bom|Boa/ }),
+    ).toBeInTheDocument()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    fireEvent.click(engrenagem)
+    fireEvent.mouseDown(document.body)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 })

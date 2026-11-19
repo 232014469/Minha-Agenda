@@ -1,17 +1,101 @@
-.config-pagina {
+/* Painel suspenso, preso embaixo da engrenagem */
+.config-painel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: clamp(12px, 3vw, 40px);
+  z-index: 40;
   display: grid;
-  gap: 16px;
+  gap: 10px;
+  width: min(440px, calc(100vw - 24px));
+  max-height: calc(100svh - 110px);
+  overflow-y: auto;
+  padding: 14px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  box-shadow: 0 14px 40px rgb(67 45 30 / 0.22);
+  font-weight: 400;
+  text-align: left;
+  animation: config-aparecer 0.15s ease-out;
+}
+
+@keyframes config-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .config-painel {
+    animation: none;
+  }
+}
+
+.config-painel-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 4px 4px;
+}
+
+.config-painel-topo h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.config-painel-topo p {
+  margin: 2px 0 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+}
+
+.config-fechar {
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cor-texto);
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.config-fechar:hover {
+  background: var(--cor-menu);
+}
+
+/* Caixas do painel, mais compactas que nas telas */
+.config-painel .secao-caixa {
+  gap: 10px;
+  padding: 12px 14px;
 }
 
 .config-secao h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .config-secao p {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .config-painel {
+    position: fixed;
+    top: 64px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-height: calc(100svh - 160px);
+  }
 }
 
 .config-acoes {
@@ -94,7 +178,7 @@
 .config-temas {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -104,12 +188,12 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 14px 6px 8px;
+  gap: 6px;
+  padding: 5px 10px 5px 6px;
   border: 1px solid var(--cor-borda-forte);
   border-radius: 999px;
   background: #fff;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   cursor: pointer;
 }
 
