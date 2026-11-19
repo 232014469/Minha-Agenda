@@ -34,3 +34,33 @@
 
   --raio: 12px;
 }
+
+/* Tema (Configurações): verde é o padrão */
+:root,
+[data-tema='verde'] {
+  --tema: #8f9e76;
+  --tema-escuro: #6f7d55;
+  --tema-suave: #c8c9b4;
+  --tema-texto: #fff;
+}
+
+[data-tema='azul'] {
+  --tema: #7fa6c9;
+  --tema-escuro: #4a789f;
+  --tema-suave: #c4d6e4;
+  --tema-texto: #fff;
+}
+
+[data-tema='rosa'] {
+  --tema: #d6939a;
+  --tema-escuro: #b0606a;
+  --tema-suave: #eccacb;
+  --tema-texto: #fff;
+}
+
+[data-tema='amarelo'] {
+  --tema: #e8c46a;
+  --tema-escuro: #b8902e;
+  --tema-suave: #f0dfae;
+  --tema-texto: var(--cor-texto);
+}

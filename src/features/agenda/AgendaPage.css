@@ -138,8 +138,8 @@
 }
 
 .agenda-vistas button[aria-pressed='true'] {
-  background: var(--cor-verde);
-  color: var(--cor-texto);
+  background: var(--tema);
+  color: var(--tema-texto);
   font-weight: 700;
 }
 
@@ -164,7 +164,7 @@
 
 .agenda-tabela th {
   padding: 8px 4px;
-  background: #c8c9b4;
+  background: var(--tema-suave);
   color: var(--cor-texto);
   font-size: 0.7rem;
   font-weight: 700;
