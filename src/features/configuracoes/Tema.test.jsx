@@ -2,13 +2,14 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import { aplicarTema, lerTema } from '../../config/tema'
+import { aplicarModo, aplicarTema, lerModo, lerTema } from '../../config/tema'
 import Tema from './Tema'
 
 afterEach(() => {
   cleanup()
   localStorage.clear()
   delete document.documentElement.dataset.tema
+  delete document.documentElement.dataset.modo
 })
 
 describe('Tema', () => {
@@ -27,5 +28,28 @@ describe('Tema', () => {
   it('tema desconhecido volta para o verde', () => {
     expect(aplicarTema('roxo-neon')).toBe('verde')
     expect(document.documentElement.dataset.tema).toBe('verde')
+  })
+
+  it('começa claro e passa para o escuro ao escolher', () => {
+    render(<Tema />)
+
+    expect(screen.getByRole('radio', { name: /Claro/ })).toBeChecked()
+
+    fireEvent.click(screen.getByRole('radio', { name: /Escuro/ }))
+
+    expect(document.documentElement.dataset.modo).toBe('escuro')
+    expect(lerModo()).toBe('escuro')
+  })
+
+  it('automático segue o sistema do aparelho', () => {
+    window.matchMedia = () => ({ matches: true })
+    expect(aplicarModo('auto')).toBe('auto')
+    expect(document.documentElement.dataset.modo).toBe('escuro')
+
+    window.matchMedia = () => ({ matches: false })
+    aplicarModo('auto')
+    expect(document.documentElement.dataset.modo).toBe('claro')
+
+    delete window.matchMedia
   })
 })

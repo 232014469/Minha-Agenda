@@ -10,7 +10,7 @@
 }
 
 .menu-opcoes:hover {
-  background: rgb(67 45 30 / 0.12);
+  background: rgb(var(--sombra) / 0.12);
 }
 
 .menu-opcoes:focus-within {

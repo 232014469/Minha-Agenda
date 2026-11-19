@@ -8,11 +8,12 @@ import './styles/tokens.css'
 import './index.css'
 import App from './App.jsx'
 import { APP } from './config/app'
-import { aplicarTema, lerTema } from './config/tema'
+import { aplicarModo, aplicarTema, lerModo, lerTema } from './config/tema'
 import DadosProvider from './dados/DadosProvider.jsx'
 
 document.title = APP.nome
 aplicarTema(lerTema())
+aplicarModo(lerModo())
 
 // Modo offline: só no site publicado (no `npm run dev` atrapalharia).
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {

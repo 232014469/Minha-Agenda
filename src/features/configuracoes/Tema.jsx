@@ -1,9 +1,17 @@
 import { useState } from 'react'
-import { TEMAS, aplicarTema, lerTema } from '../../config/tema'
+import {
+  MODOS,
+  TEMAS,
+  aplicarModo,
+  aplicarTema,
+  lerModo,
+  lerTema,
+} from '../../config/tema'
 
-/** Escolha da cor do app (vale para este aparelho). */
+/** Escolha da cor e da aparência (claro ou escuro) do app, neste aparelho. */
 export default function Tema() {
   const [atual, setAtual] = useState(lerTema)
+  const [modo, setModo] = useState(lerModo)
 
   function escolher(id) {
     setAtual(aplicarTema(id))
@@ -16,9 +24,25 @@ export default function Tema() {
     >
       <h2 id="config-tema-titulo">Tema</h2>
       <p>
-        A cor do menu, das abas, das barras de progresso e das manchas do topo.
-        As cores das matérias não mudam.
+        A cor do menu, das abas, das barras de progresso e das manchas do topo,
+        e se o app fica claro ou escuro.
       </p>
+      <fieldset className="config-temas">
+        <legend className="so-leitor">Aparência</legend>
+        {MODOS.map((opcao) => (
+          <label key={opcao.id} className="config-tema">
+            <input
+              type="radio"
+              name="modo"
+              value={opcao.id}
+              checked={modo === opcao.id}
+              onChange={() => setModo(aplicarModo(opcao.id))}
+            />
+            <span aria-hidden="true">{opcao.icone}</span>
+            {opcao.nome}
+          </label>
+        ))}
+      </fieldset>
       <fieldset className="config-temas">
         <legend className="so-leitor">Cor do tema</legend>
         {TEMAS.map((tema) => (

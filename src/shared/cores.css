@@ -46,3 +46,44 @@
   --painel-forte: #c4a383;
   --painel-destaque: #6b4a2e;
 }
+
+/* Modo escuro: fundo fechado, cor forte média e destaque claro (para texto) */
+:root[data-modo='escuro'] .materia-cor-lilas {
+  --painel-forte: #6e62a8;
+  --painel-destaque: #c3b0ec;
+}
+
+:root[data-modo='escuro'] .materia-cor-amarelo {
+  --painel-forte: #8a7440;
+  --painel-destaque: #f0cd78;
+}
+
+:root[data-modo='escuro'] .materia-cor-verde {
+  --painel-forte: #557a68;
+  --painel-destaque: #a8d1b8;
+}
+
+:root[data-modo='escuro'] .materia-cor-rosa {
+  --painel-forte: #93596a;
+  --painel-destaque: #f2b3a6;
+}
+
+:root[data-modo='escuro'] .materia-cor-azul {
+  --painel-forte: #3f6e9a;
+  --painel-destaque: #9fd3f2;
+}
+
+:root[data-modo='escuro'] .materia-cor-laranja {
+  --painel-forte: #946446;
+  --painel-destaque: #f5b27a;
+}
+
+:root[data-modo='escuro'] .materia-cor-turquesa {
+  --painel-forte: #3b8079;
+  --painel-destaque: #8fd6cb;
+}
+
+:root[data-modo='escuro'] .materia-cor-marrom {
+  --painel-forte: #75604f;
+  --painel-destaque: #d8bc9f;
+}

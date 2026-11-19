@@ -1,0 +1,144 @@
+/* Céu do modo escuro: só aparece com data-modo='escuro' no <html> */
+.ceu {
+  display: none;
+}
+
+:root[data-modo='escuro'] .ceu {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 90% 340px at 70% 0,
+    rgb(120 140 220 / 0.18),
+    transparent 70%
+  );
+}
+
+/* No escuro, as manchas do tema dão lugar ao céu */
+:root[data-modo='escuro'] .layout-coluna::before,
+:root[data-modo='escuro'] .layout-coluna::after {
+  display: none;
+}
+
+.ceu-estrela {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fffbe8;
+  box-shadow: 0 0 4px rgb(255 251 232 / 0.8);
+  animation: ceu-brilho ease-in-out infinite;
+}
+
+.ceu-estrela.media {
+  width: 3px;
+  height: 3px;
+}
+
+/* As maiores têm quatro pontas, como um brilho */
+.ceu-estrela.grande {
+  width: 11px;
+  height: 11px;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff6cf;
+  clip-path: polygon(
+    50% 0,
+    61% 39%,
+    100% 50%,
+    61% 61%,
+    50% 100%,
+    39% 61%,
+    0 50%,
+    39% 39%
+  );
+  filter: drop-shadow(0 0 3px rgb(255 246 207 / 0.9));
+}
+
+@keyframes ceu-brilho {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.75);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* Lua crescente no alto, perto do seletor de semestre */
+.ceu-lua {
+  position: absolute;
+  top: 22px;
+  right: 290px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  box-shadow:
+    inset -15px 8px 0 0 #fbf1cf,
+    0 0 0 0 transparent;
+  filter: drop-shadow(0 0 14px rgb(251 241 207 / 0.45));
+  transform: rotate(-12deg);
+}
+
+/* Estrela cadente: atravessa o alto da tela de tempos em tempos */
+.ceu-cadente {
+  position: absolute;
+  top: 40px;
+  left: 30%;
+  width: 90px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #fffbe8);
+  opacity: 0;
+  transform: rotate(-18deg);
+  animation: ceu-cadente 13s linear infinite 4s;
+}
+
+@keyframes ceu-cadente {
+  0%,
+  88% {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  96% {
+    opacity: 0;
+    translate: 260px 84px;
+  }
+
+  100% {
+    opacity: 0;
+    translate: 260px 84px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ceu-lua {
+    top: 64px;
+    right: 22px;
+    width: 34px;
+    height: 34px;
+    box-shadow: inset -10px 5px 0 0 #fbf1cf;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ceu-estrela,
+  .ceu-cadente {
+    animation: none;
+  }
+
+  .ceu-cadente {
+    display: none;
+  }
+}

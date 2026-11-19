@@ -11,7 +11,7 @@
   min-width: 80px;
   height: 12px;
   border-radius: 999px;
-  background: #e2ddcf;
+  background: var(--cor-trilho);
   overflow: hidden;
 }
 
@@ -26,13 +26,13 @@
   flex-shrink: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #30251e;
+  color: var(--cor-texto);
   white-space: nowrap;
 }
 
 .barra-progresso-vazia .barra-progresso-texto {
   font-weight: 400;
-  color: #5c5047;
+  color: var(--cor-texto-suave);
 }
 
 @media (prefers-reduced-motion: reduce) {

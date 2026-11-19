@@ -24,7 +24,7 @@
   padding: 2px 8px;
   border: 1px solid var(--cor-borda-forte);
   border-radius: 10px 10px 10px 2px;
-  background: #fff;
+  background: var(--cor-superficie);
   color: var(--cor-texto);
   font-family: var(--fonte-titulo);
   font-size: 0.8rem;

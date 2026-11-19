@@ -242,7 +242,7 @@
   margin: 0;
   padding: 6px 10px;
   border-radius: 8px;
-  background: #fbe3e1;
+  background: var(--cor-perigo-claro);
   color: var(--cor-alerta);
   font-size: 0.85rem;
   font-weight: 700;
@@ -286,7 +286,7 @@
 }
 
 .inicio-materia:hover {
-  box-shadow: 0 3px 10px rgb(67 45 30 / 0.12);
+  box-shadow: 0 3px 10px rgb(var(--sombra) / 0.12);
 }
 
 .inicio-materia:focus-visible {
@@ -389,7 +389,7 @@
 }
 
 .inicio-numero-alerta {
-  background: #fbe3e1 !important;
+  background: var(--cor-perigo-claro) !important;
 }
 
 .inicio-numero-alerta dd {
@@ -553,7 +553,7 @@
 
 /* Dia sem entrega: só um tracinho na base. */
 .inicio-semana-barra:empty {
-  background: rgb(255 255 255 / 0.45);
+  background: rgb(var(--vidro) / 0.45);
 }
 
 /* O cartão da semana abre o mês ampliado ao clicar. */
@@ -562,7 +562,7 @@
 }
 
 .inicio-semana-cartao:hover {
-  box-shadow: 0 4px 14px rgb(67 45 30 / 0.12);
+  box-shadow: 0 4px 14px rgb(var(--sombra) / 0.12);
 }
 
 .inicio-ampliar {
@@ -573,7 +573,7 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.5);
+  background: rgb(var(--vidro) / 0.5);
   color: var(--cor-texto);
   font-size: 1rem;
   cursor: pointer;
@@ -581,7 +581,7 @@
 
 .inicio-ampliar:hover,
 .inicio-ampliar:focus-visible {
-  background: rgb(255 255 255 / 0.85);
+  background: rgb(var(--vidro) / 0.85);
 }
 
 .inicio-mes-fundo {
@@ -636,7 +636,7 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.55);
+  background: rgb(var(--vidro) / 0.55);
   color: var(--cor-texto);
   font-size: 1.4rem;
   line-height: 1;
@@ -645,7 +645,7 @@
 
 .inicio-mes-seta:hover,
 .inicio-mes-fechar:hover {
-  background: rgb(255 255 255 / 0.85);
+  background: rgb(var(--vidro) / 0.85);
 }
 
 /* Mês: uma barra por dia, mais finas e mais altas que as da semana. */
@@ -735,4 +735,25 @@
   color: var(--cor-texto);
   font-size: 0.75rem;
   font-weight: 700;
+}
+
+/* Modo escuro: as etiquetas coloridas ficam em tons claros para dar leitura */
+:root[data-modo='escuro'] .etiqueta-lilas {
+  color: #c3b0ec;
+}
+
+:root[data-modo='escuro'] .etiqueta-azul {
+  color: #8cc8f2;
+}
+
+:root[data-modo='escuro'] .etiqueta-verde {
+  color: #93d1ad;
+}
+
+:root[data-modo='escuro'] .etiqueta-amarelo {
+  color: #f0cd78;
+}
+
+:root[data-modo='escuro'] .etiqueta-rosa {
+  color: #f2a594;
 }

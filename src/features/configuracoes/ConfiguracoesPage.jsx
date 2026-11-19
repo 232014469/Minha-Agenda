@@ -33,7 +33,9 @@ export default function ConfiguracoesPage({ aoFechar }) {
       <header className="config-painel-topo">
         <div>
           <h2 id="config-titulo">Configurações</h2>
-          <p>Cor, mascote, outros aparelhos e cópias de segurança.</p>
+          <p>
+            Cor, modo escuro, mascote, outros aparelhos e cópias de segurança.
+          </p>
         </div>
         {aoFechar && (
           <button

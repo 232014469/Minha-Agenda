@@ -54,7 +54,7 @@
   box-shadow:
     2px 2px 0 var(--painel-fundo),
     4px 4px 0 var(--painel-forte),
-    4px 4px 6px rgb(67 45 30 / 0.2);
+    4px 4px 6px rgb(var(--sombra) / 0.2);
   color: var(--cor-texto);
   font-size: 0.72rem;
   font-weight: 700;
@@ -105,7 +105,7 @@
 }
 
 .postit-area-naorealizadas {
-  background: #f3efe8;
+  background: var(--cor-apagada);
 }
 
 .postit-area-alvo {
@@ -150,7 +150,7 @@
   padding: 5px;
   border-radius: 2px 2px 8px 2px;
   background: var(--painel-forte);
-  box-shadow: 0 3px 6px rgb(67 45 30 / 0.18);
+  box-shadow: 0 3px 6px rgb(var(--sombra) / 0.18);
   cursor: grab;
   transform: rotate(-1deg);
 }
@@ -185,7 +185,7 @@
   justify-self: start;
   padding: 1px 8px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.55);
+  background: rgb(var(--vidro) / 0.55);
   color: var(--painel-destaque);
   font-size: 0.8rem;
   font-weight: 700;
@@ -234,7 +234,7 @@
 
 .postit-editar:hover,
 .postit-editar:focus-visible {
-  background: rgb(255 255 255 / 0.6);
+  background: rgb(var(--vidro) / 0.6);
 }
 
 .postit-mover .menu-opcoes {
@@ -246,9 +246,9 @@
 .postit input {
   min-width: 0;
   padding: 4px 6px;
-  border: 1px solid rgb(67 45 30 / 0.3);
+  border: 1px solid rgb(var(--sombra) / 0.3);
   border-radius: 6px;
-  background: rgb(255 255 255 / 0.8);
+  background: rgb(var(--vidro) / 0.8);
   color: var(--cor-texto);
   font: inherit;
   font-size: 0.85rem;
@@ -312,9 +312,9 @@
 
 .postit-acoes button {
   padding: 4px 10px;
-  border: 1px solid rgb(67 45 30 / 0.3);
+  border: 1px solid rgb(var(--sombra) / 0.3);
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.7);
+  background: rgb(var(--vidro) / 0.7);
   color: var(--cor-texto);
   font-size: 0.85rem;
   font-weight: 700;

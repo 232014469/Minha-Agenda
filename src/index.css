@@ -107,7 +107,7 @@ input[type='radio'] {
   padding: 7px 10px;
   border: 1px solid var(--cor-borda-forte);
   border-radius: 8px;
-  background: #fff;
+  background: var(--cor-superficie);
   color: var(--cor-texto);
   font: inherit;
   font-size: 0.85rem;

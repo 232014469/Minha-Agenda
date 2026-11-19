@@ -7,6 +7,7 @@ import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
 import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
+import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
 import './LayoutBase.css'
@@ -77,6 +78,7 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
+        <CeuEstrelado />
         <div className="layout-semestre" ref={cantoRef}>
           <label htmlFor="layout-semestre">Semestre</label>
           <select

@@ -122,7 +122,7 @@
 
 .layout-links a:hover {
   border-color: var(--cor-borda-forte);
-  background: #f6e9d3;
+  background: var(--cor-hover);
 }
 
 .layout-links a.active {
@@ -187,7 +187,7 @@
   padding: 6px;
   border-radius: 2px 2px 8px 2px;
   background: var(--painel-forte);
-  box-shadow: 0 3px 6px rgb(67 45 30 / 0.18);
+  box-shadow: 0 3px 6px rgb(var(--sombra) / 0.18);
   cursor: default;
   transform: rotate(-1.5deg);
 }
@@ -301,7 +301,7 @@
   padding: 8px 14px;
   border: 1px solid var(--cor-borda);
   border-radius: 8px;
-  background: #fff;
+  background: var(--cor-superficie);
 }
 
 .layout-busca input {
@@ -341,17 +341,17 @@
   height: 40px;
   border-radius: 50%;
   background: var(--cor-lilas-escuro);
-  color: #fff;
+  color: var(--cor-texto-no-destaque);
   font-weight: 700;
 }
 
 .layout-sair {
   min-height: 40px;
   padding: 8px 14px;
-  border: 1px solid #756184;
+  border: 1px solid var(--cor-botao-lilas-borda);
   border-radius: 6px;
   background: var(--cor-lilas);
-  color: #302239;
+  color: var(--cor-botao-lilas-texto);
 }
 
 .layout-conteudo {
@@ -401,7 +401,7 @@
 }
 
 .layout-config:hover {
-  background: rgb(67 45 30 / 0.08);
+  background: rgb(var(--sombra) / 0.08);
 }
 
 .layout-config.active {
@@ -415,7 +415,7 @@
 }
 
 .layout-semestre select:hover {
-  background-color: rgb(67 45 30 / 0.08);
+  background-color: rgb(var(--sombra) / 0.08);
 }
 
 .layout-semestre select:focus-visible {
@@ -516,7 +516,7 @@
 .layout-aviso {
   margin: 0;
   padding: 12px 24px;
-  background: #f8ded5;
-  color: #882f20;
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro-texto);
   font-weight: 700;
 }

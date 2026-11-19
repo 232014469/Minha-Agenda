@@ -29,10 +29,32 @@
 
   --cor-alerta: #b3261e;
 
+  /* Superfícies e estados que antes tinham a cor escrita direto nas telas */
+  --cor-superficie: #fff;
+  --cor-hover: #f6e9d3;
+  --cor-trilho: #e2ddcf;
+  --cor-apagada: #f3efe8;
+  --cor-vazio-fundo: #fcf6ec;
+  --cor-vazio-borda: #c9b9a3;
+  --cor-erro-fundo: #fbeaea;
+  --cor-erro-borda: #c97b7b;
+  --cor-erro-texto: #882f20;
+  --cor-perigo-claro: #fbe3e1;
+  --cor-botao-lilas: #bba7ce;
+  --cor-botao-lilas-borda: #756184;
+  --cor-botao-lilas-texto: #302239;
+  --cor-texto-no-destaque: #fff;
+
+  /* Sombras e vidros: só os números do RGB, para usar com transparência */
+  --sombra: 67 45 30;
+  --vidro: 255 255 255;
+
   --fonte-titulo: 'Concert One', 'Courier New', Courier, monospace;
   --fonte-texto: 'Courier Prime', 'Courier New', Courier, monospace;
 
   --raio: 12px;
+
+  color-scheme: light;
 }
 
 /* Tema (Configurações): verde é o padrão */
@@ -62,5 +84,61 @@
   --tema: #e8c46a;
   --tema-escuro: #b8902e;
   --tema-suave: #f0dfae;
-  --tema-texto: var(--cor-texto);
+  --tema-texto: #432d1e;
+}
+
+/*
+ * Modo escuro (Configurações → Aparência): um céu estrelado azul-noite, com
+ * lua e estrelas (ver CeuEstrelado). Texto claro e as cores das matérias em
+ * tons de noite. A cor do tema continua a mesma; só a versão suave escurece.
+ */
+:root[data-modo='escuro'] {
+  --cor-fundo: #1f2a47;
+  --cor-papel: #27345a;
+  --cor-menu: #2a385f;
+  --cor-texto: #eef0fa;
+  --cor-texto-suave: #b9c1dc;
+  --cor-borda: #3a4972;
+  --cor-borda-forte: #52628c;
+
+  --cor-lilas: #6e62a8;
+  --cor-lilas-claro: #383a6b;
+  --cor-lilas-escuro: #b9a8f0;
+
+  --cor-verde: #557a68;
+  --cor-verde-claro: #2d4655;
+  --cor-verde-escuro: #a8d1b8;
+
+  --cor-amarelo: #8a7440;
+  --cor-amarelo-claro: #4a4458;
+  --cor-azul-claro: #2c4268;
+  --cor-rosa-claro: #47375a;
+  --cor-laranja-claro: #4a3d55;
+  --cor-turquesa-claro: #2a4a5a;
+  --cor-marrom-claro: #3d3b55;
+
+  --cor-alerta: #f07f78;
+
+  --cor-superficie: #2f3d66;
+  --cor-hover: #35446f;
+  --cor-trilho: #3d4c76;
+  --cor-apagada: #2a3555;
+  --cor-vazio-fundo: #29365c;
+  --cor-vazio-borda: #52628c;
+  --cor-erro-fundo: #4a3352;
+  --cor-erro-borda: #b5657a;
+  --cor-erro-texto: #ffc2c0;
+  --cor-perigo-claro: #4b3454;
+  --cor-botao-lilas: #6e62a8;
+  --cor-botao-lilas-borda: #9a8ed0;
+  --cor-botao-lilas-texto: #eef0fa;
+  --cor-texto-no-destaque: #1b2440;
+
+  --sombra: 8 12 28;
+  --vidro: 32 42 72;
+
+  --tema-suave: color-mix(in srgb, var(--tema) 42%, #1f2a47);
+  --tema-escuro: color-mix(in srgb, var(--tema) 78%, #fff);
+
+  color-scheme: dark;
 }

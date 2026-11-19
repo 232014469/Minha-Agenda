@@ -363,7 +363,7 @@ button.agenda-dia-numero:focus-visible {
   border: 1px solid var(--cor-borda);
   border-left: 4px solid var(--chip, var(--cor-lilas));
   border-radius: 10px;
-  background: #fff;
+  background: var(--cor-superficie);
   font-size: 0.75rem;
   color: var(--cor-texto-suave);
 }
@@ -482,7 +482,7 @@ button.agenda-dia-numero:focus-visible {
   padding: 6px 10px;
   border: 1px solid var(--cor-borda-forte);
   border-radius: 8px;
-  background: #fff;
+  background: var(--cor-superficie);
   color: var(--cor-texto);
   font: inherit;
   font-size: 0.82rem;
@@ -512,9 +512,9 @@ button.agenda-dia-numero:focus-visible {
 /* Carregando, erro e vazio */
 .agenda-painel-estado {
   padding: 24px;
-  border: 1px dashed #c9b9a3;
+  border: 1px dashed var(--cor-vazio-borda);
   border-radius: 12px;
-  background: #fcf6ec;
+  background: var(--cor-vazio-fundo);
   text-align: center;
 }
 
@@ -531,10 +531,10 @@ button.agenda-dia-numero:focus-visible {
   min-height: 44px;
   margin-top: 12px;
   padding: 10px 18px;
-  border: 1px solid #756184;
+  border: 1px solid var(--cor-botao-lilas-borda);
   border-radius: 6px;
-  background: #bba7ce;
-  color: #302239;
+  background: var(--cor-botao-lilas);
+  color: var(--cor-botao-lilas-texto);
   font: inherit;
   font-weight: 700;
   cursor: pointer;
@@ -626,7 +626,7 @@ button.agenda-dia-numero:focus-visible {
   border: 1px solid var(--cor-borda);
   border-left: 4px solid var(--chip, var(--cor-lilas));
   border-radius: 10px;
-  background: #fff;
+  background: var(--cor-superficie);
   color: var(--cor-texto-suave);
   font-size: 0.75rem;
   white-space: normal;
@@ -662,7 +662,7 @@ button.agenda-dia-numero:focus-visible {
 }
 
 .agenda-chip-atrasada .agenda-cartao-status {
-  background: #fbe3e1;
+  background: var(--cor-perigo-claro);
   color: var(--cor-alerta);
 }
 
@@ -774,12 +774,12 @@ button.agenda-dia-numero:focus-visible {
   border: 1px solid var(--cor-borda);
   border-left: 4px solid var(--painel-forte, var(--cor-lilas));
   border-radius: 10px;
-  background: #fff;
+  background: var(--cor-superficie);
   transition: box-shadow 0.15s ease;
 }
 
 .agenda-card:hover {
-  box-shadow: 0 3px 10px rgb(67 45 30 / 0.1);
+  box-shadow: 0 3px 10px rgb(var(--sombra) / 0.1);
 }
 
 .agenda-card h3 {
@@ -855,8 +855,8 @@ button.agenda-dia-numero:focus-visible {
   margin: 0 0 12px;
   padding: 8px 12px;
   border-radius: 10px;
-  background: #fbeaea;
-  color: #882f20;
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro-texto);
   font-size: 0.8rem;
   font-weight: 700;
 }
