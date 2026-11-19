@@ -76,8 +76,11 @@ function prefereMenosMovimento() {
   )
 }
 
-/** Onde o gatinho fica: no meio do menu ou escondido além da borda esquerda. */
-const POSICAO = { meio: '50%', fora: '-48px' }
+/**
+ * Onde o gatinho fica: no meio do palco (no celular, perto do título, pela
+ * variável --mascote-meio) ou escondido além da borda esquerda.
+ */
+const POSICAO = { meio: 'var(--mascote-meio, 50%)', fora: '-48px' }
 
 /**
  * Gatinho em pixel art com uma rotina própria: fica parado piscando, senta,

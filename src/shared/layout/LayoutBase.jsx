@@ -4,6 +4,7 @@ import { APP } from '../../config/app'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
+import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
 import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
 import Mascote from './Mascote'
@@ -26,6 +27,9 @@ const itens = [
 export default function LayoutBase() {
   const { salvou, semestre, semestres, escolherSemestre } = useDados()
   const [configAberta, setConfigAberta] = useState(false)
+  // No celular o menu vira a barra de baixo: o gatinho vai para cima do
+  // título da tela. Só um gatinho existe por vez (miados não se repetem).
+  const celular = useTelaPequena()
   const cantoRef = useRef(null)
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 
@@ -47,7 +51,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          <Mascote />
+          {!celular && <Mascote />}
           <p className="layout-lema">{APP.lema}</p>
         </div>
 
@@ -106,6 +110,11 @@ export default function LayoutBase() {
           </p>
         )}
         <main className="layout-conteudo">
+          {celular && (
+            <div className="layout-mascote-celular">
+              <Mascote />
+            </div>
+          )}
           <Outlet />
         </main>
         <GatinhosNaTela />

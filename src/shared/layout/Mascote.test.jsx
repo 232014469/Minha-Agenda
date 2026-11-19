@@ -124,7 +124,7 @@ describe('Mascote', () => {
     expect(gatinho).not.toHaveClass('mascote-reagindo')
 
     act(() => window.dispatchEvent(new CustomEvent(EVENTO_VOLTOU_DO_PASSEIO)))
-    expect(gatinho.style.left).toBe('50%')
+    expect(gatinho.style.left).toBe('var(--mascote-meio, 50%)')
     expect(container.querySelector('.sprite').style.backgroundImage).toContain(
       '-walk',
     )

@@ -425,6 +425,16 @@
 
 /* Celular: o menu vira uma barra na parte de baixo */
 @media (max-width: 760px) {
+  /* O gatinho fica em cima do título da tela, perto do começo dele. O palco
+     vai até a borda da tela (passa por cima dos 20px de margem) para ele
+     sair andando por ela. */
+  .layout-mascote-celular .mascote-palco {
+    --mascote-meio: 52px;
+
+    height: 46px;
+    margin: 0 0 2px -20px;
+  }
+
   .layout {
     grid-template-columns: 1fr;
     padding-bottom: 76px;

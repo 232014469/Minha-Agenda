@@ -47,36 +47,6 @@
   outline-offset: -20px;
 }
 
-/* Comemoração: pula no canto de baixo, com um balão */
-.gatinho-festa {
-  position: fixed;
-  right: 24px;
-  bottom: -18px;
-  z-index: 30;
-  display: flex;
-  align-items: flex-start;
-  pointer-events: none;
-  animation: gatinho-chega 0.25s ease-out;
-}
-
-.gatinho-festa-balao {
-  margin-top: 6px;
-  padding: 3px 10px;
-  border: 1px solid var(--cor-borda-forte);
-  border-radius: 12px 12px 12px 2px;
-  background: #fff;
-  font-family: var(--fonte-titulo);
-  font-size: 0.85rem;
-  box-shadow: 0 3px 10px rgb(67 45 30 / 0.15);
-}
-
-@keyframes gatinho-chega {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-}
-
 /* Cochilo: deitado, com os "z" subindo */
 .gatinho-dormindo {
   position: relative;
@@ -118,20 +88,9 @@
 }
 
 /* No computador, quem comemora é o mascote do menu */
-@media (min-width: 761px) {
-  .gatinho-festa {
-    display: none;
-  }
-}
-
 @media (max-width: 760px) {
   .gatinho-passeio {
     bottom: 40px;
-  }
-
-  .gatinho-festa {
-    right: 12px;
-    bottom: 50px;
   }
 }
 
