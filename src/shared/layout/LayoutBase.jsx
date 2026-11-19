@@ -46,8 +46,8 @@ export default function LayoutBase() {
     <div className="layout">
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
-          <Mascote />
           <p className="layout-marca">{APP.nome}</p>
+          <Mascote />
           <p className="layout-lema">{APP.lema}</p>
         </div>
 
