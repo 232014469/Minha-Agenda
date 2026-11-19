@@ -9,7 +9,7 @@ import {
   validarDados,
   validarProgressoCurso,
 } from './armazenamento'
-import { EVENTO_CONCLUIU } from '../shared/gatinhos/gatos'
+import { EVENTO_CONCLUIU, EVENTO_TRISTE } from '../shared/gatinhos/gatos'
 import { useSincronizacao } from '../sync/useSincronizacao'
 
 // Quando o item mudou, para a sincronização saber qual versão é a mais nova.
@@ -126,9 +126,11 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       ),
     }))
 
-    // Um gatinho comemora (ver GatinhosNaTela).
+    // O mascote comemora ou fica triste (ver Mascote).
     if (status === 'CONCLUIDA') {
       window.dispatchEvent(new CustomEvent(EVENTO_CONCLUIU))
+    } else if (status === 'NAO_REALIZADA') {
+      window.dispatchEvent(new CustomEvent(EVENTO_TRISTE))
     }
   }, [])
 
@@ -155,6 +157,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       tarefas: atuais.tarefas.filter((tarefa) => tarefa.id !== id),
       removidos: [...atuais.removidos, `t:${id}`],
     }))
+    window.dispatchEvent(new CustomEvent(EVENTO_TRISTE))
   }, [])
 
   /** Marca ou desmarca uma disciplina do fluxograma como cursada. */

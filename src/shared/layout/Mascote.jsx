@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import Sprite from '../gatinhos/Sprite'
-import { EVENTO_CONCLUIU, GATOS, ehGato } from '../gatinhos/gatos'
+import {
+  EVENTO_CONCLUIU,
+  EVENTO_TRISTE,
+  GATOS,
+  ehGato,
+} from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
 import { miar, uivar } from '../sons'
 import './Mascote.css'
@@ -8,7 +13,8 @@ import './Mascote.css'
 /**
  * O mascote do menu, escolhido nas Configurações: o lobinho ou um gatinho.
  * Além de reagir ao clique, é ele quem comemora quando uma tarefa é
- * concluída (se "Gatinhos pela tela" estiver ligado).
+ * concluída e fica triste quando não é realizada ou é excluída (se
+ * "Gatinhos pela tela" estiver ligado).
  */
 export default function Mascote() {
   const { mascote, sons, gatinhos } = usePreferencias()
@@ -20,25 +26,33 @@ export default function Mascote() {
   )
 }
 
-/** Chama `aoConcluir` sempre que uma tarefa é concluída, enquanto `ativo`. */
-function useAoConcluir(ativo, aoConcluir) {
+/** Chama `reagir` a cada `evento` dos dados, enquanto `ativo`. */
+function useEvento(ativo, evento, reagir) {
   useEffect(() => {
     if (!ativo) return undefined
 
-    window.addEventListener(EVENTO_CONCLUIU, aoConcluir)
+    window.addEventListener(evento, reagir)
 
-    return () => window.removeEventListener(EVENTO_CONCLUIU, aoConcluir)
-  }, [ativo, aoConcluir])
+    return () => window.removeEventListener(evento, reagir)
+  }, [ativo, evento, reagir])
 }
 
-const TEXTO_DO_BALAO = { miau: 'Miau!', uivo: 'Auuu!', festa: 'Feito! 🎉' }
+const TEXTO_DO_BALAO = {
+  miau: 'Miau!',
+  uivo: 'Auuu!',
+  festa: 'Feito! 🎉',
+  triste: 'Ah… 😿',
+  pedindo: 'Miaaau! 🥺',
+}
 
 /** Balão de fala e o aviso para leitores de tela quando comemora. */
-function Balao({ acao, padrao }) {
+function Balao({ acao, padrao, triste = TEXTO_DO_BALAO.triste }) {
+  const texto = acao === 'triste' ? triste : TEXTO_DO_BALAO[acao]
+
   return (
     <>
       <span className="mascote-balao" aria-hidden="true">
-        {TEXTO_DO_BALAO[acao] ?? padrao}
+        {texto ?? padrao}
       </span>
       <span className="so-leitor" role="status">
         {acao === 'festa' ? 'Tarefa concluída!' : ''}
@@ -47,45 +61,77 @@ function Balao({ acao, padrao }) {
   )
 }
 
+/** Cada reação do gatinho: a animação, quantas vezes e o miado. */
+const CENAS = {
+  miau: { animacao: 'jump', fps: 9, vezes: '2', miado: 'clique' },
+  festa: { animacao: 'jump', fps: 9, vezes: '3', miado: 'fofo' },
+  pedindo: { animacao: 'jump', fps: 11, vezes: '5', miado: 'pedindo' },
+  triste: { animacao: 'liedown', fps: 15, vezes: '1', miado: 'triste' },
+}
+
+/** Quantos cliques rápidos deixam o gatinho pedindo atenção. */
+const CLIQUES_SEGUIDOS = 5
+
 /**
  * Gatinho em pixel art: abana o rabo e pisca. Um clique faz ele pular e
- * miar; ao concluir uma tarefa, ele pula comemorando.
+ * miar; ao concluir uma tarefa ele comemora, e fica triste quando uma
+ * tarefa não é realizada ou é excluída. Muitos cliques seguidos: ele pede
+ * atenção.
  */
 function MascoteGato({ gato, sons, comemora }) {
-  const [pulo, setPulo] = useState(null)
+  const [cena, setCena] = useState(null)
+  const [cliques, setCliques] = useState([])
   const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
 
-  const comemorar = useCallback(() => {
-    setPulo({ acao: 'festa', vez: Date.now() })
-    if (sons) miar({ volume: 0.3 })
-  }, [sons])
+  const encenar = useCallback(
+    (acao) => {
+      setCena({ acao, vez: Date.now() })
+      if (sons) miar(CENAS[acao].miado, { volume: acao === 'miau' ? 0.8 : 0.6 })
+    },
+    [sons],
+  )
+  const comemorar = useCallback(() => encenar('festa'), [encenar])
+  const entristecer = useCallback(() => encenar('triste'), [encenar])
 
-  useAoConcluir(comemora, comemorar)
+  useEvento(comemora, EVENTO_CONCLUIU, comemorar)
+  useEvento(comemora, EVENTO_TRISTE, entristecer)
+
+  function clicar() {
+    const agora = Date.now()
+    const recentes = [...cliques, agora].filter((vez) => agora - vez < 3000)
+
+    if (recentes.length >= CLIQUES_SEGUIDOS) {
+      setCliques([])
+      encenar('pedindo')
+    } else {
+      setCliques(recentes)
+      encenar('miau')
+    }
+  }
+
+  const atual = cena ? CENAS[cena.acao] : null
 
   return (
     <button
       type="button"
-      className={`mascote mascote-gato${pulo ? ' mascote-uivando' : ''}`}
+      className={`mascote mascote-gato${cena ? ' mascote-uivando' : ''}`}
       aria-label={`${nome}, o mascote. Clique para ele miar`}
       title="Miau?"
-      onClick={() => {
-        setPulo({ acao: 'miau', vez: Date.now() })
-        if (sons) miar()
-      }}
+      onClick={clicar}
     >
-      {pulo ? (
+      {atual ? (
         <Sprite
-          key={pulo.vez}
+          key={cena.vez}
           gato={gato}
-          animacao="jump"
-          fps={9}
-          vezes={pulo.acao === 'festa' ? '3' : '2'}
-          aoTerminar={() => setPulo(null)}
+          animacao={atual.animacao}
+          fps={atual.fps}
+          vezes={atual.vezes}
+          aoTerminar={() => setCena(null)}
         />
       ) : (
         <Sprite key="parado" gato={gato} animacao="idle_blink" fps={7} />
       )}
-      <Balao acao={pulo?.acao} padrao="Miau!" />
+      <Balao acao={cena?.acao} padrao="Miau!" />
     </button>
   )
 }
@@ -110,13 +156,23 @@ function MascoteLobo({ sons, comemora }) {
     setUivo({ acao: 'festa', vez: Date.now() })
     if (sons) uivar({ volume: 0.3 })
   }, [sons])
+  const entristecer = useCallback(() => {
+    setUivo({ acao: 'triste', vez: Date.now() })
+  }, [])
 
-  useAoConcluir(comemora, comemorar)
+  useEvento(comemora, EVENTO_CONCLUIU, comemorar)
+  useEvento(comemora, EVENTO_TRISTE, entristecer)
 
   return (
     <button
       type="button"
-      className={`mascote${uivando ? ' mascote-uivando' : ''}`}
+      className={`mascote${
+        uivo?.acao === 'triste'
+          ? ' mascote-triste'
+          : uivando
+            ? ' mascote-uivando'
+            : ''
+      }`}
       aria-label="Lobinho, o mascote. Clique para ele uivar"
       title="Auuu?"
       onClick={() => {
@@ -209,7 +265,7 @@ function MascoteLobo({ sons, comemora }) {
           />
         </g>
       </svg>
-      <Balao acao={uivo?.acao} padrao="Auuu!" />
+      <Balao acao={uivo?.acao} padrao="Auuu!" triste="Auu… 😢" />
     </button>
   )
 }

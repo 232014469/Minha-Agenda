@@ -1,6 +1,6 @@
 /**
- * Sons do mascote, sintetizados na hora pelo navegador (sem arquivo de
- * áudio): um miado ("m-i-a-u") e um uivo. Só tocam depois de um clique.
+ * Sons do mascote: miados gravados e o uivo do lobinho, sintetizado na hora
+ * pelo navegador. Só tocam depois de uma ação de quem usa o app.
  */
 let contexto = null
 
@@ -63,42 +63,42 @@ function vocalizar({ altura, formante1, formante2, volume, duracao }) {
   vibrato.stop(t + duracao)
 }
 
-/** Miado curto; cada um sai um pouco diferente. */
-export function miar({ volume = 0.5 } = {}) {
-  const v = 0.9 + Math.random() * 0.2
-  const hz = (valor) => valor * v
+/**
+ * Miados gravados de gatos de verdade (Mixkit, ver
+ * src/assets/gatinhos/CREDITOS.md): fofo, de fome, pedindo e triste.
+ */
+const MIADOS = {
+  fofo: new URL('../assets/sons/miado-fofo.mp3', import.meta.url).href,
+  fome: new URL('../assets/sons/miado-fome.mp3', import.meta.url).href,
+  pedindo: new URL('../assets/sons/miado-pedindo.mp3', import.meta.url).href,
+  triste: new URL('../assets/sons/miado-triste.mp3', import.meta.url).href,
+}
 
-  vocalizar({
-    duracao: 0.75,
-    altura: [
-      [0, hz(500)],
-      [0.08, hz(640)],
-      [0.24, hz(820)],
-      [0.45, hz(700)],
-      [0.72, hz(430)],
-    ],
-    formante1: [
-      [0, 300],
-      [0.08, 360],
-      [0.3, 820],
-      [0.5, 700],
-      [0.72, 420],
-    ],
-    formante2: [
-      [0, 1100],
-      [0.08, 2300],
-      [0.3, 1400],
-      [0.5, 1100],
-      [0.72, 850],
-    ],
-    volume: [
-      [0, 0],
-      [0.03, volume * 0.35],
-      [0.09, volume],
-      [0.5, volume * 0.85],
-      [0.74, 0],
-    ],
-  })
+const tocando = new Map()
+
+/**
+ * Toca um miado: 'fofo', 'fome', 'pedindo', 'triste' ou 'clique' (sorteia
+ * entre o fofo e o de fome). Se o mesmo miado já está tocando, recomeça.
+ */
+export function miar(tipo = 'clique', { volume = 0.8 } = {}) {
+  const nome =
+    tipo === 'clique' ? (Math.random() < 0.5 ? 'fofo' : 'fome') : tipo
+  const url = MIADOS[nome]
+
+  // Sem áudio (ou nos testes, que rodam no jsdom): segue sem som.
+  if (!url || typeof Audio === 'undefined') return
+  if (globalThis.navigator?.userAgent?.includes('jsdom')) return
+
+  try {
+    const som = tocando.get(nome) ?? new Audio(url)
+
+    tocando.set(nome, som)
+    som.volume = volume
+    som.currentTime = 0
+    som.play()?.catch?.(() => {})
+  } catch {
+    // Navegador sem áudio: segue sem som.
+  }
 }
 
 /** Uivo de lobinho: sobe, segura e desce devagar. */

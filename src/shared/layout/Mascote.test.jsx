@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { mudarPreferencia, recarregarPreferencias } from '../preferencias'
-import { EVENTO_CONCLUIU } from '../gatinhos/gatos'
+import { EVENTO_CONCLUIU, EVENTO_TRISTE } from '../gatinhos/gatos'
 import Mascote from './Mascote'
 
 afterEach(() => {
@@ -59,5 +59,29 @@ describe('Mascote', () => {
     expect(screen.getByRole('button', { name: /Lobinho/ })).toHaveTextContent(
       'Feito! 🎉',
     )
+  })
+
+  it('fica triste quando uma tarefa não é realizada ou é excluída', () => {
+    mudarPreferencia('mascote', 'gato01')
+    render(<Mascote />)
+
+    act(() => window.dispatchEvent(new CustomEvent(EVENTO_TRISTE)))
+
+    expect(
+      screen.getByRole('button', { name: /Gatinho marrom/ }),
+    ).toHaveTextContent('Ah… 😿')
+  })
+
+  it('pede atenção depois de 5 cliques seguidos', () => {
+    mudarPreferencia('mascote', 'gato02')
+    render(<Mascote />)
+
+    const gatinho = screen.getByRole('button', { name: /Gatinho cinza/ })
+
+    for (let i = 0; i < 4; i += 1) fireEvent.click(gatinho)
+    expect(gatinho).toHaveTextContent('Miau!')
+
+    fireEvent.click(gatinho)
+    expect(gatinho).toHaveTextContent('Miaaau! 🥺')
   })
 })

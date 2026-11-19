@@ -10,6 +10,9 @@ export const GATOS = [
 /** Avisado pelos dados quando uma tarefa é concluída (o gatinho comemora). */
 export const EVENTO_CONCLUIU = 'wolf-study:concluiu'
 
+/** Avisado quando uma tarefa vai para "Não realizadas" ou é excluída. */
+export const EVENTO_TRISTE = 'wolf-study:triste'
+
 /** Quantos quadros cada animação tem. */
 export const QUADROS = { idle_blink: 8, walk: 8, jump: 5, liedown: 24 }
 

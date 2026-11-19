@@ -136,6 +136,20 @@
   }
 }
 
+/* Triste: cabeça baixa, rabo parado e o balão */
+.mascote-triste .mascote-cabeca {
+  transform: rotate(10deg) translateY(4px);
+}
+
+.mascote-triste .mascote-rabo {
+  animation-play-state: paused;
+}
+
+.mascote-triste .mascote-balao {
+  opacity: 1;
+  transform: none;
+}
+
 /* Uivo: cabeça para cima, rabo mais rápido e o balão */
 .mascote-uivando .mascote-cabeca {
   transform: rotate(-18deg) translateY(-2px);

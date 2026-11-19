@@ -51,7 +51,7 @@ export default function GatinhosNaTela() {
     function concluiu() {
       setFesta({ gato: gatoDaVez(mascote), chave: Date.now() })
       // No computador quem mia é o mascote do menu; aqui, só no celular.
-      if (sons && telaPequena()) miar({ volume: 0.3 })
+      if (sons && telaPequena()) miar('fofo', { volume: 0.5 })
     }
 
     window.addEventListener(EVENTO_CONCLUIU, concluiu)
@@ -83,7 +83,7 @@ export default function GatinhosNaTela() {
             type="button"
             className="gatinho-botao"
             aria-label="Gatinho passeando. Clique para ele miar"
-            onClick={() => sons && miar()}
+            onClick={() => sons && miar('fome')}
           >
             <Sprite gato={passeio.gato} animacao="walk" fps={10} />
           </button>
