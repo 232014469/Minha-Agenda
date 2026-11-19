@@ -1,52 +1,91 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Sprite from '../gatinhos/Sprite'
-import { GATOS, ehGato } from '../gatinhos/gatos'
+import { EVENTO_CONCLUIU, GATOS, ehGato } from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
 import { miar, uivar } from '../sons'
 import './Mascote.css'
 
-/** O mascote do menu, escolhido nas Configurações: o lobinho ou um gatinho. */
+/**
+ * O mascote do menu, escolhido nas Configurações: o lobinho ou um gatinho.
+ * Além de reagir ao clique, é ele quem comemora quando uma tarefa é
+ * concluída (se "Gatinhos pela tela" estiver ligado).
+ */
 export default function Mascote() {
-  const { mascote, sons } = usePreferencias()
+  const { mascote, sons, gatinhos } = usePreferencias()
 
   return ehGato(mascote) ? (
-    <MascoteGato gato={mascote} sons={sons} />
+    <MascoteGato gato={mascote} sons={sons} comemora={gatinhos} />
   ) : (
-    <MascoteLobo sons={sons} />
+    <MascoteLobo sons={sons} comemora={gatinhos} />
   )
 }
 
-/** Gatinho em pixel art: abana o rabo e pisca; um clique faz ele pular e miar. */
-function MascoteGato({ gato, sons }) {
-  const [pulando, setPulando] = useState(false)
+/** Chama `aoConcluir` sempre que uma tarefa é concluída, enquanto `ativo`. */
+function useAoConcluir(ativo, aoConcluir) {
+  useEffect(() => {
+    if (!ativo) return undefined
+
+    window.addEventListener(EVENTO_CONCLUIU, aoConcluir)
+
+    return () => window.removeEventListener(EVENTO_CONCLUIU, aoConcluir)
+  }, [ativo, aoConcluir])
+}
+
+const TEXTO_DO_BALAO = { miau: 'Miau!', uivo: 'Auuu!', festa: 'Feito! 🎉' }
+
+/** Balão de fala e o aviso para leitores de tela quando comemora. */
+function Balao({ acao, padrao }) {
+  return (
+    <>
+      <span className="mascote-balao" aria-hidden="true">
+        {TEXTO_DO_BALAO[acao] ?? padrao}
+      </span>
+      <span className="so-leitor" role="status">
+        {acao === 'festa' ? 'Tarefa concluída!' : ''}
+      </span>
+    </>
+  )
+}
+
+/**
+ * Gatinho em pixel art: abana o rabo e pisca. Um clique faz ele pular e
+ * miar; ao concluir uma tarefa, ele pula comemorando.
+ */
+function MascoteGato({ gato, sons, comemora }) {
+  const [pulo, setPulo] = useState(null)
   const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
+
+  const comemorar = useCallback(() => {
+    setPulo({ acao: 'festa', vez: Date.now() })
+    if (sons) miar({ volume: 0.3 })
+  }, [sons])
+
+  useAoConcluir(comemora, comemorar)
 
   return (
     <button
       type="button"
-      className={`mascote mascote-gato${pulando ? ' mascote-uivando' : ''}`}
+      className={`mascote mascote-gato${pulo ? ' mascote-uivando' : ''}`}
       aria-label={`${nome}, o mascote. Clique para ele miar`}
       title="Miau?"
       onClick={() => {
-        setPulando(true)
+        setPulo({ acao: 'miau', vez: Date.now() })
         if (sons) miar()
       }}
     >
-      {pulando ? (
+      {pulo ? (
         <Sprite
-          key="pulo"
+          key={pulo.vez}
           gato={gato}
           animacao="jump"
           fps={9}
-          vezes="2"
-          aoTerminar={() => setPulando(false)}
+          vezes={pulo.acao === 'festa' ? '3' : '2'}
+          aoTerminar={() => setPulo(null)}
         />
       ) : (
         <Sprite key="parado" gato={gato} animacao="idle_blink" fps={7} />
       )}
-      <span className="mascote-balao" aria-hidden="true">
-        Miau!
-      </span>
+      <Balao acao={pulo?.acao} padrao="Miau!" />
     </button>
   )
 }
@@ -55,16 +94,24 @@ function MascoteGato({ gato, sons }) {
  * Lobinho do Wolf Study: respira, abana o rabo, pisca e mexe a orelha.
  * Um clique faz ele uivar. O lenço segue a cor do tema.
  */
-function MascoteLobo({ sons }) {
-  const [uivando, setUivando] = useState(false)
+function MascoteLobo({ sons, comemora }) {
+  const [uivo, setUivo] = useState(null)
+  const uivando = uivo !== null
 
   useEffect(() => {
-    if (!uivando) return undefined
+    if (!uivo) return undefined
 
-    const fim = setTimeout(() => setUivando(false), 1600)
+    const fim = setTimeout(() => setUivo(null), 1600)
 
     return () => clearTimeout(fim)
-  }, [uivando])
+  }, [uivo])
+
+  const comemorar = useCallback(() => {
+    setUivo({ acao: 'festa', vez: Date.now() })
+    if (sons) uivar({ volume: 0.3 })
+  }, [sons])
+
+  useAoConcluir(comemora, comemorar)
 
   return (
     <button
@@ -73,7 +120,7 @@ function MascoteLobo({ sons }) {
       aria-label="Lobinho, o mascote. Clique para ele uivar"
       title="Auuu?"
       onClick={() => {
-        setUivando(true)
+        setUivo({ acao: 'uivo', vez: Date.now() })
         if (sons) uivar()
       }}
     >
@@ -162,9 +209,7 @@ function MascoteLobo({ sons }) {
           />
         </g>
       </svg>
-      <span className="mascote-balao" aria-hidden="true">
-        Auuu!
-      </span>
+      <Balao acao={uivo?.acao} padrao="Auuu!" />
     </button>
   )
 }

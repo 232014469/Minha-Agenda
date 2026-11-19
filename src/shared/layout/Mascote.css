@@ -152,7 +152,7 @@
 .mascote-balao {
   position: absolute;
   top: -6px;
-  left: 58px;
+  left: 46px;
   padding: 2px 8px;
   border: 1px solid var(--cor-borda-forte);
   border-radius: 10px 10px 10px 2px;

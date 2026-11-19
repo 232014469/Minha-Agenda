@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { mudarPreferencia, recarregarPreferencias } from '../preferencias'
+import { EVENTO_CONCLUIU } from '../gatinhos/gatos'
 import Mascote from './Mascote'
 
 afterEach(() => {
@@ -35,5 +36,28 @@ describe('Mascote', () => {
     fireEvent.click(gatinho)
     expect(gatinho).toHaveClass('mascote-uivando')
     expect(gatinho).toHaveTextContent('Miau!')
+  })
+
+  it('o próprio mascote comemora quando uma tarefa é concluída', () => {
+    mudarPreferencia('mascote', 'gato05')
+    render(<Mascote />)
+
+    act(() => window.dispatchEvent(new CustomEvent(EVENTO_CONCLUIU)))
+
+    const gatinho = screen.getByRole('button', { name: /Gatinho preto/ })
+
+    expect(gatinho).toHaveClass('mascote-uivando')
+    expect(gatinho).toHaveTextContent('Feito! 🎉')
+    expect(screen.getByRole('status')).toHaveTextContent('Tarefa concluída!')
+  })
+
+  it('o lobinho também comemora', () => {
+    render(<Mascote />)
+
+    act(() => window.dispatchEvent(new CustomEvent(EVENTO_CONCLUIU)))
+
+    expect(screen.getByRole('button', { name: /Lobinho/ })).toHaveTextContent(
+      'Feito! 🎉',
+    )
   })
 })

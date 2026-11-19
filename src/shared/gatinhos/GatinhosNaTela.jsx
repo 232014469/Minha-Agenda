@@ -4,6 +4,9 @@ import { miar } from '../sons'
 import Sprite from './Sprite'
 import { EVENTO_CONCLUIU, gatoDaVez } from './gatos'
 
+const telaPequena = () =>
+  globalThis.matchMedia?.('(max-width: 760px)').matches ?? false
+
 const movimentoReduzido = () =>
   globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
@@ -13,7 +16,9 @@ const proximaEspera = (primeira) =>
 
 /**
  * Gatinhos soltos pela tela: de vez em quando um atravessa andando pela
- * borda de baixo, e um pula comemorando quando uma tarefa é concluída.
+ * borda de baixo. Quando uma tarefa é concluída, quem comemora é o mascote
+ * do menu; no celular, onde o menu não mostra o mascote, um gatinho pula no
+ * canto da tela.
  * Desligam nas Configurações e com "reduzir movimento" no sistema.
  */
 export default function GatinhosNaTela() {
@@ -45,7 +50,8 @@ export default function GatinhosNaTela() {
 
     function concluiu() {
       setFesta({ gato: gatoDaVez(mascote), chave: Date.now() })
-      if (sons) miar({ volume: 0.3 })
+      // No computador quem mia é o mascote do menu; aqui, só no celular.
+      if (sons && telaPequena()) miar({ volume: 0.3 })
     }
 
     window.addEventListener(EVENTO_CONCLUIU, concluiu)

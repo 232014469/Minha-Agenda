@@ -117,6 +117,13 @@
   }
 }
 
+/* No computador, quem comemora é o mascote do menu */
+@media (min-width: 761px) {
+  .gatinho-festa {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   .gatinho-passeio {
     bottom: 40px;
