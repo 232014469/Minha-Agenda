@@ -1,11 +1,61 @@
 import { useEffect, useState } from 'react'
+import Sprite from '../gatinhos/Sprite'
+import { GATOS, ehGato } from '../gatinhos/gatos'
+import { usePreferencias } from '../preferencias'
+import { miar, uivar } from '../sons'
 import './Mascote.css'
+
+/** O mascote do menu, escolhido nas Configurações: o lobinho ou um gatinho. */
+export default function Mascote() {
+  const { mascote, sons } = usePreferencias()
+
+  return ehGato(mascote) ? (
+    <MascoteGato gato={mascote} sons={sons} />
+  ) : (
+    <MascoteLobo sons={sons} />
+  )
+}
+
+/** Gatinho em pixel art: abana o rabo e pisca; um clique faz ele pular e miar. */
+function MascoteGato({ gato, sons }) {
+  const [pulando, setPulando] = useState(false)
+  const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
+
+  return (
+    <button
+      type="button"
+      className={`mascote mascote-gato${pulando ? ' mascote-uivando' : ''}`}
+      aria-label={`${nome}, o mascote. Clique para ele miar`}
+      title="Miau?"
+      onClick={() => {
+        setPulando(true)
+        if (sons) miar()
+      }}
+    >
+      {pulando ? (
+        <Sprite
+          key="pulo"
+          gato={gato}
+          animacao="jump"
+          fps={9}
+          vezes="2"
+          aoTerminar={() => setPulando(false)}
+        />
+      ) : (
+        <Sprite key="parado" gato={gato} animacao="idle_blink" fps={7} />
+      )}
+      <span className="mascote-balao" aria-hidden="true">
+        Miau!
+      </span>
+    </button>
+  )
+}
 
 /**
  * Lobinho do Wolf Study: respira, abana o rabo, pisca e mexe a orelha.
  * Um clique faz ele uivar. O lenço segue a cor do tema.
  */
-export default function Mascote() {
+function MascoteLobo({ sons }) {
   const [uivando, setUivando] = useState(false)
 
   useEffect(() => {
@@ -22,7 +72,10 @@ export default function Mascote() {
       className={`mascote${uivando ? ' mascote-uivando' : ''}`}
       aria-label="Lobinho, o mascote. Clique para ele uivar"
       title="Auuu?"
-      onClick={() => setUivando(true)}
+      onClick={() => {
+        setUivando(true)
+        if (sons) uivar()
+      }}
     >
       <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
         <g className="mascote-rabo">

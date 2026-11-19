@@ -2,11 +2,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
+import { mudarPreferencia, recarregarPreferencias } from '../preferencias'
 import Mascote from './Mascote'
 
 afterEach(() => {
   cleanup()
   vi.useRealTimers()
+  localStorage.clear()
+  recarregarPreferencias()
 })
 
 describe('Mascote', () => {
@@ -21,5 +24,16 @@ describe('Mascote', () => {
 
     act(() => vi.advanceTimersByTime(1700))
     expect(lobinho).not.toHaveClass('mascote-uivando')
+  })
+
+  it('vira o gatinho escolhido nas Configurações, que pula e mia', () => {
+    mudarPreferencia('mascote', 'gato03')
+    render(<Mascote />)
+
+    const gatinho = screen.getByRole('button', { name: /Gatinho laranja/ })
+
+    fireEvent.click(gatinho)
+    expect(gatinho).toHaveClass('mascote-uivando')
+    expect(gatinho).toHaveTextContent('Miau!')
   })
 })

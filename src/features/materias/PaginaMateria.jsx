@@ -9,6 +9,7 @@ import {
   cargaHorariaDe,
   situacaoDasFaltas,
 } from '../faltas/faltas'
+import GatinhoDormindo from '../../shared/gatinhos/GatinhoDormindo'
 import Icone from '../../shared/layout/Icone'
 import '../../shared/cores.css'
 import {
@@ -214,11 +215,14 @@ export default function PaginaMateria() {
             </div>
           </div>
           {visiveis.length === 0 ? (
-            <p className="materia-vazio">
-              {entregas.length === 0
-                ? 'Nenhuma entrega ainda. Adicione na Agenda ou no Post it.'
-                : 'Nenhuma entrega neste filtro.'}
-            </p>
+            <div>
+              {entregas.length === 0 && <GatinhoDormindo />}
+              <p className="materia-vazio">
+                {entregas.length === 0
+                  ? 'Nenhuma entrega ainda. Adicione na Agenda ou no Post it.'
+                  : 'Nenhuma entrega neste filtro.'}
+              </p>
+            </div>
           ) : (
             <ul className="materia-entregas">
               {visiveis.map((entrega) => (

@@ -5,6 +5,7 @@ import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import Icone from './Icone'
+import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
 import './LayoutBase.css'
@@ -107,6 +108,7 @@ export default function LayoutBase() {
         <main className="layout-conteudo">
           <Outlet />
         </main>
+        <GatinhosNaTela />
       </div>
     </div>
   )

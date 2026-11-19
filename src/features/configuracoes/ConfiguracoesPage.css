@@ -223,3 +223,73 @@
   outline: 3px solid var(--cor-lilas-escuro);
   outline-offset: 2px;
 }
+
+/* Mascote: seis opções, cada uma mostra o bichinho */
+.config-mascotes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.config-mascote {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 46px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.config-mascote input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.config-mascote:has(input:checked) {
+  border-color: var(--tema-escuro);
+  box-shadow: 0 0 0 2px var(--tema);
+  background: var(--cor-menu);
+}
+
+.config-mascote:has(input:focus-visible) {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}
+
+.config-mascote-lobo {
+  font-size: 1.5rem;
+}
+
+/* Primeiro quadro do sprite, 2 vezes maior, centrado no gatinho */
+.config-mascote-gato {
+  width: 64px;
+  height: 64px;
+  margin: -14px 0 0 -6px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 512px 64px;
+  image-rendering: pixelated;
+}
+
+.config-chave-liga {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.config-chave-liga input {
+  width: 15px;
+  height: 15px;
+}

@@ -9,6 +9,7 @@ import {
   validarDados,
   validarProgressoCurso,
 } from './armazenamento'
+import { EVENTO_CONCLUIU } from '../shared/gatinhos/gatos'
 import { useSincronizacao } from '../sync/useSincronizacao'
 
 // Quando o item mudou, para a sincronização saber qual versão é a mais nova.
@@ -124,6 +125,11 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
         tarefa.id === id ? { ...tarefa, status, alteradoEm: agora() } : tarefa,
       ),
     }))
+
+    // Um gatinho comemora (ver GatinhosNaTela).
+    if (status === 'CONCLUIDA') {
+      window.dispatchEvent(new CustomEvent(EVENTO_CONCLUIU))
+    }
   }, [])
 
   /** Muda título, tipo, data ou descrição de uma tarefa já salva. */

@@ -1,0 +1,136 @@
+/* Sprite: a tira de quadros anda de um em um, com os pixels nítidos */
+.sprite {
+  display: inline-block;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+}
+
+@keyframes sprite-quadros {
+  to {
+    background-position-x: var(--sprite-fim);
+  }
+}
+
+/* Passeio: atravessa a tela pela borda de baixo, da esquerda para a direita */
+.gatinho-passeio {
+  position: fixed;
+  bottom: -30px;
+  left: 0;
+  z-index: 30;
+  pointer-events: none;
+  animation: gatinho-atravessa 16s linear forwards;
+}
+
+@keyframes gatinho-atravessa {
+  from {
+    transform: translateX(-100px);
+  }
+
+  to {
+    transform: translateX(calc(100vw + 10px));
+  }
+}
+
+.gatinho-botao {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.gatinho-botao:focus-visible {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: -20px;
+}
+
+/* Comemoração: pula no canto de baixo, com um balão */
+.gatinho-festa {
+  position: fixed;
+  right: 24px;
+  bottom: -18px;
+  z-index: 30;
+  display: flex;
+  align-items: flex-start;
+  pointer-events: none;
+  animation: gatinho-chega 0.25s ease-out;
+}
+
+.gatinho-festa-balao {
+  margin-top: 6px;
+  padding: 3px 10px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 12px 12px 12px 2px;
+  background: #fff;
+  font-family: var(--fonte-titulo);
+  font-size: 0.85rem;
+  box-shadow: 0 3px 10px rgb(67 45 30 / 0.15);
+}
+
+@keyframes gatinho-chega {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* Cochilo: deitado, com os "z" subindo */
+.gatinho-dormindo {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 52px;
+  overflow: hidden;
+}
+
+.gatinho-dormindo .sprite {
+  margin-top: -40px;
+}
+
+.gatinho-zzz {
+  position: absolute;
+  top: 2px;
+  left: calc(50% + 18px);
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-titulo);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  animation: gatinho-zzz 2.4s ease-in-out infinite;
+}
+
+@keyframes gatinho-zzz {
+  0% {
+    opacity: 0;
+    transform: translate(0, 8px);
+  }
+
+  40% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(10px, -6px);
+  }
+}
+
+@media (max-width: 760px) {
+  .gatinho-passeio {
+    bottom: 40px;
+  }
+
+  .gatinho-festa {
+    right: 12px;
+    bottom: 50px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sprite,
+  .gatinho-zzz {
+    animation: none !important;
+  }
+}

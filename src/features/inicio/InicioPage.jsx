@@ -16,6 +16,7 @@ import {
 } from './inicioUtils'
 import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
 import { fraseDoDia } from '../../config/frases'
+import GatinhoDormindo from '../../shared/gatinhos/GatinhoDormindo'
 import ProgressoGeral from './ProgressoGeral'
 import './InicioPage.css'
 
@@ -114,7 +115,10 @@ function Proximas({ proximas, atrasadas }) {
       )}
 
       {proximas.length === 0 ? (
-        <EstadoVazio mensagem="Nenhuma entrega pendente. Bom trabalho!" />
+        <>
+          <GatinhoDormindo />
+          <EstadoVazio mensagem="Nenhuma entrega pendente. Bom trabalho!" />
+        </>
       ) : (
         <ul>
           {proximas.map((item) => {

@@ -187,3 +187,14 @@
     transition: none;
   }
 }
+
+/* Gatinho como mascote: o sprite é maior que o botão e fica centralizado */
+.mascote-gato {
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+
+.mascote-gato .sprite {
+  margin-top: -32px;
+}

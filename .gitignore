@@ -27,3 +27,5 @@ dist-ssr
 .env
 .env.*
 !.env.example
+# Pacote original dos gatinhos (os usados ficam em src/assets/gatinhos)
+kittens_assets/

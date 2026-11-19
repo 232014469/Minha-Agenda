@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import '../../shared/secao.css'
 import Backup from './Backup'
+import MascoteESons from './MascoteESons'
 import Sincronizacao from './Sincronizacao'
 import Tema from './Tema'
 import './ConfiguracoesPage.css'
@@ -32,7 +33,7 @@ export default function ConfiguracoesPage({ aoFechar }) {
       <header className="config-painel-topo">
         <div>
           <h2 id="config-titulo">Configurações</h2>
-          <p>Cor do app, outros aparelhos e cópias de segurança.</p>
+          <p>Cor, mascote, outros aparelhos e cópias de segurança.</p>
         </div>
         {aoFechar && (
           <button
@@ -46,6 +47,7 @@ export default function ConfiguracoesPage({ aoFechar }) {
         )}
       </header>
       <Tema />
+      <MascoteESons />
       <Sincronizacao />
       <Backup />
     </div>
