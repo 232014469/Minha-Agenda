@@ -203,15 +203,14 @@
   background: var(--cor-fundo);
 }
 
-/* Manchas verdes do protótipo: uma grande atrás da busca e uma pequena no canto */
+/* Manchas verdes do protótipo, desenhadas em SVG: uma grande atrás do título
+   e uma pequena no canto da engrenagem (espelhada) */
 .layout-coluna::before,
 .layout-coluna::after {
   content: '';
   position: absolute;
   top: 0;
   z-index: 0;
-  background: url('../../assets/decoracao-superior.png') no-repeat top left /
-    100% auto;
   pointer-events: none;
 }
 
@@ -219,12 +218,16 @@
   left: 0;
   width: 300px;
   height: 205px;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20205'%3E%3Cpath%20d='M0%200H286c14%2038-12%2070-48%2083-40%2014-46%2056-86%2084C110%20197%2048%20197%200%20178Z'%20fill='%238f9e76'%20fill-opacity='.12'/%3E%3Cpath%20d='M0%200h192c14%2029-10%2054-40%2062-36%209-38%2043-71%2060C52%20137%2021%20134%200%20126Z'%20fill='%238f9e76'%20fill-opacity='.17'/%3E%3Ccircle%20cx='262'%20cy='22'%20r='5'%20fill='%238f9e76'%20fill-opacity='.22'/%3E%3C/svg%3E")
+    no-repeat top left / 100% 100%;
 }
 
 .layout-coluna::after {
   right: 0;
   width: 130px;
   height: 90px;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20130%2090'%3E%3Cpath%20d='M0%200h124c9%2026-12%2041-35%2045-25%204-31%2028-56%2036C19%2085%208%2083%200%2079Z'%20fill='%238f9e76'%20fill-opacity='.15'/%3E%3C/svg%3E")
+    no-repeat top left / 100% 100%;
   transform: scaleX(-1);
 }
 

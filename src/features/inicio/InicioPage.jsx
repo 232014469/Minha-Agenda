@@ -10,6 +10,8 @@ import {
   diasAte,
   proximasTarefas,
   resumirEntregas,
+  resumoDoDia,
+  saudacao,
   textoDosDias,
 } from './inicioUtils'
 import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
@@ -207,15 +209,30 @@ function MinhasMaterias({ materias, tarefas }) {
 }
 
 /** Tela principal: resumo do semestre, matérias, progresso e próximas entregas. */
+/** "quarta-feira, 18 de novembro" */
+function dataPorExtenso(data) {
+  return data.toLocaleDateString('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+}
+
 export default function InicioPage() {
   const { materias, tarefas, semestre } = useDados()
   const resumo = resumirEntregas(tarefas)
   const atrasadas = tarefas.filter(ehAtrasada).length
+  const agora = new Date()
 
   return (
     <section className="inicio">
-      <h1 className="titulo-pagina">Olá!</h1>
-      <p className="subtitulo-pagina">Semestre {nomeDoSemestre(semestre)}</p>
+      <h1 className="titulo-pagina">{saudacao(agora)}!</h1>
+      <p className="subtitulo-pagina inicio-subtitulo">
+        <span className="inicio-data">{dataPorExtenso(agora)}</span>
+        <span aria-hidden="true"> · </span>
+        <span>Semestre {nomeDoSemestre(semestre)}</span>
+        <span className="inicio-resumo-dia">{resumoDoDia(tarefas, agora)}</span>
+      </p>
       <div className="inicio-grade">
         <div className="inicio-principal">
           <div className="inicio-cartoes">

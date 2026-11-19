@@ -710,3 +710,29 @@
     visibility: hidden;
   }
 }
+
+/* Topo do Dashboard: data por extenso, semestre e o resumo do dia */
+.inicio-subtitulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+}
+
+.inicio-subtitulo > span[aria-hidden='true'] {
+  margin: 0 6px;
+}
+
+.inicio-data::first-letter {
+  text-transform: uppercase;
+}
+
+.inicio-resumo-dia {
+  margin-left: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--cor-lilas-claro);
+  color: var(--cor-texto);
+  font-size: 0.75rem;
+  font-weight: 700;
+}

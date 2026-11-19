@@ -9,6 +9,8 @@ import {
   entregasDoMes,
   entregasPorDia,
   resumirEntregas,
+  resumoDoDia,
+  saudacao,
 } from './inicioUtils'
 
 const entregas = [
@@ -188,5 +190,44 @@ describe('entregasDoMes', () => {
 
   it('fevereiro de ano bissexto tem 29 dias', () => {
     expect(entregasDoMes([], 2028, 1)).toHaveLength(29)
+  })
+})
+
+describe('saudacao e resumoDoDia', () => {
+  it('cumprimenta pela hora do dia', () => {
+    expect(saudacao(new Date(2026, 10, 18, 8))).toBe('Bom dia')
+    expect(saudacao(new Date(2026, 10, 18, 14))).toBe('Boa tarde')
+    expect(saudacao(new Date(2026, 10, 18, 21))).toBe('Boa noite')
+    expect(saudacao(new Date(2026, 10, 18, 3))).toBe('Boa noite')
+  })
+
+  it('conta as entregas de hoje, senão as até domingo', () => {
+    // 18/11/2026 é uma quarta-feira
+    const agora = new Date(2026, 10, 18, 10)
+    const tarefa = (id, prazo, status = 'A_FAZER') => ({ id, prazo, status })
+
+    expect(
+      resumoDoDia(
+        [
+          tarefa(1, '2026-11-18T23:59:00'),
+          tarefa(2, '2026-11-18T12:00:00', 'CONCLUIDA'),
+          tarefa(3, '2026-11-20T23:59:00'),
+        ],
+        agora,
+      ),
+    ).toBe('1 entrega para hoje')
+    expect(
+      resumoDoDia(
+        [
+          tarefa(3, '2026-11-20T23:59:00'),
+          tarefa(4, '2026-11-22T23:59:00'),
+          tarefa(5, '2026-11-23T23:59:00'),
+        ],
+        agora,
+      ),
+    ).toBe('2 entregas até domingo')
+    expect(resumoDoDia([tarefa(5, '2026-11-23T23:59:00')], agora)).toBe(
+      'Nada pendente esta semana 🎉',
+    )
   })
 })

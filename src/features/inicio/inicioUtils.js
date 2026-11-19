@@ -89,6 +89,45 @@ export function corDoTipo(tipo) {
   return 'lilas'
 }
 
+/** "Bom dia", "Boa tarde" ou "Boa noite", pela hora. */
+export function saudacao(agora = new Date()) {
+  const hora = agora.getHours()
+
+  if (hora >= 5 && hora < 12) return 'Bom dia'
+  if (hora >= 12 && hora < 18) return 'Boa tarde'
+
+  return 'Boa noite'
+}
+
+/**
+ * Resumo curto do dia para o topo do Dashboard: entregas pendentes de hoje
+ * ou, se não houver, as que faltam até domingo.
+ */
+export function resumoDoDia(tarefas, agora = new Date()) {
+  const hoje = diaSemHora(agora)
+  const domingo = new Date(hoje)
+
+  domingo.setDate(hoje.getDate() + ((7 - hoje.getDay()) % 7))
+
+  const pendentes = tarefas.filter(
+    (tarefa) => !ehConcluida(tarefa.status) && !ehNaoRealizada(tarefa.status),
+  )
+  const doDia = (tarefa) => diaSemHora(new Date(tarefa.prazo)).getTime()
+  const paraHoje = pendentes.filter(
+    (tarefa) => doDia(tarefa) === hoje.getTime(),
+  ).length
+  const ateDomingo = pendentes.filter(
+    (tarefa) =>
+      doDia(tarefa) >= hoje.getTime() && doDia(tarefa) <= domingo.getTime(),
+  ).length
+  const entregas = (n) => `${n} ${n === 1 ? 'entrega' : 'entregas'}`
+
+  if (paraHoje > 0) return `${entregas(paraHoje)} para hoje`
+  if (ateDomingo > 0) return `${entregas(ateDomingo)} até domingo`
+
+  return 'Nada pendente esta semana 🎉'
+}
+
 function diaSemHora(data) {
   return new Date(data.getFullYear(), data.getMonth(), data.getDate())
 }
