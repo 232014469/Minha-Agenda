@@ -54,7 +54,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && <Mascote />}
+          {!celular && <Mascote noMenu />}
           <p className="layout-lema">{APP.lema}</p>
         </div>
 

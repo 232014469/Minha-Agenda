@@ -47,4 +47,34 @@ describe('rotina do gatinho', () => {
     expect(voltar.passos[0]).toMatchObject({ onde: 'meio', anda: true })
     expect(avancar(voltar).nome).toBe('parado')
   })
+
+  it('explorar só entra no sorteio quando há menu', () => {
+    expect(proximaRotina('parado', () => 0.99)).toBe('passear')
+    expect(proximaRotina('parado', () => 0.99, { links: 4 })).toBe('explorar')
+  })
+
+  it('explorar: pula para perto de um link, sobe a parede e volta pra casa', () => {
+    const passos = iniciarRotina('explorar', () => 0.5, { links: 4 }).passos
+
+    expect(passos.map((passo) => passo.onde)).toEqual([
+      'link:2',
+      'link:2',
+      'link:2',
+      'parede:2',
+      'parede:2',
+      'parede-alto',
+      'meio',
+      'meio',
+    ])
+    expect(passos.map((passo) => passo.animacao)).toEqual([
+      'jump',
+      'land',
+      'idle_blink',
+      'run',
+      'wallgrab',
+      'wallclimb',
+      'jump',
+      'land',
+    ])
+  })
 })

@@ -81,3 +81,80 @@
 .mascote-gato .sprite-virado {
   transform: scaleX(-1);
 }
+
+/* Menu do computador: a casinha fica no lugar do gatinho, e o palco cobre o
+   menu inteiro para ele pular perto dos links e subir pela parede direita.
+   Só aparece depois de medir o menu (sem pular de um canto ao outro). */
+.mascote-casa {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 64px;
+  margin-top: 6px;
+}
+
+.casinha {
+  width: 84px;
+  height: 64px;
+  overflow: visible;
+}
+
+.casinha-tapete {
+  fill: var(--tema-suave);
+}
+
+.casinha-parede {
+  fill: #d9b48a;
+  stroke: rgb(var(--sombra) / 0.55);
+  stroke-width: 1.5;
+}
+
+.casinha-tabuas {
+  fill: none;
+  stroke: rgb(var(--sombra) / 0.18);
+  stroke-width: 1.2;
+}
+
+.casinha-telhado {
+  fill: var(--tema);
+  stroke: rgb(var(--sombra) / 0.55);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.casinha-coracao {
+  fill: #fff;
+  opacity: 0.85;
+}
+
+.casinha-porta {
+  fill: #5a3e2b;
+}
+
+:root[data-modo='escuro'] .casinha-parede {
+  fill: #9a7a5c;
+}
+
+:root[data-modo='escuro'] .casinha-porta {
+  fill: #2c2018;
+}
+
+.mascote-palco-menu {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  height: auto;
+  margin: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.mascote-palco-menu.medido {
+  visibility: visible;
+}
+
+.mascote-palco-menu .mascote-gato {
+  pointer-events: auto;
+}

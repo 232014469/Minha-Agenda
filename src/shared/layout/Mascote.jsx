@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Sprite from '../gatinhos/Sprite'
 import { avancar, iniciarRotina } from '../gatinhos/rotina'
 import {
@@ -11,15 +11,17 @@ import {
 } from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
 import { miar } from '../sons'
+import Casinha from './Casinha'
 import './Mascote.css'
 
 /**
  * O mascote do menu: o gatinho escolhido nas Configurações. Além de reagir ao
  * clique, é ele quem comemora quando uma tarefa é concluída e fica triste
  * quando não é realizada ou é excluída (se "Gatinhos pela tela" estiver
- * ligado).
+ * ligado). `noMenu`: no menu do computador ele mora numa casinha e pode
+ * explorar o menu todo (pular perto dos links e subir pela parede).
  */
-export default function Mascote() {
+export default function Mascote({ noMenu = false }) {
   const { mascote, sons, bordoes, gatinhos } = usePreferencias()
 
   return (
@@ -28,6 +30,7 @@ export default function Mascote() {
       sons={sons}
       bordoes={bordoes}
       comemora={gatinhos}
+      noMenu={noMenu}
     />
   )
 }
@@ -114,6 +117,85 @@ function prefereMenosMovimento() {
  */
 const POSICAO = { meio: 'var(--mascote-meio, 50%)', fora: '-48px' }
 
+/** Altura dos pés do gatinho dentro do botão de 64px (o desenho fica no meio). */
+const PES = 43
+
+/** Como o gatinho se move entre dois lugares: pulo para baixo, para cima ou reto. */
+const CURVAS = {
+  cai: 'cubic-bezier(0.55, 0, 1, 0.45)',
+  sobe: 'cubic-bezier(0, 0.55, 0.45, 1)',
+}
+
+/**
+ * Onde fica o gatinho. Sem mapa (celular ou antes de medir), só a posição
+ * de lado; no menu, um ponto (x, pés) medido na tela: a casinha, fora da
+ * borda, ao lado de um link ou na parede direita.
+ */
+function posicao(onde, mapa) {
+  if (!mapa) return { left: POSICAO[onde] ?? POSICAO.meio }
+
+  const { largura, casa, links } = mapa
+  const [lugar, numero] = onde.split(':')
+  const alturaDoLink = links[Number(numero)] ?? casa.y
+  const pontos = {
+    meio: [casa.x, casa.y],
+    fora: [-48, casa.y],
+    link: [largura - 50, alturaDoLink],
+    parede: [largura - 14, alturaDoLink],
+    'parede-alto': [largura - 14, casa.y - 4],
+  }
+  const [x, y] = pontos[lugar] ?? pontos.meio
+
+  return { left: `${x}px`, top: `${y - PES}px` }
+}
+
+/**
+ * Mede o menu para o gatinho saber onde estão a casinha e os links. Só no
+ * menu do computador; refaz quando o menu muda de tamanho.
+ */
+function useMapaDoMenu(ativo, palcoRef, casaRef) {
+  const [mapa, setMapa] = useState(null)
+
+  useEffect(() => {
+    const palco = palcoRef.current
+
+    if (!ativo || !palco || typeof ResizeObserver === 'undefined') {
+      return undefined
+    }
+
+    function medir() {
+      const caixa = palco.getBoundingClientRect()
+      const casa = casaRef.current?.getBoundingClientRect()
+
+      if (!caixa.width || !casa?.width) {
+        setMapa(null)
+        return
+      }
+
+      const links = [
+        ...(palco.closest('nav')?.querySelectorAll('.layout-links a') ?? []),
+      ].map((link) => link.getBoundingClientRect().bottom - caixa.top - 6)
+
+      setMapa({
+        largura: caixa.width,
+        casa: {
+          x: casa.left + casa.width / 2 - caixa.left,
+          y: casa.bottom - caixa.top - 5,
+        },
+        links,
+      })
+    }
+
+    const observador = new ResizeObserver(medir)
+
+    observador.observe(palco)
+
+    return () => observador.disconnect()
+  }, [ativo, palcoRef, casaRef])
+
+  return mapa
+}
+
 /**
  * Gatinho em pixel art com uma rotina própria: fica parado piscando, senta,
  * deita e se levanta, ou sai andando pela esquerda e volta. Um clique faz ele
@@ -124,20 +206,30 @@ const POSICAO = { meio: 'var(--mascote-meio, 50%)', fora: '-48px' }
  * depois. Quando sai para passear pela borda de baixo da tela, deixa o menu
  * e só volta no fim do passeio.
  */
-function MascoteGato({ gato, sons, bordoes, comemora }) {
+function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
   const [cena, setCena] = useState(null)
   const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
   const [semRotina] = useState(prefereMenosMovimento)
   const [passeando, setPasseando] = useState(false)
+  const palcoRef = useRef(null)
+  const casaRef = useRef(null)
+  const mapa = useMapaDoMenu(noMenu, palcoRef, casaRef)
+  const quantosLinks = mapa?.links.length ?? 0
   const passo = rotina.passos[rotina.indice]
 
   useEffect(() => {
     if (cena || semRotina || passo.ms === null) return undefined
 
-    const espera = setTimeout(() => setRotina(avancar), passo.ms)
+    const espera = setTimeout(
+      () =>
+        setRotina((atual) =>
+          avancar(atual, Math.random, { links: quantosLinks }),
+        ),
+      passo.ms,
+    )
 
     return () => clearTimeout(espera)
-  }, [cena, semRotina, passo])
+  }, [cena, semRotina, passo, quantosLinks])
   const [cliques, setCliques] = useState([])
   const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
 
@@ -146,7 +238,10 @@ function MascoteGato({ gato, sons, bordoes, comemora }) {
       if (passeando) return
 
       setCena({ acao, vez: Date.now() })
-      setRotina(iniciarRotina('parado'))
+      // Explorando o menu, reage onde está e depois continua o caminho.
+      setRotina((atual) =>
+        atual.nome === 'explorar' ? atual : iniciarRotina('parado'),
+      )
       if (sons) {
         const { miado, bordao } = CENAS[acao]
 
@@ -191,8 +286,17 @@ function MascoteGato({ gato, sons, bordoes, comemora }) {
 
   const atual = cena ? CENAS[cena.acao] : null
   const emCena = Boolean(atual)
-  const onde = emCena || semRotina ? 'meio' : passo.onde
+  const onde = semRotina ? 'meio' : passo.onde
   const anda = !emCena && !semRotina && passo.anda
+  let transicao = 'none'
+
+  if (anda && mapa) {
+    transicao = `left ${passo.ms}ms linear, top ${passo.ms}ms ${
+      CURVAS[passo.curva] ?? 'linear'
+    }`
+  } else if (anda) {
+    transicao = `left ${passo.ms}ms linear`
+  }
 
   let desenho = null
 
@@ -223,23 +327,34 @@ function MascoteGato({ gato, sons, bordoes, comemora }) {
     )
   }
 
+  const botao = (
+    <button
+      type="button"
+      className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}`}
+      aria-label={`${nome}, o mascote. Clique para ele miar`}
+      title="Miau?"
+      tabIndex={passeando ? -1 : undefined}
+      style={{ ...posicao(onde, mapa), transition: transicao }}
+      onClick={clicar}
+    >
+      {desenho}
+      <Balao acao={cena?.acao} padrao="Miau!" bordoes={sons && bordoes} />
+    </button>
+  )
+
+  if (!noMenu) return <div className="mascote-palco">{botao}</div>
+
   return (
-    <div className="mascote-palco">
-      <button
-        type="button"
-        className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}`}
-        aria-label={`${nome}, o mascote. Clique para ele miar`}
-        title="Miau?"
-        tabIndex={passeando ? -1 : undefined}
-        style={{
-          left: POSICAO[onde],
-          transition: anda ? `left ${passo.ms}ms linear` : 'none',
-        }}
-        onClick={clicar}
+    <>
+      <div className="mascote-casa" ref={casaRef}>
+        <Casinha />
+      </div>
+      <div
+        className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
+        ref={palcoRef}
       >
-        {desenho}
-        <Balao acao={cena?.acao} padrao="Miau!" bordoes={sons && bordoes} />
-      </button>
-    </div>
+        {botao}
+      </div>
+    </>
   )
 }
