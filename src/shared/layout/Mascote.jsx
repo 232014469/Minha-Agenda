@@ -119,6 +119,7 @@ const POSICAO = {
   meio: 'var(--mascote-meio, 50%)',
   'frente-porta': 'var(--mascote-meio, 50%)',
   dentro: 'var(--mascote-meio, 50%)',
+  cochilo: 'var(--mascote-meio, 50%)',
   pote: 'var(--mascote-meio, 50%)',
   'brinca-esq': 'var(--mascote-meio, 50%)',
   'brinca-dir': 'var(--mascote-meio, 50%)',
@@ -147,6 +148,9 @@ function posicao(onde, mapa) {
     // Dia de chuva: logo antes da porta e lá dentro (atrás da parede)
     'frente-porta': [casa.esquerda + casa.largura * 0.82 + 20, casa.y],
     dentro: [casa.porta - 24, casa.y],
+    // Dormindo deitado lá dentro: o corpo fica atrás da parede e só a cabeça
+    // aparece na porta
+    cochilo: [casa.esquerda + 53, casa.y],
     // Na frente dos potinhos do quintal, do lado esquerdo da casinha
     pote: [casa.esquerda - 8, casa.y],
     // Pontas do quintal, para brincar com os bichinhos

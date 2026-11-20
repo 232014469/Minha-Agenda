@@ -8,7 +8,8 @@
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (a porta da casinha), 'frente-porta' (do lado direito da
- *   porta), 'dentro' (atrás da parede), 'pote' (nos potinhos), 'brinca-esq'
+ *   porta), 'dentro' (atrás da parede), 'cochilo' (deitado lá dentro, com a
+ *   cabeça aparecendo na porta), 'pote' (nos potinhos), 'brinca-esq'
  *   e 'brinca-dir' (pontas do quintal), 'lateral' e 'lateral-alto' (na parede
  *   de fora da casinha, embaixo e em cima) ou 'chao-esq' (no chão, do lado
  *   esquerdo da casinha);
@@ -93,11 +94,25 @@ export const ROTINAS = {
       anda: true,
       atras: true,
     },
-    { animacao: null, ms: 4000, onde: 'dentro', dorme: true, atras: true },
+    {
+      animacao: 'liedown',
+      fps: 4,
+      ms: 4000,
+      onde: 'cochilo',
+      dorme: true,
+      atras: true,
+    },
   ],
   // ...e continua dormindo enquanto chover...
   dormindo: () => [
-    { animacao: null, ms: 4000, onde: 'dentro', dorme: true, atras: true },
+    {
+      animacao: 'liedown',
+      fps: 4,
+      ms: 4000,
+      onde: 'cochilo',
+      dorme: true,
+      atras: true,
+    },
   ],
   // ...até a chuva passar: sai pela porta e volta ao seu lugar.
   acordar: () => [
