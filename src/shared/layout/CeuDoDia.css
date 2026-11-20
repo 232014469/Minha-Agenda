@@ -303,7 +303,10 @@
   filter: drop-shadow(0 0 6px rgb(255 224 102 / 0.9));
 }
 
+/* O clarão ilumina o fundo inteiro (não só o alto da tela); continua atrás
+   dos cards e do menu */
 .ceu-dia-clarao {
+  position: fixed;
   inset: 0;
   background: rgb(255 255 255 / 0.55);
 }
