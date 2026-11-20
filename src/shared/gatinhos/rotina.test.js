@@ -119,7 +119,12 @@ describe('rotina do gatinho', () => {
 
     const dormir = iniciarRotina('dormir').passos
 
-    expect(dormir[0]).toMatchObject({ onde: 'porta', some: true })
-    expect(dormir[1]).toMatchObject({ animacao: null, dorme: true })
+    expect(dormir.map((passo) => passo.onde)).toEqual([
+      'frente-porta',
+      'dentro',
+      'dentro',
+    ])
+    expect(dormir[1]).toMatchObject({ animacao: 'walk', atras: true })
+    expect(dormir[2]).toMatchObject({ animacao: null, dorme: true })
   })
 })

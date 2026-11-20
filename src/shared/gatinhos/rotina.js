@@ -8,6 +8,7 @@
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (a porta da casinha), 'chao' (no chão, do lado dela),
+ *   'frente-porta' (do lado direito da porta), 'dentro' (atrás da parede),
  *   'fora' (escondido além da borda esquerda; 'fora:N' na altura do link N),
  *   'link:N' (ao lado do link N do menu), 'parede:N' (na parede direita, na
  *   altura do link N) ou 'parede-alto' (na parede, na altura da casinha);
@@ -102,21 +103,45 @@ export const ROTINAS = {
   voltar: () => [...VOLTA_PRO_CESTO],
   // Dia de chuva: anda até a porta e some lá dentro, dormindo...
   dormir: () => [
+    // vai para o lado direito da porta...
+    { animacao: 'walk', fps: 8, ms: 500, onde: 'frente-porta', anda: true },
+    // ...e entra andando para a esquerda: o corpo some atrás da parede do
+    // lado esquerdo da porta (que fica por cima dele enquanto `atras`)
     {
       animacao: 'walk',
       fps: 8,
-      ms: 700,
-      onde: 'porta',
+      ms: 900,
+      virado: true,
+      onde: 'dentro',
       anda: true,
-      some: true,
+      atras: true,
     },
-    { animacao: null, ms: 4000, onde: 'porta', dorme: true },
+    { animacao: null, ms: 4000, onde: 'dentro', dorme: true, atras: true },
   ],
   // ...e continua dormindo enquanto chover...
-  dormindo: () => [{ animacao: null, ms: 4000, onde: 'porta', dorme: true }],
+  dormindo: () => [
+    { animacao: null, ms: 4000, onde: 'dentro', dorme: true, atras: true },
+  ],
   // ...até a chuva passar: sai pela porta e volta ao seu lugar.
   acordar: () => [
-    { animacao: 'walk', fps: 8, ms: 700, onde: 'meio', anda: true },
+    // sai da parede andando para a direita, até o lado da porta...
+    {
+      animacao: 'walk',
+      fps: 8,
+      ms: 900,
+      onde: 'frente-porta',
+      anda: true,
+      atras: true,
+    },
+    // ...e volta para a frente da porta
+    {
+      animacao: 'walk',
+      fps: 8,
+      ms: 500,
+      virado: true,
+      onde: 'meio',
+      anda: true,
+    },
   ],
   // Menu do computador: pula da casinha até o lado do primeiro link
   // (Dashboard), olha em volta, corre até a parede, sobe por ela e pula de

@@ -119,7 +119,8 @@ function prefereMenosMovimento() {
 const POSICAO = {
   meio: 'var(--mascote-meio, 50%)',
   chao: 'var(--mascote-meio, 50%)',
-  porta: 'var(--mascote-meio, 50%)',
+  'frente-porta': 'var(--mascote-meio, 50%)',
+  dentro: 'var(--mascote-meio, 50%)',
   fora: '-48px',
 }
 
@@ -145,8 +146,9 @@ function posicao(onde, mapa) {
   const alturaDoLink = links[Number(numero)] ?? casa.y
   const pontos = {
     meio: [casa.x, casa.y],
-    // Entrando pela porta (dia de chuva)
-    porta: [casa.x, casa.y - 6],
+    // Dia de chuva: logo antes da porta e lá dentro (atrás da parede)
+    'frente-porta': [casa.esquerda + casa.largura * 0.82 + 20, casa.y],
+    dentro: [casa.porta - 24, casa.y],
     chao: [casa.x - 52, casa.base - 2],
     fora: [-48, numero === undefined ? casa.base - 2 : alturaDoLink],
     link: [largura - 50, alturaDoLink],
@@ -174,7 +176,10 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
 
     function medir() {
       const caixa = palco.getBoundingClientRect()
-      const casa = casaRef.current?.getBoundingClientRect()
+      // A casinha em si (não a faixa inteira em volta dela)
+      const casa = casaRef.current
+        ?.querySelector('.casinha')
+        ?.getBoundingClientRect()
 
       if (!caixa.width || !casa?.width) {
         setMapa(null)
@@ -188,10 +193,14 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
       setMapa({
         largura: caixa.width,
         casa: {
-          // Na frente da porta, que fica do lado direito da casinha
-          x: casa.left + casa.width * 0.66 - caixa.left,
+          // Na frente da porta (colunas 33 a 40 de 50 do desenho)
+          x: casa.left + casa.width * 0.73 - caixa.left,
           y: casa.bottom - caixa.top - 2,
           base: casa.bottom - caixa.top,
+          esquerda: casa.left - caixa.left,
+          largura: casa.width,
+          // Borda esquerda da porta (coluna 33 de 50 do desenho)
+          porta: casa.left + casa.width * 0.66 - caixa.left,
         },
         links,
       })
@@ -360,11 +369,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
       tabIndex={passeando ? -1 : undefined}
       style={{
         ...posicao(onde, mapa),
-        // Entrando na casinha some aos poucos; lá dentro fica invisível
-        opacity: !emCena && (passo.some || passo.dorme) ? 0 : 1,
-        transition: `${transicao === 'none' ? '' : `${transicao}, `}opacity ${
-          passo.some ? passo.ms : 500
-        }ms ease`,
+        transition: transicao,
       }}
       onClick={clicar}
     >
@@ -385,13 +390,22 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
         ref={palcoRef}
       >
         {botao}
+        {mapa && passo.atras && !emCena && (
+          <Casinha
+            frente
+            style={{
+              left: `${mapa.casa.esquerda}px`,
+              top: `${mapa.casa.base - 80}px`,
+            }}
+          />
+        )}
         {mapa && passo.dorme && !emCena && (
           <span
             className="casinha-zzz"
             aria-hidden="true"
             style={{
-              left: `${mapa.casa.x}px`,
-              top: `${mapa.casa.y - 22}px`,
+              left: `${mapa.casa.esquerda + mapa.casa.largura * 0.84}px`,
+              top: `${mapa.casa.y - 30}px`,
             }}
           >
             <span>Z</span>

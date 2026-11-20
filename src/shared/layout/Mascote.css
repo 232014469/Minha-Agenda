@@ -206,3 +206,14 @@
     translate: 12px -26px;
   }
 }
+
+/* Parede do lado esquerdo da porta (colunas 0 a 33, linhas 21 a 40 do
+   desenho), por cima do gatinho quando ele entra ou sai da casinha */
+.casinha-frente {
+  position: absolute;
+  width: 100px;
+  height: 80px;
+  clip-path: inset(52.5% 34% 0 0);
+  image-rendering: pixelated;
+  pointer-events: none;
+}
