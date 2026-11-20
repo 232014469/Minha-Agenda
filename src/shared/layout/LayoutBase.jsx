@@ -6,6 +6,7 @@ import { useDados } from '../../dados/useDados'
 import { felicidadeDoGatinho } from '../gatinhos/felicidade'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
+import FraseDoGatinho from './FraseDoGatinho'
 import Icone from './Icone'
 import AlertaPodeNao from './AlertaPodeNao'
 import { temAtrasadas } from './alerta'
@@ -64,7 +65,7 @@ export default function LayoutBase() {
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
           {!celular && <Mascote noMenu chuva={chuva} felicidade={felicidade} />}
-          <p className="layout-lema">{APP.lema}</p>
+          <FraseDoGatinho className="layout-lema" humor={felicidade.nivel} />
         </div>
 
         <ul className="layout-links">
