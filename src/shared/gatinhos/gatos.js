@@ -17,8 +17,9 @@ export const EVENTO_TRISTE = 'wolf-study:triste'
 export const EVENTO_FALTA = 'wolf-study:falta'
 
 /**
- * Avisado pelo alerta de entrada ("Pode não!") com o id da tarefa atrasada
- * ou para hoje: o post-it dela no quadro "Esta semana" pisca.
+ * Avisado pelo alerta de entrada ("Pode não!") com os ids de todas as
+ * atividades atrasadas ou para hoje: os post-its delas no quadro "Esta
+ * semana" piscam.
  */
 export const EVENTO_ALERTA_POSTIT = 'wolf-study:alerta-postit'
 

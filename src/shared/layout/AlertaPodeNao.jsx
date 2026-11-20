@@ -98,6 +98,7 @@ export default function AlertaPodeNao({ hoje = new Date() }) {
   const fase = alerta?.fase
   const esperaToque = alerta?.esperaToque
   const alvo = alerta?.alvo
+  const urgentes = alerta?.urgentes
 
   // Marca o aviso de hoje e tenta tocar o bordão (uma vez)
   useEffect(() => {
@@ -131,21 +132,21 @@ export default function AlertaPodeNao({ hoje = new Date() }) {
     return () => clearTimeout(espera)
   }, [fase, esperaToque])
 
-  // Chegou no post-it: ele pisca e o alerta some
+  // Chegou no post-it: todos os atrasados e os de hoje piscam, e o alerta some
   useEffect(() => {
     if (fase !== 'voando') return undefined
 
     const fim = setTimeout(() => {
-      if (alvo) {
-        window.dispatchEvent(
-          new CustomEvent(EVENTO_ALERTA_POSTIT, { detail: alvo.id }),
-        )
-      }
+      window.dispatchEvent(
+        new CustomEvent(EVENTO_ALERTA_POSTIT, {
+          detail: urgentes.map((tarefa) => tarefa.id),
+        }),
+      )
       setAlerta(null)
     }, TEMPO_VOANDO)
 
     return () => clearTimeout(fim)
-  }, [fase, alvo])
+  }, [fase, urgentes])
 
   function tocar() {
     if (alerta?.esperaToque) {
@@ -160,7 +161,6 @@ export default function AlertaPodeNao({ hoje = new Date() }) {
 
   if (!alerta) return null
 
-  const { urgentes } = alerta
   const primeira = urgentes[0]
 
   return (

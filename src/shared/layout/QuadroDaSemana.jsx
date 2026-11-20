@@ -7,19 +7,21 @@ import { atividadesDaSemana, rotuloDoDia } from './semana'
 /**
  * Quadro fixo no menu lateral com as atividades pendentes da semana, em
  * post-its só para ver (não são clicáveis). Fica sempre à mostra. O post-it
- * avisado pelo alerta "Pode não!" pisca por alguns segundos.
+ * de cada atividade atrasada ou de hoje avisada pelo alerta "Pode não!" pisca
+ * por alguns segundos.
  */
 export default function QuadroDaSemana({ hoje = new Date() }) {
   const { materias, tarefas } = useDados()
-  const [alertado, setAlertado] = useState(null)
+  // Ids das atividades atrasadas ou de hoje avisadas pelo alerta
+  const [alertados, setAlertados] = useState([])
 
   useEffect(() => {
     let fim
 
     function alertar(evento) {
       clearTimeout(fim)
-      setAlertado(evento.detail)
-      fim = setTimeout(() => setAlertado(null), 6000)
+      setAlertados([evento.detail].flat())
+      fim = setTimeout(() => setAlertados([]), 6000)
     }
 
     window.addEventListener(EVENTO_ALERTA_POSTIT, alertar)
@@ -50,7 +52,7 @@ export default function QuadroDaSemana({ hoje = new Date() }) {
                 key={tarefa.id}
                 className={`semana-postit materia-cor-${corDe(tarefa.materiaId)}${
                   dia === 'Hoje' ? ' semana-hoje' : ''
-                }${alertado === tarefa.id ? ' semana-alerta' : ''}`}
+                }${alertados.includes(tarefa.id) ? ' semana-alerta' : ''}`}
                 data-tarefa-id={tarefa.id}
                 title={`${tarefa.titulo} · ${nomeDe(tarefa.materiaId)}`}
               >

@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { act, cleanup, render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import DadosProvider from '../../dados/DadosProvider'
 import QuadroDaSemana from './QuadroDaSemana'
 import { atividadesDaSemana, rotuloDoDia } from './semana'
 import { CHAVE } from '../../dados/armazenamento'
+import { EVENTO_ALERTA_POSTIT } from '../gatinhos/gatos'
 
 // Quinta-feira, 12/11/2026: a semana vai de segunda 09/11 a domingo 15/11.
 const HOJE = new Date(2026, 10, 12, 10, 0)
@@ -89,5 +90,27 @@ describe('QuadroDaSemana', () => {
     )
 
     expect(screen.getByText('Nada pendente nesta semana.')).toBeInTheDocument()
+  })
+
+  it('o alerta faz piscar todos os post-its atrasados e de hoje', () => {
+    render(
+      <DadosProvider>
+        <QuadroDaSemana hoje={HOJE} />
+      </DadosProvider>,
+    )
+
+    act(() =>
+      window.dispatchEvent(
+        new CustomEvent(EVENTO_ALERTA_POSTIT, { detail: [2, 3] }),
+      ),
+    )
+
+    const itens = within(
+      screen.getByRole('region', { name: 'Esta semana' }),
+    ).getAllByRole('listitem')
+
+    expect(itens[0]).toHaveClass('semana-alerta')
+    expect(itens[1]).toHaveClass('semana-alerta')
+    expect(itens[2]).not.toHaveClass('semana-alerta')
   })
 })
