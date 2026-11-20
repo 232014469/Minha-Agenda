@@ -2,8 +2,8 @@ import { APP } from '../../config/app'
 
 /**
  * Frases embaixo da casinha, conforme o humor do gatinho (da felicidade).
- * Elas vão se revezando: triste, um empurrãozinho para não desistir;
- * radiante, comemoração.
+ * Uma por dia: triste, um empurrãozinho para não desistir; radiante,
+ * comemoração.
  */
 export const FRASES_DO_GATINHO = {
   triste: [
@@ -33,9 +33,15 @@ export const FRASES_DO_GATINHO = {
   ],
 }
 
-/** A frase da vez para o humor (`vez` vai contando e dá a volta na lista). */
-export function fraseDoGatinho(humor, vez = 0) {
+/**
+ * A frase do dia para o humor: troca à meia-noite (hora local) e segue a
+ * ordem da lista, recomeçando depois da última.
+ */
+export function fraseDoGatinho(humor, agora = new Date()) {
   const frases = FRASES_DO_GATINHO[humor] ?? FRASES_DO_GATINHO.feliz
+  const dia = Math.floor(
+    Date.UTC(agora.getFullYear(), agora.getMonth(), agora.getDate()) / 86400000,
+  )
 
-  return frases[vez % frases.length]
+  return frases[dia % frases.length]
 }
