@@ -1,0 +1,100 @@
+/* Barrinha de felicidade do gatinho, embaixo da casinha */
+.felicidade {
+  --felicidade-cor: var(--tema);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 4px;
+  cursor: default;
+}
+
+.felicidade-radiante {
+  --felicidade-cor: #e8577a;
+}
+
+.felicidade-chateado {
+  --felicidade-cor: #e0a030;
+}
+
+.felicidade-triste {
+  --felicidade-cor: #8a97a8;
+}
+
+.felicidade-coracao {
+  fill: var(--felicidade-cor);
+}
+
+.felicidade-contorno {
+  fill: #3a2a20;
+}
+
+.felicidade-brilho {
+  fill: #fff;
+}
+
+.felicidade-icone {
+  flex: none;
+}
+
+/* Radiante, o coração bate; triste, fica parado e meio caído */
+.felicidade-radiante .felicidade-icone {
+  animation: felicidade-bate 1.6s ease-in-out infinite;
+}
+
+.felicidade-triste .felicidade-icone {
+  transform: rotate(-12deg) translateY(1px);
+}
+
+.felicidade-trilho {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 2px solid #3a2a20;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--felicidade-cor) 18%, #fff);
+}
+
+.felicidade-gomo {
+  width: 8px;
+  height: 6px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--felicidade-cor) 22%, transparent);
+  transition: background-color 0.6s ease;
+}
+
+.felicidade-gomo.cheio {
+  background: var(--felicidade-cor);
+}
+
+:root[data-modo='escuro'] .felicidade-trilho {
+  border-color: #e6e1f0;
+  background: color-mix(in srgb, var(--felicidade-cor) 18%, transparent);
+}
+
+:root[data-modo='escuro'] .felicidade-contorno {
+  fill: #e6e1f0;
+}
+
+@keyframes felicidade-bate {
+  0%,
+  70%,
+  100% {
+    transform: scale(1);
+  }
+
+  80% {
+    transform: scale(1.25);
+  }
+
+  90% {
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .felicidade-radiante .felicidade-icone {
+    animation: none;
+  }
+}

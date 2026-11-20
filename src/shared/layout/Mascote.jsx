@@ -10,6 +10,7 @@ import {
 import { usePreferencias } from '../preferencias'
 import { miar } from '../sons'
 import Casinha from './Casinha'
+import BarraFelicidade from './BarraFelicidade'
 import Quintal from './Quintal'
 import './Mascote.css'
 
@@ -20,7 +21,11 @@ import './Mascote.css'
  * ligado). `noMenu`: no menu do computador ele mora numa casinha e pode
  * subir pela parede do lado dela e pular de volta.
  */
-export default function Mascote({ noMenu = false, chuva = false }) {
+export default function Mascote({
+  noMenu = false,
+  chuva = false,
+  felicidade = null,
+}) {
   const { mascote, sons, bordoes, gatinhos } = usePreferencias()
 
   return (
@@ -31,6 +36,7 @@ export default function Mascote({ noMenu = false, chuva = false }) {
       comemora={gatinhos}
       noMenu={noMenu}
       chuva={chuva}
+      felicidade={felicidade}
     />
   )
 }
@@ -234,7 +240,16 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
  * machuca e fica vermelho. As reações interrompem a rotina, que recomeça
  * depois.
  */
-function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
+function MascoteGato({
+  gato,
+  sons,
+  bordoes,
+  comemora,
+  noMenu,
+  chuva,
+  felicidade,
+}) {
+  const humor = felicidade?.nivel ?? 'feliz'
   const [cena, setCena] = useState(null)
   const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
   const [semRotina] = useState(prefereMenosMovimento)
@@ -264,6 +279,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
         avancar(atual, Math.random, {
           links: quantosLinks,
           chuva: dormeNaChuva,
+          humor,
         }),
       )
     }, passo.ms)
@@ -275,6 +291,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
     passo,
     quantosLinks,
     dormeNaChuva,
+    humor,
     saindoDeCasa,
     cenaDepois,
   ])
@@ -392,10 +409,12 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
       <div className="mascote-casa" ref={casaRef}>
         <Quintal
           chuva={chuva}
+          humor={humor}
           brincando={rotina.nome === 'brincar' ? rotina.vez : null}
         />
         <Casinha />
       </div>
+      {felicidade && <BarraFelicidade felicidade={felicidade} />}
       <div
         className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
         ref={palcoRef}

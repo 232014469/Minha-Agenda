@@ -202,6 +202,29 @@ const SORTEAVEIS = [
 ]
 
 /**
+ * O que ele sorteia conforme o humor (`opcoes.humor`, da felicidade): triste
+ * só fica sentado ou deitado; chateado não brinca; radiante brinca e explora
+ * mais. Explorar, comer e brincar só existem quando há menu (`opcoes.links`).
+ */
+function sorteaveisDoHumor({ links, humor }) {
+  if (humor === 'triste') {
+    return [
+      ['sentado', 1],
+      ['deitar', 3],
+    ]
+  }
+  if (!links) return SORTEAVEIS
+  if (humor === 'chateado') {
+    return [...SORTEAVEIS, ['deitar', 2], ['comer', 1.5], ['explorar', 1]]
+  }
+  if (humor === 'radiante') {
+    return [...SORTEAVEIS, ['explorar', 3], ['comer', 1.5], ['brincar', 4]]
+  }
+
+  return [...SORTEAVEIS, ['explorar', 2], ['comer', 1.5], ['brincar', 2.5]]
+}
+
+/**
  * Depois de qualquer coisa, volta a ficar parado; parado, sorteia a próxima.
  * Explorar o menu só entra no sorteio quando há menu (`opcoes.links`).
  */
@@ -213,9 +236,7 @@ export function proximaRotina(atual, sorteio = Math.random, opcoes = {}) {
   if (dormindo) return 'acordar'
   if (atual !== 'parado') return 'parado'
 
-  const sorteaveis = opcoes.links
-    ? [...SORTEAVEIS, ['explorar', 2], ['comer', 1.5], ['brincar', 2.5]]
-    : SORTEAVEIS
+  const sorteaveis = sorteaveisDoHumor(opcoes)
   const total = sorteaveis.reduce((soma, [, peso]) => soma + peso, 0)
   let alvo = sorteio() * total
 

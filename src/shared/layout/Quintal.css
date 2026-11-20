@@ -39,6 +39,48 @@
   fill: color-mix(in srgb, var(--tema) 70%, #000);
 }
 
+.quintal-petala-murcha {
+  fill: #b7a596;
+}
+
+.quintal-miolo-murcho {
+  fill: #a8884a;
+}
+
+.quintal-caule-murcho {
+  fill: #8a7a52;
+}
+
+/* Florzinhas novas brotam devagar quando fica tudo em dia */
+.quintal-florzinha {
+  transform-origin: 50% 100%;
+  animation: quintal-brota 1.2s ease-out both;
+}
+
+.quintal-florzinha:nth-of-type(2n) {
+  animation-delay: 0.3s;
+}
+
+.quintal-florzinha:nth-of-type(3n) {
+  animation-delay: 0.6s;
+}
+
+.quintal-na-cerca {
+  z-index: 1;
+}
+
+@keyframes quintal-brota {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
 .quintal-contorno {
   fill: #3a2a20;
 }
@@ -299,7 +341,8 @@
   .quintal-borboleta,
   .quintal-borboleta .pixel-arte,
   .quintal-vagalume,
-  .quintal-pingo {
+  .quintal-pingo,
+  .quintal-florzinha {
     animation: none !important;
   }
 }

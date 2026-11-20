@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import { APP } from '../../config/app'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
+import { felicidadeDoGatinho } from '../gatinhos/felicidade'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
@@ -28,9 +29,15 @@ const itens = [
 
 /** Moldura das telas: menu de caderno na lateral (barra inferior no celular). */
 export default function LayoutBase() {
-  const { salvou, semestre, semestres, escolherSemestre, tarefas } = useDados()
+  const { salvou, semestre, semestres, escolherSemestre, tarefas, materias } =
+    useDados()
   // Dia de chuva (atividade atrasada): o gatinho dorme na casinha
   const chuva = temAtrasadas(tarefas)
+  // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim florido
+  const felicidade = useMemo(
+    () => felicidadeDoGatinho({ tarefas, materias }),
+    [tarefas, materias],
+  )
   const [configAberta, setConfigAberta] = useState(false)
   // No celular o menu vira a barra de baixo: o gatinho vai para cima do
   // título da tela. Só um gatinho existe por vez (miados não se repetem).
@@ -56,7 +63,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && <Mascote noMenu chuva={chuva} />}
+          {!celular && <Mascote noMenu chuva={chuva} felicidade={felicidade} />}
           <p className="layout-lema">{APP.lema}</p>
         </div>
 
