@@ -140,7 +140,8 @@ export const ROTINAS = {
     { animacao: 'walk', fps: 10, ms: 1300, onde: 'meio', anda: true },
   ],
   // Menu do computador: corre até a parede de fora da casinha, se agarra,
-  // sobe até o telhado, olha em volta lá de cima e pula de volta para o chão.
+  // escala até o beiral, sobe na pontinha do telhado, olha em volta lá de
+  // cima e pula de volta para o chão.
   explorar: (s) => [
     {
       animacao: 'run',
@@ -150,22 +151,24 @@ export const ROTINAS = {
       onde: 'lateral',
       anda: true,
     },
-    { animacao: 'wallgrab', fps: 10, ms: 700, onde: 'lateral' },
+    { animacao: 'wallgrab', fps: 10, ms: 600, onde: 'lateral' },
     {
       animacao: 'wallclimb',
-      fps: 8,
-      ms: 1100,
+      fps: 7,
+      ms: 1300,
       onde: 'lateral-alto',
       anda: true,
+      curva: 'devagar',
     },
     {
       animacao: 'jump',
-      fps: 10,
-      ms: 500,
+      fps: 12,
+      ms: 400,
       onde: 'telhado',
       anda: true,
       curva: 'sobe',
     },
+    { animacao: 'land', fps: 10, ms: 300, vezes: '1', onde: 'telhado' },
     {
       animacao: 'idle_blink',
       fps: 7,

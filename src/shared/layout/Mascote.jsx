@@ -131,6 +131,8 @@ const PES = 43
 const CURVAS = {
   cai: 'cubic-bezier(0.55, 0, 1, 0.45)',
   sobe: 'cubic-bezier(0, 0.55, 0.45, 1)',
+  // Escalando: começa e termina suave, sem arrancar
+  devagar: 'cubic-bezier(0.45, 0, 0.55, 1)',
 }
 
 /**
@@ -152,10 +154,12 @@ function posicao(onde, mapa) {
     // Pontas do quintal, para brincar com os bichinhos
     'brinca-esq': [casa.esquerda + casa.largura / 2 - 70, casa.y],
     'brinca-dir': [casa.esquerda + casa.largura / 2 + 62, casa.y],
-    // Parede de fora da casinha (lado esquerdo), o telhado e o chão ao lado
-    lateral: [casa.esquerda - 8, casa.y],
-    'lateral-alto': [casa.esquerda - 8, casa.base - 30],
-    telhado: [casa.esquerda + 22, casa.base - 44],
+    // Parede de fora da casinha (lado esquerdo): as costas do gatinho
+    // encostam na parede (4px dentro do desenho); sobe até o beiral e senta
+    // na pontinha do telhado. Depois pula para o chão ao lado.
+    lateral: [casa.esquerda - 4, casa.y],
+    'lateral-alto': [casa.esquerda - 4, casa.base - 28],
+    telhado: [casa.esquerda + 6, casa.base - 36],
     'chao-esq': [casa.esquerda - 34, casa.y],
   }
   const [x, y] = pontos[onde] ?? pontos.meio
