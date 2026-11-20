@@ -9,9 +9,8 @@
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (a porta da casinha), 'frente-porta' (do lado direito da
  *   porta), 'dentro' (atrás da parede), 'pote' (nos potinhos), 'brinca-esq'
- *   e 'brinca-dir' (pontas do quintal), 'lateral' e 'lateral-alto' (na parede
- *   de fora da casinha, embaixo e em cima), 'telhado' ou 'chao-esq' (no chão,
- *   do lado esquerdo da casinha);
+ *   e 'brinca-dir' (pontas do quintal), 'lateral' (na parede de fora da
+ *   casinha), 'telhado' ou 'chao-esq' (no chão, do lado esquerdo da casinha);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
  *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto.
  */
@@ -139,9 +138,9 @@ export const ROTINAS = {
     },
     { animacao: 'walk', fps: 10, ms: 1300, onde: 'meio', anda: true },
   ],
-  // Menu do computador: corre até a parede de fora da casinha, se agarra,
-  // escala até o beiral, sobe na pontinha do telhado, olha em volta lá de
-  // cima e pula de volta para o chão.
+  // Menu do computador: corre até a parede de fora da casinha, se apoia nela,
+  // pula para a pontinha do telhado, olha em volta lá de cima e pula de
+  // volta para o chão.
   explorar: (s) => [
     {
       animacao: 'run',
@@ -152,18 +151,11 @@ export const ROTINAS = {
       anda: true,
     },
     { animacao: 'wallgrab', fps: 10, ms: 600, onde: 'lateral' },
-    {
-      animacao: 'wallclimb',
-      fps: 7,
-      ms: 1300,
-      onde: 'lateral-alto',
-      anda: true,
-      curva: 'devagar',
-    },
+    // ...e, apoiado na parede, pula direto para a pontinha do telhado
     {
       animacao: 'jump',
-      fps: 12,
-      ms: 400,
+      fps: 10,
+      ms: 550,
       onde: 'telhado',
       anda: true,
       curva: 'sobe',
