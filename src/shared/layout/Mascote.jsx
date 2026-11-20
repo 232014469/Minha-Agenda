@@ -238,23 +238,39 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   // Só dorme na chuva quando tem casinha (menu do computador)
   const dormeNaChuva = Boolean(mapa) && chuva
   const passo = rotina.passos[rotina.indice]
+  // Reação que chegou com ele dentro da casinha: acontece depois que sair
+  const [cenaDepois, setCenaDepois] = useState(null)
+  const dentroDeCasa = rotina.nome === 'dormir' || rotina.nome === 'dormindo'
+  const saindoDeCasa =
+    rotina.nome === 'acordar' && rotina.indice === rotina.passos.length - 1
 
   useEffect(() => {
     if (cena || semRotina || passo.ms === null) return undefined
 
-    const espera = setTimeout(
-      () =>
-        setRotina((atual) =>
-          avancar(atual, Math.random, {
-            links: quantosLinks,
-            chuva: dormeNaChuva,
-          }),
-        ),
-      passo.ms,
-    )
+    const espera = setTimeout(() => {
+      if (saindoDeCasa && cenaDepois) {
+        setCena({ acao: cenaDepois, vez: Date.now() })
+        setCenaDepois(null)
+      }
+
+      setRotina((atual) =>
+        avancar(atual, Math.random, {
+          links: quantosLinks,
+          chuva: dormeNaChuva,
+        }),
+      )
+    }, passo.ms)
 
     return () => clearTimeout(espera)
-  }, [cena, semRotina, passo, quantosLinks, dormeNaChuva])
+  }, [
+    cena,
+    semRotina,
+    passo,
+    quantosLinks,
+    dormeNaChuva,
+    saindoDeCasa,
+    cenaDepois,
+  ])
   const [cliques, setCliques] = useState([])
   const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
 
@@ -262,11 +278,17 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
     (acao) => {
       if (passeando) return
 
-      setCena({ acao, vez: Date.now() })
-      // Explorando o menu, reage onde está e depois continua o caminho.
-      setRotina((atual) =>
-        atual.nome === 'explorar' ? atual : iniciarRotina('parado'),
-      )
+      if (dentroDeCasa) {
+        // Dentro da casinha: primeiro sai pela borda da parede, depois reage
+        setCenaDepois(acao)
+        setRotina(iniciarRotina('acordar'))
+      } else {
+        setCena({ acao, vez: Date.now() })
+        // Explorando o menu, reage onde está e depois continua o caminho.
+        setRotina((atual) =>
+          atual.nome === 'explorar' ? atual : iniciarRotina('parado'),
+        )
+      }
       if (sons) {
         const { miado, bordao } = CENAS[acao]
 
@@ -275,7 +297,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
         })
       }
     },
-    [sons, bordoes, passeando],
+    [sons, bordoes, passeando, dentroDeCasa],
   )
   const sairPassear = useCallback(() => {
     setPasseando(true)
