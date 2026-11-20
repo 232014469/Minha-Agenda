@@ -8,6 +8,7 @@ import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
 import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
 import AlertaPodeNao from './AlertaPodeNao'
+import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
@@ -79,6 +80,7 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
+        <CeuDoDia />
         <CeuEstrelado />
         <div className="layout-semestre" ref={cantoRef}>
           <label htmlFor="layout-semestre">Semestre</label>

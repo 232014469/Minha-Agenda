@@ -1,5 +1,6 @@
 import {
   compararPrazo,
+  ehAtrasada,
   ehConcluida,
   ehNaoRealizada,
 } from '../../features/agenda/agendaUtils'
@@ -21,4 +22,9 @@ export function tarefasUrgentes(tarefas, hoje = new Date()) {
         new Date(tarefa.prazo) < amanha,
     )
     .sort(compararPrazo)
+}
+
+/** Chove no céu do modo claro enquanto houver atividade pendente atrasada. */
+export function temAtrasadas(tarefas) {
+  return tarefas.some((tarefa) => ehAtrasada(tarefa))
 }

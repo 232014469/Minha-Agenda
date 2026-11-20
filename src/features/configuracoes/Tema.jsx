@@ -24,8 +24,8 @@ export default function Tema() {
     >
       <h2 id="config-tema-titulo">Tema</h2>
       <p>
-        A cor do menu, das abas, das barras de progresso e das manchas do topo,
-        e se o app fica claro ou escuro.
+        A cor do menu, das abas e das barras de progresso, e se o app fica claro
+        (com sol) ou escuro (com estrelas).
       </p>
       <fieldset className="config-temas">
         <legend className="so-leitor">Aparência</legend>
