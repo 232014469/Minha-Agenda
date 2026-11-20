@@ -143,6 +143,25 @@ export const ROTINAS = {
       anda: true,
     },
   ],
+  // Menu do computador: vai até os potinhos do quintal, come e volta
+  comer: (s) => [
+    {
+      animacao: 'walk',
+      fps: 10,
+      ms: 1300,
+      virado: true,
+      onde: 'pote',
+      anda: true,
+    },
+    {
+      animacao: 'crouch',
+      fps: 6,
+      ms: entre(3000, 5000, s),
+      virado: true,
+      onde: 'pote',
+    },
+    { animacao: 'walk', fps: 10, ms: 1300, onde: 'meio', anda: true },
+  ],
   // Menu do computador: pula da casinha até o lado do primeiro link
   // (Dashboard), olha em volta, corre até a parede, sobe por ela e pula de
   // volta para casa.
@@ -223,7 +242,7 @@ export function proximaRotina(atual, sorteio = Math.random, opcoes = {}) {
   if (atual !== 'parado') return 'parado'
 
   const sorteaveis = opcoes.links
-    ? [...SORTEAVEIS, ['explorar', 2.5]]
+    ? [...SORTEAVEIS, ['explorar', 2.5], ['comer', 1.5]]
     : SORTEAVEIS
   const total = sorteaveis.reduce((soma, [, peso]) => soma + peso, 0)
   let alvo = sorteio() * total

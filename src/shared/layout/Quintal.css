@@ -1,0 +1,233 @@
+/* Quintal da casinha: fica atrás da casinha e do gatinho */
+.quintal {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.quintal > .pixel-arte,
+.quintal > span {
+  position: absolute;
+}
+
+.quintal-grama {
+  fill: var(--tema);
+}
+
+.quintal-grama-clara {
+  fill: color-mix(in srgb, var(--tema) 65%, #fff);
+}
+
+.quintal-grama-escura {
+  fill: color-mix(in srgb, var(--tema) 70%, #000);
+}
+
+.quintal-petala {
+  fill: #fff;
+}
+
+.quintal-petala-rosa {
+  fill: #f2a7b8;
+}
+
+.quintal-miolo {
+  fill: #f6c945;
+}
+
+.quintal-caule {
+  fill: color-mix(in srgb, var(--tema) 70%, #000);
+}
+
+.quintal-contorno {
+  fill: #3a2a20;
+}
+
+.quintal-pote {
+  fill: #c0504d;
+}
+
+.quintal-pote-dentro {
+  fill: #e07a6e;
+}
+
+.quintal-racao {
+  fill: #8a5a32;
+}
+
+.quintal-agua {
+  fill: #6fb4e0;
+}
+
+.quintal-agua-brilho {
+  fill: #b9e2fa;
+}
+
+.quintal-madeira {
+  fill: #9b6b43;
+}
+
+.quintal-madeira-clara {
+  fill: #c9935f;
+}
+
+.quintal-poca {
+  fill: #8fb3d6;
+}
+
+.quintal-poca-brilho {
+  fill: #d6e9fa;
+}
+
+:root[data-modo='escuro'] .quintal-grama-clara {
+  fill: color-mix(in srgb, var(--tema) 85%, #fff);
+}
+
+:root[data-modo='escuro'] .quintal-grama {
+  fill: color-mix(in srgb, var(--tema) 75%, #000);
+}
+
+:root[data-modo='escuro'] .quintal-grama-escura {
+  fill: color-mix(in srgb, var(--tema) 50%, #000);
+}
+
+/* Poça e pingos: só quando chove */
+.quintal-poca,
+.quintal-pingo {
+  display: none;
+}
+
+.quintal-chuva .quintal-poca {
+  display: block;
+}
+
+.quintal-chuva .quintal-pingo {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background: #8fb3d6;
+  animation: quintal-pingo 0.9s linear infinite;
+}
+
+.quintal-chuva .quintal-pingo + .quintal-pingo {
+  animation-delay: 0.45s;
+}
+
+@keyframes quintal-pingo {
+  from {
+    opacity: 0;
+    translate: 0 -14px;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    translate: 0 0;
+  }
+}
+
+/* Borboleta: só de dia e sem chuva, voando em volta da casinha */
+.quintal-borboleta {
+  display: none;
+  left: 50%;
+  bottom: 30px;
+  fill: #f2a7b8;
+}
+
+.quintal-borboleta .quintal-petala {
+  fill: #f6c945;
+}
+
+:root:not([data-modo='escuro'])
+  .quintal:not(.quintal-chuva)
+  .quintal-borboleta {
+  display: block;
+  animation: quintal-voa 16s ease-in-out infinite;
+}
+
+.quintal-borboleta .pixel-arte {
+  display: block;
+  animation: quintal-bate-asa 0.35s steps(2) infinite;
+}
+
+@keyframes quintal-bate-asa {
+  50% {
+    scale: 0.4 1;
+  }
+}
+
+@keyframes quintal-voa {
+  0%,
+  100% {
+    translate: 58px -6px;
+  }
+
+  20% {
+    translate: 30px -30px;
+  }
+
+  40% {
+    translate: -20px -40px;
+  }
+
+  60% {
+    translate: -66px -18px;
+  }
+
+  80% {
+    translate: -10px -8px;
+  }
+}
+
+/* Vaga-lumes: só à noite e sem chuva, piscando e flutuando */
+.quintal-vagalume {
+  display: none;
+  width: 3px;
+  height: 3px;
+  background: #e8f58a;
+  box-shadow: 0 0 6px 2px rgb(232 245 138 / 0.7);
+}
+
+:root[data-modo='escuro'] .quintal:not(.quintal-chuva) .quintal-vagalume {
+  display: block;
+  animation: quintal-vagalume 4s ease-in-out infinite;
+}
+
+.quintal-vagalume:nth-of-type(2n) {
+  animation-delay: -1.5s !important;
+  animation-duration: 5s !important;
+}
+
+.quintal-vagalume:nth-of-type(3n) {
+  animation-delay: -3s !important;
+}
+
+@keyframes quintal-vagalume {
+  0%,
+  100% {
+    opacity: 0.15;
+    translate: 0 0;
+  }
+
+  40% {
+    opacity: 1;
+    translate: 6px -6px;
+  }
+
+  70% {
+    opacity: 0.6;
+    translate: -4px -10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quintal-borboleta,
+  .quintal-borboleta .pixel-arte,
+  .quintal-vagalume,
+  .quintal-pingo {
+    animation: none !important;
+  }
+}

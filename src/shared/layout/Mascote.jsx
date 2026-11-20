@@ -12,6 +12,7 @@ import {
 import { usePreferencias } from '../preferencias'
 import { miar } from '../sons'
 import Casinha from './Casinha'
+import Quintal from './Quintal'
 import './Mascote.css'
 
 /**
@@ -121,6 +122,7 @@ const POSICAO = {
   chao: 'var(--mascote-meio, 50%)',
   'frente-porta': 'var(--mascote-meio, 50%)',
   dentro: 'var(--mascote-meio, 50%)',
+  pote: 'var(--mascote-meio, 50%)',
   fora: '-48px',
 }
 
@@ -149,6 +151,8 @@ function posicao(onde, mapa) {
     // Dia de chuva: logo antes da porta e lá dentro (atrás da parede)
     'frente-porta': [casa.esquerda + casa.largura * 0.82 + 20, casa.y],
     dentro: [casa.porta - 24, casa.y],
+    // Na frente dos potinhos do quintal, do lado esquerdo da casinha
+    pote: [casa.esquerda - 8, casa.y],
     chao: [casa.x - 52, casa.base - 2],
     fora: [-48, numero === undefined ? casa.base - 2 : alturaDoLink],
     link: [largura - 50, alturaDoLink],
@@ -405,6 +409,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   return (
     <>
       <div className="mascote-casa" ref={casaRef}>
+        <Quintal chuva={chuva} />
         <Casinha />
       </div>
       <div
@@ -426,8 +431,8 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
             className="casinha-zzz"
             aria-hidden="true"
             style={{
-              left: `${mapa.casa.esquerda + mapa.casa.largura * 0.84}px`,
-              top: `${mapa.casa.y - 30}px`,
+              left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
+              top: `${mapa.casa.y - 34}px`,
             }}
           >
             <span>Z</span>

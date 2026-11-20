@@ -65,7 +65,8 @@ describe('rotina do gatinho', () => {
 
   it('explorar só entra no sorteio quando há menu', () => {
     expect(proximaRotina('parado', () => 0.99)).toBe('passear')
-    expect(proximaRotina('parado', () => 0.99, { links: 4 })).toBe('explorar')
+    expect(proximaRotina('parado', () => 0.8, { links: 4 })).toBe('explorar')
+    expect(proximaRotina('parado', () => 0.99, { links: 4 })).toBe('comer')
   })
 
   it('explorar: pula até o Dashboard, sobe a parede e volta pra casa', () => {
