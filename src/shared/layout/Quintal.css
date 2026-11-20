@@ -11,6 +11,22 @@
   position: absolute;
 }
 
+/* Gramado: da borda esquerda do menu (os 24px de margem) até 78px depois do
+   meio da casinha; o desenho é comprido e alinhado à direita */
+.quintal-gramado {
+  left: -24px;
+  right: calc(50% - 78px);
+  bottom: 0;
+  height: 10px;
+  overflow: hidden;
+}
+
+.quintal-gramado .pixel-arte {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
 .quintal-grama {
   fill: var(--tema);
 }
