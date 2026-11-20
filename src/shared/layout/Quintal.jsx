@@ -3,7 +3,7 @@ import './Quintal.css'
 
 /*
  * Quintal da casinha no menu, em pixel art (desenhos próprios, 2px por
- * pixel): grama no tom do tema com florzinhas, dois potinhos (ração e água),
+ * pixel): grama verde com florzinhas, dois potinhos (ração e água),
  * uma cerquinha (mais flores com o gatinho radiante, murchas quando ele está
  * chateado ou triste), e bichinhos conforme o tempo: duas borboletas de dia (uma
  * vermelha), vaga-lumes

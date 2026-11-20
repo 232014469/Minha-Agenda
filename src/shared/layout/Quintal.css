@@ -1,4 +1,5 @@
-/* Quintal da casinha: fica atrás da casinha e do gatinho */
+/* Quintal da casinha: fica atrás da casinha e do gatinho. A grama é sempre
+   verde, qualquer que seja o tema. */
 .quintal {
   position: absolute;
   inset: 0;
@@ -12,15 +13,15 @@
 }
 
 .quintal-grama {
-  fill: var(--tema);
+  fill: #7fa35a;
 }
 
 .quintal-grama-clara {
-  fill: color-mix(in srgb, var(--tema) 65%, #fff);
+  fill: #a8c98a;
 }
 
 .quintal-grama-escura {
-  fill: color-mix(in srgb, var(--tema) 70%, #000);
+  fill: #5a7b3e;
 }
 
 .quintal-petala {
@@ -36,7 +37,7 @@
 }
 
 .quintal-caule {
-  fill: color-mix(in srgb, var(--tema) 70%, #000);
+  fill: #5a7b3e;
 }
 
 .quintal-petala-murcha {
@@ -122,15 +123,15 @@
 }
 
 :root[data-modo='escuro'] .quintal-grama-clara {
-  fill: color-mix(in srgb, var(--tema) 85%, #fff);
+  fill: #86a868;
 }
 
 :root[data-modo='escuro'] .quintal-grama {
-  fill: color-mix(in srgb, var(--tema) 75%, #000);
+  fill: #5f8344;
 }
 
 :root[data-modo='escuro'] .quintal-grama-escura {
-  fill: color-mix(in srgb, var(--tema) 50%, #000);
+  fill: #3f5c2c;
 }
 
 /* Poça e pingos: só quando chove */
@@ -351,7 +352,10 @@
    quando */
 .quintal-frente {
   position: absolute;
-  inset: -14px 0 0;
+  top: -10px;
+  bottom: 8px;
+  left: calc(50% - 74px);
+  width: 156px;
   z-index: 1;
   overflow: hidden;
   pointer-events: none;
@@ -364,7 +368,7 @@
   height: 7px;
   border-radius: 1px;
   background: rgb(90 112 150 / 0.6);
-  rotate: 12deg;
+  rotate: 8deg;
   animation: quintal-gota linear infinite;
 }
 
@@ -378,7 +382,7 @@
   }
 
   to {
-    translate: -14px 96px;
+    translate: -12px 90px;
   }
 }
 
