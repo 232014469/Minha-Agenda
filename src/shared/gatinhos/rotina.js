@@ -1,7 +1,7 @@
 /**
  * Rotina do gatinho mascote quando ninguém mexe nele: fica parado piscando,
  * senta, deita e levanta, ou (no menu do computador, sem sair do quintal)
- * sobe pela parede do lado da casinha, vai comer nos potinhos ou brinca com
+ * sobe pela parede da casinha até o telhado, vai comer nos potinhos ou brinca com
  * as borboletas e os vaga-lumes. Cada rotina é uma lista de
  * passos; os tempos são sorteados para não ficar repetitivo.
  *
@@ -9,8 +9,9 @@
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (a porta da casinha), 'frente-porta' (do lado direito da
  *   porta), 'dentro' (atrás da parede), 'pote' (nos potinhos), 'brinca-esq'
- *   e 'brinca-dir' (pontas do quintal), 'parede' (na parede direita do menu,
- *   na altura da casinha) ou 'parede-alto' (mais acima na mesma parede);
+ *   e 'brinca-dir' (pontas do quintal), 'lateral' e 'lateral-alto' (na parede
+ *   de fora da casinha, embaixo e em cima), 'telhado' ou 'chao-esq' (no chão,
+ *   do lado esquerdo da casinha);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
  *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto.
  */
@@ -138,24 +139,45 @@ export const ROTINAS = {
     },
     { animacao: 'walk', fps: 10, ms: 1300, onde: 'meio', anda: true },
   ],
-  // Menu do computador: corre até a parede do lado da casinha, se agarra,
-  // sobe um pouco e pula de volta para casa.
-  explorar: () => [
-    { animacao: 'run', fps: 12, ms: 700, onde: 'parede', anda: true },
-    { animacao: 'wallgrab', fps: 10, ms: 800, onde: 'parede' },
+  // Menu do computador: corre até a parede de fora da casinha, se agarra,
+  // sobe até o telhado, olha em volta lá de cima e pula de volta para o chão.
+  explorar: (s) => [
+    {
+      animacao: 'run',
+      fps: 12,
+      ms: 900,
+      virado: true,
+      onde: 'lateral',
+      anda: true,
+    },
+    { animacao: 'wallgrab', fps: 10, ms: 700, onde: 'lateral' },
     {
       animacao: 'wallclimb',
       fps: 8,
-      ms: 1200,
-      onde: 'parede-alto',
+      ms: 1100,
+      onde: 'lateral-alto',
       anda: true,
+    },
+    {
+      animacao: 'jump',
+      fps: 10,
+      ms: 500,
+      onde: 'telhado',
+      anda: true,
+      curva: 'sobe',
+    },
+    {
+      animacao: 'idle_blink',
+      fps: 7,
+      ms: entre(1500, 3000, s),
+      onde: 'telhado',
     },
     {
       animacao: 'jump',
       fps: 9,
       ms: 700,
       virado: true,
-      onde: 'meio',
+      onde: 'chao-esq',
       anda: true,
       curva: 'cai',
     },
@@ -165,8 +187,9 @@ export const ROTINAS = {
       ms: 300,
       vezes: '1',
       virado: true,
-      onde: 'meio',
+      onde: 'chao-esq',
     },
+    { animacao: 'walk', fps: 10, ms: 1300, onde: 'meio', anda: true },
   ],
 }
 

@@ -136,12 +136,12 @@ const CURVAS = {
 /**
  * Onde fica o gatinho. Sem mapa (celular ou antes de medir), só a posição
  * de lado; no menu, um ponto (x, pés) medido na tela: a casinha, as pontas do
- * quintal, os potinhos ou a parede direita.
+ * quintal, os potinhos, a parede de fora e o telhado.
  */
 function posicao(onde, mapa) {
   if (!mapa) return { left: POSICAO[onde] ?? POSICAO.meio }
 
-  const { largura, casa } = mapa
+  const { casa } = mapa
   const pontos = {
     meio: [casa.x, casa.y],
     // Dia de chuva: logo antes da porta e lá dentro (atrás da parede)
@@ -152,9 +152,11 @@ function posicao(onde, mapa) {
     // Pontas do quintal, para brincar com os bichinhos
     'brinca-esq': [casa.esquerda + casa.largura / 2 - 70, casa.y],
     'brinca-dir': [casa.esquerda + casa.largura / 2 + 62, casa.y],
-    // Parede direita do menu: na altura da casinha e um pouco acima
-    parede: [largura - 14, casa.y],
-    'parede-alto': [largura - 14, casa.y - 40],
+    // Parede de fora da casinha (lado esquerdo), o telhado e o chão ao lado
+    lateral: [casa.esquerda - 8, casa.y],
+    'lateral-alto': [casa.esquerda - 8, casa.base - 30],
+    telhado: [casa.esquerda + 22, casa.base - 44],
+    'chao-esq': [casa.esquerda - 34, casa.y],
   }
   const [x, y] = pontos[onde] ?? pontos.meio
 
