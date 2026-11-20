@@ -18,7 +18,7 @@ import './Mascote.css'
  * O mascote do menu: o gatinho escolhido nas Configurações. Além de reagir ao
  * clique, é ele quem comemora quando uma tarefa é concluída e fica triste
  * quando não é realizada ou é excluída (se "Gatinhos pela tela" estiver
- * ligado). `noMenu`: no menu do computador ele mora numa casinha e pode
+ * ligado). `noMenu`: no menu do computador ele mora num cestinho e pode
  * explorar o menu todo (pular perto dos links e subir pela parede).
  */
 export default function Mascote({ noMenu = false }) {
@@ -117,6 +117,9 @@ function prefereMenosMovimento() {
  */
 const POSICAO = { meio: 'var(--mascote-meio, 50%)', fora: '-48px' }
 
+/** Tamanho do cestinho na tela (26 × 10 pixels de 3px, ver Casinha). */
+const CESTINHO = { largura: 78, altura: 30 }
+
 /** Altura dos pés do gatinho dentro do botão de 64px (o desenho fica no meio). */
 const PES = 43
 
@@ -180,7 +183,9 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
         largura: caixa.width,
         casa: {
           x: casa.left + casa.width / 2 - caixa.left,
-          y: casa.bottom - caixa.top - 5,
+          // Pés dentro do cestinho: a frente dele cobre a barriga do gatinho
+          y: casa.bottom - caixa.top - 8,
+          base: casa.bottom - caixa.top,
         },
         links,
       })
@@ -354,6 +359,16 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
         ref={palcoRef}
       >
         {botao}
+        {mapa && (
+          <Casinha
+            frente
+            className="cestinho-frente"
+            style={{
+              left: `${mapa.casa.x - CESTINHO.largura / 2}px`,
+              top: `${mapa.casa.base - CESTINHO.altura}px`,
+            }}
+          />
+        )}
       </div>
     </>
   )

@@ -82,8 +82,8 @@
   transform: scaleX(-1);
 }
 
-/* Menu do computador: a casinha fica no lugar do gatinho, e o palco cobre o
-   menu inteiro para ele pular perto dos links e subir pela parede direita.
+/* Menu do computador: o cestinho fica no lugar do gatinho, e o palco cobre
+   o menu inteiro para ele pular perto dos links e subir pela parede direita.
    Só aparece depois de medir o menu (sem pular de um canto ao outro). */
 .mascote-casa {
   display: flex;
@@ -93,50 +93,48 @@
   margin-top: 6px;
 }
 
-.casinha {
-  width: 84px;
-  height: 64px;
-  overflow: visible;
+/* Cestinho em pixel art (26 × 10 pixels, 3px cada), na cor do tema */
+.cestinho {
+  width: 78px;
+  height: 30px;
 }
 
-.casinha-tapete {
+/* A frente do cestinho, por cima do gatinho quando ele está em casa */
+.cestinho-frente {
+  position: absolute;
+  pointer-events: none;
+}
+
+.cestinho-contorno {
+  fill: #4a2f1d;
+}
+
+.cestinho-trama {
+  fill: var(--tema);
+}
+
+.cestinho-trama-escura {
+  fill: color-mix(in srgb, var(--tema) 70%, #000);
+}
+
+.cestinho-manta {
+  fill: color-mix(in srgb, var(--tema-suave) 65%, #fff);
+}
+
+.cestinho-dobra {
+  fill: color-mix(in srgb, var(--tema-suave) 25%, #fff);
+}
+
+:root[data-modo='escuro'] .cestinho-contorno {
+  fill: #160f0a;
+}
+
+:root[data-modo='escuro'] .cestinho-manta {
   fill: var(--tema-suave);
 }
 
-.casinha-parede {
-  fill: #d9b48a;
-  stroke: rgb(var(--sombra) / 0.55);
-  stroke-width: 1.5;
-}
-
-.casinha-tabuas {
-  fill: none;
-  stroke: rgb(var(--sombra) / 0.18);
-  stroke-width: 1.2;
-}
-
-.casinha-telhado {
-  fill: var(--tema);
-  stroke: rgb(var(--sombra) / 0.55);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-}
-
-.casinha-coracao {
-  fill: #fff;
-  opacity: 0.85;
-}
-
-.casinha-porta {
-  fill: #5a3e2b;
-}
-
-:root[data-modo='escuro'] .casinha-parede {
-  fill: #9a7a5c;
-}
-
-:root[data-modo='escuro'] .casinha-porta {
-  fill: #2c2018;
+:root[data-modo='escuro'] .cestinho-dobra {
+  fill: color-mix(in srgb, var(--tema-suave) 60%, #fff);
 }
 
 .mascote-palco-menu {
