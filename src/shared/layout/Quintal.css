@@ -303,3 +303,110 @@
     animation: none !important;
   }
 }
+
+/* Chuva por cima da casinha (na frente dela), com um peixinho de vez em
+   quando */
+.quintal-frente {
+  position: absolute;
+  inset: -14px 0 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.quintal-gota {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 7px;
+  border-radius: 1px;
+  background: rgb(90 112 150 / 0.6);
+  rotate: 12deg;
+  animation: quintal-gota linear infinite;
+}
+
+:root[data-modo='escuro'] .quintal-gota {
+  background: rgb(170 190 235 / 0.6);
+}
+
+@keyframes quintal-gota {
+  from {
+    translate: 0 -10px;
+  }
+
+  to {
+    translate: -14px 96px;
+  }
+}
+
+.quintal-peixe {
+  fill: #7fb6d9;
+}
+
+.quintal-peixe-cauda {
+  fill: #5a93bd;
+}
+
+/* O peixinho: cai girando, bate na grama, pula duas vezes e some */
+.quintal-peixinho {
+  position: absolute;
+  opacity: 0;
+  animation: quintal-peixinho 11s ease-in infinite 2s;
+}
+
+.quintal-peixinho .pixel-arte {
+  display: block;
+}
+
+@keyframes quintal-peixinho {
+  0% {
+    opacity: 0;
+    translate: -10px -96px;
+    rotate: -40deg;
+  }
+
+  2% {
+    opacity: 1;
+  }
+
+  12% {
+    translate: 0 0;
+    rotate: 200deg;
+  }
+
+  15% {
+    translate: 3px -8px;
+    rotate: 180deg;
+  }
+
+  18% {
+    translate: 5px 0;
+    rotate: 170deg;
+  }
+
+  21% {
+    translate: 6px -4px;
+    rotate: 185deg;
+  }
+
+  24%,
+  34% {
+    opacity: 1;
+    translate: 7px 0;
+    rotate: 180deg;
+  }
+
+  40%,
+  100% {
+    opacity: 0;
+    translate: 7px 0;
+    rotate: 180deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quintal-gota,
+  .quintal-peixinho {
+    display: none;
+  }
+}

@@ -6,7 +6,8 @@ import './Quintal.css'
  * pixel): grama no tom do tema com florzinhas, dois potinhos (ração e água),
  * uma cerquinha, e bichinhos conforme o tempo: duas borboletas de dia (uma
  * vermelha), vaga-lumes
- * à noite e uma poça com gotas quando chove (o CSS escolhe o que aparece).
+ * à noite e, quando chove, uma poça, gotas caindo por cima da casinha e um
+ * peixinho que cai do céu (o CSS escolhe o que aparece).
  */
 
 const GRAMA = [
@@ -36,6 +37,18 @@ const CERCA = [
 
 const BORBOLETA = ['aa.aa', 'aakaa', '.a.a.']
 
+const PEIXE = ['..bbb..t', '.bbbbbtt', 'bkbbbbtt', '.bbbbb.t']
+
+/** Gotas que caem em cima da casinha (posição em % e atraso, fixos). */
+const GOTAS = Array.from({ length: 16 }, (_, indice) => ({
+  id: indice,
+  estilo: {
+    left: `${4 + ((indice * 37) % 92)}%`,
+    animationDelay: `${-((indice * 0.13) % 0.9).toFixed(2)}s`,
+    animationDuration: `${0.75 + (indice % 4) * 0.08}s`,
+  },
+}))
+
 const POCA = ['..pppppppppp..', 'pppPPpppppppPp', '..pppppppppp..']
 
 const CORES = {
@@ -54,6 +67,7 @@ const CORES = {
   w: 'quintal-agua-brilho',
   m: 'quintal-madeira',
   M: 'quintal-madeira-clara',
+  t: 'quintal-peixe-cauda',
 }
 
 const CORES_FLOR_ROSA = {
@@ -67,6 +81,11 @@ const CORES_VERMELHA = {
   a: 'quintal-asa-vermelha',
   k: 'quintal-contorno',
 }
+const CORES_PEIXE = {
+  ...CORES,
+  b: 'quintal-peixe',
+  k: 'quintal-contorno',
+}
 const CORES_POTE = { ...CORES, p: 'quintal-pote-dentro' }
 
 /** Posições a partir do meio da casinha (em px), no chão do quintal. */
@@ -76,42 +95,56 @@ function no(x, baixo = 0) {
 
 export default function Quintal({ chuva, brincando }) {
   return (
-    <div
-      className={`quintal${chuva ? ' quintal-chuva' : ''}`}
-      aria-hidden="true"
-    >
-      <PixelArte desenho={GRAMA} cores={CORES} style={no(-78)} />
-      <PixelArte desenho={FLOR} cores={CORES_FLOR} style={no(-74, 8)} />
-      <PixelArte desenho={FLOR} cores={CORES_FLOR_ROSA} style={no(66, 8)} />
-      <PixelArte desenho={POTE_RACAO} cores={CORES_POTE} style={no(-62, 6)} />
-      <PixelArte desenho={POTE_AGUA} cores={CORES_POTE} style={no(-49, 6)} />
-      <PixelArte desenho={CERCA} cores={CORES} style={no(42, 6)} />
-      <PixelArte
-        className="quintal-poca"
-        desenho={POCA}
-        cores={CORES}
-        style={no(28, 1)}
-      />
-      <span className="quintal-pingo" style={no(40, 4)} />
-      <span className="quintal-pingo" style={no(48, 3)} />
-      {/* Quando o gatinho brinca, a primeira borboleta (ou o primeiro
-          vaga-lume, à noite) foge dele no ritmo da brincadeira */}
-      <span
-        key={`borboleta-${brincando ?? 'voo'}`}
-        className={`quintal-borboleta${brincando ? ' quintal-foge' : ''}`}
+    <>
+      <div
+        className={`quintal${chuva ? ' quintal-chuva' : ''}`}
+        aria-hidden="true"
       >
-        <PixelArte desenho={BORBOLETA} cores={CORES} />
-      </span>
-      <span className="quintal-borboleta quintal-borboleta-vermelha">
-        <PixelArte desenho={BORBOLETA} cores={CORES_VERMELHA} />
-      </span>
-      <span
-        key={`vagalume-${brincando ?? 'voo'}`}
-        className={`quintal-vagalume${brincando ? ' quintal-foge' : ''}`}
-        style={no(-50, 40)}
-      />
-      <span className="quintal-vagalume" style={no(52, 52)} />
-      <span className="quintal-vagalume" style={no(-20, 66)} />
-    </div>
+        <PixelArte desenho={GRAMA} cores={CORES} style={no(-78)} />
+        <PixelArte desenho={FLOR} cores={CORES_FLOR} style={no(-74, 8)} />
+        <PixelArte desenho={FLOR} cores={CORES_FLOR_ROSA} style={no(66, 8)} />
+        <PixelArte desenho={POTE_RACAO} cores={CORES_POTE} style={no(-62, 6)} />
+        <PixelArte desenho={POTE_AGUA} cores={CORES_POTE} style={no(-49, 6)} />
+        <PixelArte desenho={CERCA} cores={CORES} style={no(42, 6)} />
+        <PixelArte
+          className="quintal-poca"
+          desenho={POCA}
+          cores={CORES}
+          style={no(28, 1)}
+        />
+        <span className="quintal-pingo" style={no(40, 4)} />
+        <span className="quintal-pingo" style={no(48, 3)} />
+        {/* Quando o gatinho brinca, a primeira borboleta (ou o primeiro
+          vaga-lume, à noite) foge dele no ritmo da brincadeira */}
+        <span
+          key={`borboleta-${brincando ?? 'voo'}`}
+          className={`quintal-borboleta${brincando ? ' quintal-foge' : ''}`}
+        >
+          <PixelArte desenho={BORBOLETA} cores={CORES} />
+        </span>
+        <span className="quintal-borboleta quintal-borboleta-vermelha">
+          <PixelArte desenho={BORBOLETA} cores={CORES_VERMELHA} />
+        </span>
+        <span
+          key={`vagalume-${brincando ?? 'voo'}`}
+          className={`quintal-vagalume${brincando ? ' quintal-foge' : ''}`}
+          style={no(-50, 40)}
+        />
+        <span className="quintal-vagalume" style={no(52, 52)} />
+        <span className="quintal-vagalume" style={no(-20, 66)} />
+      </div>
+      {/* Na chuva: gotas caindo por cima da casinha e, de vez em quando, um
+        peixinho que cai do céu, pula na grama e some */}
+      {chuva && (
+        <div className="quintal-frente" aria-hidden="true">
+          {GOTAS.map((gota) => (
+            <span key={gota.id} className="quintal-gota" style={gota.estilo} />
+          ))}
+          <span className="quintal-peixinho" style={no(22, 6)}>
+            <PixelArte desenho={PEIXE} cores={CORES_PEIXE} />
+          </span>
+        </div>
+      )}
+    </>
   )
 }
