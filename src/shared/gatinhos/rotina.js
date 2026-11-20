@@ -1,39 +1,20 @@
 /**
  * Rotina do gatinho mascote quando ninguém mexe nele: fica parado piscando,
- * senta, deita e levanta, sai andando pela esquerda e volta, ou (no menu do
- * computador) vai até a parede do lado da casinha, sobe por ela e pula de
- * volta para casa, ou vai comer nos potinhos. Cada rotina é uma lista de
+ * senta, deita e levanta, ou (no menu do computador, sem sair do quintal)
+ * sobe pela parede do lado da casinha, vai comer nos potinhos ou brinca com
+ * as borboletas e os vaga-lumes. Cada rotina é uma lista de
  * passos; os tempos são sorteados para não ficar repetitivo.
  *
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (a porta da casinha), 'frente-porta' (do lado direito da
- *   porta), 'dentro' (atrás da parede), 'pote' (nos potinhos), 'fora'
- *   (escondido além da borda esquerda), 'parede' (na parede direita do menu,
+ *   porta), 'dentro' (atrás da parede), 'pote' (nos potinhos), 'brinca-esq'
+ *   e 'brinca-dir' (pontas do quintal), 'parede' (na parede direita do menu,
  *   na altura da casinha) ou 'parede-alto' (mais acima na mesma parede);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
  *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto.
  */
 const entre = (min, max, sorteio) => Math.round(min + (max - min) * sorteio())
-
-/** Sai andando da porta até sumir pela borda esquerda... */
-const ANDA_ATE_A_BORDA = {
-  animacao: 'walk',
-  fps: 10,
-  ms: 2000,
-  virado: true,
-  onde: 'fora',
-  anda: true,
-}
-
-/** ...e, na volta, anda de lá até a porta da casinha. */
-const VOLTA_PRA_CASA = {
-  animacao: 'walk',
-  fps: 10,
-  ms: 2000,
-  onde: 'meio',
-  anda: true,
-}
 
 export const ROTINAS = {
   parado: (s) => [
@@ -65,15 +46,37 @@ export const ROTINAS = {
       onde: 'meio',
     },
   ],
-  passear: (s) => [
-    ANDA_ATE_A_BORDA,
-    { animacao: null, ms: entre(2000, 4500, s), onde: 'fora' },
-    VOLTA_PRA_CASA,
+  // Brincando no quintal: corre atrás da borboleta (ou do vaga-lume à
+  // noite), dá uma patada, corre para o outro lado, pula e volta para a porta.
+  // O quintal faz o bichinho fugir no mesmo ritmo (ver Quintal).
+  brincar: () => [
+    {
+      animacao: 'run',
+      fps: 12,
+      ms: 1000,
+      virado: true,
+      onde: 'brinca-esq',
+      anda: true,
+    },
+    {
+      animacao: 'attack',
+      fps: 10,
+      ms: 600,
+      vezes: '1',
+      virado: true,
+      onde: 'brinca-esq',
+    },
+    { animacao: 'run', fps: 12, ms: 1000, onde: 'brinca-dir', anda: true },
+    { animacao: 'jump', fps: 9, ms: 600, vezes: '1', onde: 'brinca-dir' },
+    {
+      animacao: 'walk',
+      fps: 10,
+      ms: 1000,
+      virado: true,
+      onde: 'meio',
+      anda: true,
+    },
   ],
-  // Passeio pela borda de baixo da tela: sai pela esquerda e espera fora...
-  sair: () => [ANDA_ATE_A_BORDA, { animacao: null, ms: null, onde: 'fora' }],
-  // ...e, quando o passeio termina, volta andando e pula para a porta da casinha.
-  voltar: () => [VOLTA_PRA_CASA],
   // Dia de chuva: anda até a porta e some lá dentro, dormindo...
   dormir: () => [
     // vai para o lado direito da porta...
@@ -167,13 +170,9 @@ export const ROTINAS = {
   ],
 }
 
-/** Quanto tempo o mascote leva para sair do menu antes do passeio. */
-export const TEMPO_PARA_SAIR = ANDA_ATE_A_BORDA.ms
-
 const SORTEAVEIS = [
   ['sentado', 2],
   ['deitar', 2],
-  ['passear', 1.5],
 ]
 
 /**
@@ -189,7 +188,7 @@ export function proximaRotina(atual, sorteio = Math.random, opcoes = {}) {
   if (atual !== 'parado') return 'parado'
 
   const sorteaveis = opcoes.links
-    ? [...SORTEAVEIS, ['explorar', 2.5], ['comer', 1.5]]
+    ? [...SORTEAVEIS, ['explorar', 2], ['comer', 1.5], ['brincar', 2.5]]
     : SORTEAVEIS
   const total = sorteaveis.reduce((soma, [, peso]) => soma + peso, 0)
   let alvo = sorteio() * total

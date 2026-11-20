@@ -4,7 +4,8 @@ import './Quintal.css'
 /*
  * Quintal da casinha no menu, em pixel art (desenhos próprios, 2px por
  * pixel): grama no tom do tema com florzinhas, dois potinhos (ração e água),
- * uma cerquinha, e bichinhos conforme o tempo: borboleta de dia, vaga-lumes
+ * uma cerquinha, e bichinhos conforme o tempo: duas borboletas de dia (uma
+ * vermelha), vaga-lumes
  * à noite e uma poça com gotas quando chove (o CSS escolhe o que aparece).
  */
 
@@ -61,6 +62,11 @@ const CORES_FLOR_ROSA = {
   b: 'quintal-petala-rosa',
 }
 const CORES_FLOR = { ...CORES, a: 'quintal-miolo' }
+const CORES_VERMELHA = {
+  ...CORES,
+  a: 'quintal-asa-vermelha',
+  k: 'quintal-contorno',
+}
 const CORES_POTE = { ...CORES, p: 'quintal-pote-dentro' }
 
 /** Posições a partir do meio da casinha (em px), no chão do quintal. */
@@ -68,7 +74,7 @@ function no(x, baixo = 0) {
   return { left: `calc(50% + ${x}px)`, bottom: `${baixo}px` }
 }
 
-export default function Quintal({ chuva }) {
+export default function Quintal({ chuva, brincando }) {
   return (
     <div
       className={`quintal${chuva ? ' quintal-chuva' : ''}`}
@@ -88,10 +94,22 @@ export default function Quintal({ chuva }) {
       />
       <span className="quintal-pingo" style={no(40, 4)} />
       <span className="quintal-pingo" style={no(48, 3)} />
-      <span className="quintal-borboleta">
+      {/* Quando o gatinho brinca, a primeira borboleta (ou o primeiro
+          vaga-lume, à noite) foge dele no ritmo da brincadeira */}
+      <span
+        key={`borboleta-${brincando ?? 'voo'}`}
+        className={`quintal-borboleta${brincando ? ' quintal-foge' : ''}`}
+      >
         <PixelArte desenho={BORBOLETA} cores={CORES} />
       </span>
-      <span className="quintal-vagalume" style={no(-50, 40)} />
+      <span className="quintal-borboleta quintal-borboleta-vermelha">
+        <PixelArte desenho={BORBOLETA} cores={CORES_VERMELHA} />
+      </span>
+      <span
+        key={`vagalume-${brincando ?? 'voo'}`}
+        className={`quintal-vagalume${brincando ? ' quintal-foge' : ''}`}
+        style={no(-50, 40)}
+      />
       <span className="quintal-vagalume" style={no(52, 52)} />
       <span className="quintal-vagalume" style={no(-20, 66)} />
     </div>

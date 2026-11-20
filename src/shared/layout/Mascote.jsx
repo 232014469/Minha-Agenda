@@ -4,9 +4,7 @@ import { avancar, iniciarRotina } from '../gatinhos/rotina'
 import {
   EVENTO_CONCLUIU,
   EVENTO_FALTA,
-  EVENTO_SAIU_PASSEAR,
   EVENTO_TRISTE,
-  EVENTO_VOLTOU_DO_PASSEIO,
   GATOS,
 } from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
@@ -122,7 +120,8 @@ const POSICAO = {
   'frente-porta': 'var(--mascote-meio, 50%)',
   dentro: 'var(--mascote-meio, 50%)',
   pote: 'var(--mascote-meio, 50%)',
-  fora: '-48px',
+  'brinca-esq': 'var(--mascote-meio, 50%)',
+  'brinca-dir': 'var(--mascote-meio, 50%)',
 }
 
 /** Altura dos pés do gatinho dentro do botão de 64px (o desenho fica no meio). */
@@ -136,8 +135,8 @@ const CURVAS = {
 
 /**
  * Onde fica o gatinho. Sem mapa (celular ou antes de medir), só a posição
- * de lado; no menu, um ponto (x, pés) medido na tela: a casinha, fora da
- * borda, ao lado de um link ou na parede direita.
+ * de lado; no menu, um ponto (x, pés) medido na tela: a casinha, as pontas do
+ * quintal, os potinhos ou a parede direita.
  */
 function posicao(onde, mapa) {
   if (!mapa) return { left: POSICAO[onde] ?? POSICAO.meio }
@@ -150,7 +149,9 @@ function posicao(onde, mapa) {
     dentro: [casa.porta - 24, casa.y],
     // Na frente dos potinhos do quintal, do lado esquerdo da casinha
     pote: [casa.esquerda - 8, casa.y],
-    fora: [-48, casa.base - 2],
+    // Pontas do quintal, para brincar com os bichinhos
+    'brinca-esq': [casa.esquerda + casa.largura / 2 - 70, casa.y],
+    'brinca-dir': [casa.esquerda + casa.largura / 2 + 62, casa.y],
     // Parede direita do menu: na altura da casinha e um pouco acima
     parede: [largura - 14, casa.y],
     'parede-alto': [largura - 14, casa.y - 40],
@@ -223,14 +224,12 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
  * tarefa não é realizada ou é excluída, e reclama quando mais uma falta é
  * anotada. Muitos cliques seguidos: ele se
  * machuca e fica vermelho. As reações interrompem a rotina, que recomeça
- * depois. Quando sai para passear pela borda de baixo da tela, deixa o menu
- * e só volta no fim do passeio.
+ * depois.
  */
 function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   const [cena, setCena] = useState(null)
   const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
   const [semRotina] = useState(prefereMenosMovimento)
-  const [passeando, setPasseando] = useState(false)
   const palcoRef = useRef(null)
   const casaRef = useRef(null)
   const mapa = useMapaDoMenu(noMenu, palcoRef, casaRef)
@@ -276,8 +275,6 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
 
   const encenar = useCallback(
     (acao) => {
-      if (passeando) return
-
       if (dentroDeCasa) {
         // Dentro da casinha: primeiro sai pela borda da parede, depois reage
         setCenaDepois(acao)
@@ -297,22 +294,8 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
         })
       }
     },
-    [sons, bordoes, passeando, dentroDeCasa],
+    [sons, bordoes, dentroDeCasa],
   )
-  const sairPassear = useCallback(() => {
-    setPasseando(true)
-    setCena(null)
-    // Explorando (na parede), termina a volta para casa e só então sai.
-    setRotina((atual) =>
-      atual.nome === 'explorar'
-        ? { ...atual, depois: 'sair' }
-        : iniciarRotina('sair'),
-    )
-  }, [])
-  const voltarDoPasseio = useCallback(() => {
-    setPasseando(false)
-    setRotina(iniciarRotina('voltar'))
-  }, [])
   const comemorar = useCallback(() => encenar('festa'), [encenar])
   const entristecer = useCallback(() => encenar('triste'), [encenar])
   const reclamar = useCallback(() => encenar('falta'), [encenar])
@@ -320,8 +303,6 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   useEvento(comemora, EVENTO_CONCLUIU, comemorar)
   useEvento(comemora, EVENTO_TRISTE, entristecer)
   useEvento(comemora, EVENTO_FALTA, reclamar)
-  useEvento(true, EVENTO_SAIU_PASSEAR, sairPassear)
-  useEvento(true, EVENTO_VOLTOU_DO_PASSEIO, voltarDoPasseio)
 
   function clicar() {
     const agora = Date.now()
@@ -385,7 +366,6 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
       className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}`}
       aria-label={`${nome}, o mascote. Clique para ele miar`}
       title="Miau?"
-      tabIndex={passeando ? -1 : undefined}
       style={{
         ...posicao(onde, mapa),
         transition: transicao,
@@ -402,7 +382,10 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   return (
     <>
       <div className="mascote-casa" ref={casaRef}>
-        <Quintal chuva={chuva} />
+        <Quintal
+          chuva={chuva}
+          brincando={rotina.nome === 'brincar' ? rotina.vez : null}
+        />
         <Casinha />
       </div>
       <div

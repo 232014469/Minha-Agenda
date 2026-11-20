@@ -141,6 +141,72 @@
   fill: #f6c945;
 }
 
+.quintal-asa-vermelha {
+  fill: #e0443e;
+}
+
+/* A borboleta vermelha voa por outro caminho, mais devagar */
+:root:not([data-modo='escuro'])
+  .quintal:not(.quintal-chuva)
+  .quintal-borboleta-vermelha {
+  animation: quintal-voa-vermelha 21s ease-in-out infinite -6s;
+}
+
+@keyframes quintal-voa-vermelha {
+  0%,
+  100% {
+    translate: -70px -26px;
+  }
+
+  25% {
+    translate: -30px -46px;
+  }
+
+  50% {
+    translate: 30px -36px;
+  }
+
+  75% {
+    translate: 66px -14px;
+  }
+}
+
+/* Fugindo do gatinho na brincadeira (4,2 s, no mesmo ritmo dele): vai para a
+   esquerda, escapa da patada, vai para a direita, escapa do pulo e volta */
+:root .quintal:not(.quintal-chuva) .quintal-foge {
+  animation: quintal-foge 4.2s ease-in-out forwards !important;
+}
+
+@keyframes quintal-foge {
+  0% {
+    translate: 10px -30px;
+  }
+
+  22% {
+    translate: -76px -22px;
+  }
+
+  31% {
+    translate: -60px -48px;
+  }
+
+  38% {
+    translate: -40px -40px;
+  }
+
+  60% {
+    translate: 66px -22px;
+  }
+
+  70% {
+    translate: 52px -52px;
+  }
+
+  100% {
+    translate: 58px -6px;
+  }
+}
+
 :root:not([data-modo='escuro'])
   .quintal:not(.quintal-chuva)
   .quintal-borboleta {
@@ -194,6 +260,12 @@
 :root[data-modo='escuro'] .quintal:not(.quintal-chuva) .quintal-vagalume {
   display: block;
   animation: quintal-vagalume 4s ease-in-out infinite;
+}
+
+.quintal-vagalume.quintal-foge {
+  left: 50% !important;
+  bottom: 30px !important;
+  opacity: 1;
 }
 
 .quintal-vagalume:nth-of-type(2n) {

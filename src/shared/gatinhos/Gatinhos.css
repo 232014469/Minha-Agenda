@@ -13,40 +13,6 @@
   }
 }
 
-/* Passeio: atravessa a tela pela borda de baixo, da esquerda para a direita */
-.gatinho-passeio {
-  position: fixed;
-  bottom: -30px;
-  left: 0;
-  z-index: 30;
-  pointer-events: none;
-  animation: gatinho-atravessa 16s linear forwards;
-}
-
-@keyframes gatinho-atravessa {
-  from {
-    transform: translateX(-100px);
-  }
-
-  to {
-    transform: translateX(calc(100vw + 10px));
-  }
-}
-
-.gatinho-botao {
-  display: block;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.gatinho-botao:focus-visible {
-  outline: 3px solid var(--cor-lilas-escuro);
-  outline-offset: -20px;
-}
-
 /* Cochilo: deitado, com os "z" subindo */
 .gatinho-dormindo {
   position: relative;
@@ -84,13 +50,6 @@
   100% {
     opacity: 0;
     transform: translate(10px, -6px);
-  }
-}
-
-/* No computador, quem comemora é o mascote do menu */
-@media (max-width: 760px) {
-  .gatinho-passeio {
-    bottom: 40px;
   }
 }
 

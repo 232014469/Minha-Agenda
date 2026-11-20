@@ -23,14 +23,6 @@ export const EVENTO_FALTA = 'wolf-study:falta'
  */
 export const EVENTO_ALERTA_POSTIT = 'wolf-study:alerta-postit'
 
-/**
- * O passeio pela borda de baixo é do próprio mascote: ele sai do menu pela
- * esquerda antes (EVENTO_SAIU_PASSEAR) e só volta quando o passeio termina
- * (EVENTO_VOLTOU_DO_PASSEIO). Assim nunca há dois gatinhos iguais na tela.
- */
-export const EVENTO_SAIU_PASSEAR = 'wolf-study:saiu-passear'
-export const EVENTO_VOLTOU_DO_PASSEIO = 'wolf-study:voltou-do-passeio'
-
 /** Quantos quadros cada animação tem. */
 export const QUADROS = {
   idle_blink: 8,

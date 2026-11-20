@@ -6,7 +6,6 @@ import { useDados } from '../../dados/useDados'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
-import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
 import AlertaPodeNao from './AlertaPodeNao'
 import { temAtrasadas } from './alerta'
 import CeuDoDia from './CeuDoDia'
@@ -125,7 +124,6 @@ export default function LayoutBase() {
           )}
           <Outlet />
         </main>
-        <GatinhosNaTela chuva={chuva} />
         <AlertaPodeNao />
       </div>
     </div>
