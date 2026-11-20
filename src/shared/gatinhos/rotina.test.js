@@ -27,25 +27,40 @@ describe('rotina do gatinho', () => {
     expect(rotina.nome).toBe('parado')
   })
 
-  it('passear: sai pela esquerda virado, some e volta andando até o meio', () => {
+  it('passear: pula do cesto, sai pela esquerda, some e volta pulando', () => {
     const passos = iniciarRotina('passear', () => 0).passos
 
-    expect(passos.map((passo) => passo.onde)).toEqual(['fora', 'fora', 'meio'])
-    expect(passos[0]).toMatchObject({ virado: true, anda: true })
-    expect(passos[1].animacao).toBeNull()
-    expect(passos[2]).toMatchObject({ animacao: 'walk', anda: true })
+    expect(passos.map((passo) => passo.onde)).toEqual([
+      'chao',
+      'fora',
+      'fora',
+      'chao',
+      'meio',
+    ])
+    expect(passos.map((passo) => passo.animacao)).toEqual([
+      'jump',
+      'walk',
+      null,
+      'walk',
+      'jump',
+    ])
+    expect(passos[1]).toMatchObject({ virado: true, anda: true })
   })
 
-  it('passeio pela tela: sai pela esquerda e espera fora até voltar', () => {
+  it('passeio pela tela: pula do cesto, sai pela esquerda e espera fora', () => {
     const sair = iniciarRotina('sair').passos
 
-    expect(sair[0]).toMatchObject({ onde: 'fora', virado: true, anda: true })
-    expect(sair[1]).toMatchObject({ animacao: null, ms: null, onde: 'fora' })
+    expect(sair[0]).toMatchObject({ animacao: 'jump', onde: 'chao' })
+    expect(sair[1]).toMatchObject({ onde: 'fora', virado: true, anda: true })
+    expect(sair[2]).toMatchObject({ animacao: null, ms: null, onde: 'fora' })
 
     const voltar = iniciarRotina('voltar')
 
-    expect(voltar.passos[0]).toMatchObject({ onde: 'meio', anda: true })
-    expect(avancar(voltar).nome).toBe('parado')
+    expect(voltar.passos.map((passo) => passo.animacao)).toEqual([
+      'walk',
+      'jump',
+    ])
+    expect(avancar(avancar(voltar)).nome).toBe('parado')
   })
 
   it('explorar só entra no sorteio quando há menu', () => {

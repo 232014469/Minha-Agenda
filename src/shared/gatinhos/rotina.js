@@ -7,13 +7,49 @@
  *
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
- * - onde: 'meio' (a casinha), 'fora' (escondido além da borda esquerda),
+ * - onde: 'meio' (o cestinho), 'chao' (no chão, do lado do cestinho),
+ *   'fora' (escondido além da borda esquerda),
  *   'link:N' (ao lado do link N do menu), 'parede:N' (na parede direita, na
  *   altura do link N) ou 'parede-alto' (na parede, na altura da casinha);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
- *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto.
+ *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto;
+ * - ergue: sobe o desenho alguns px (deitado no cestinho).
  */
 const entre = (min, max, sorteio) => Math.round(min + (max - min) * sorteio())
+
+/** Sai do cestinho pulando para o chão, do lado esquerdo dele... */
+const SAI_DO_CESTO = {
+  animacao: 'jump',
+  fps: 10,
+  ms: 450,
+  virado: true,
+  onde: 'chao',
+  anda: true,
+  curva: 'cai',
+}
+
+/** ...anda até sumir pela borda esquerda... */
+const ANDA_ATE_A_BORDA = {
+  animacao: 'walk',
+  fps: 10,
+  ms: 2000,
+  virado: true,
+  onde: 'fora',
+  anda: true,
+}
+
+/** ...e, na volta, anda até o lado do cestinho e pula para dentro. */
+const VOLTA_PRO_CESTO = [
+  { animacao: 'walk', fps: 10, ms: 2000, onde: 'chao', anda: true },
+  {
+    animacao: 'jump',
+    fps: 10,
+    ms: 450,
+    onde: 'meio',
+    anda: true,
+    curva: 'sobe',
+  },
+]
 
 export const ROTINAS = {
   parado: (s) => [
@@ -22,9 +58,23 @@ export const ROTINAS = {
   sentado: (s) => [
     { animacao: 'sit', fps: 6, ms: entre(5000, 9000, s), onde: 'meio' },
   ],
+  // Deitado no cestinho: `ergue` sobe o desenho para ele não sumir dentro
   deitar: (s) => [
-    { animacao: 'crouch', fps: 10, ms: 800, vezes: '1', onde: 'meio' },
-    { animacao: 'liedown', fps: 6, ms: entre(6000, 11000, s), onde: 'meio' },
+    {
+      animacao: 'crouch',
+      fps: 10,
+      ms: 800,
+      vezes: '1',
+      onde: 'meio',
+      ergue: 6,
+    },
+    {
+      animacao: 'liedown',
+      fps: 6,
+      ms: entre(6000, 11000, s),
+      onde: 'meio',
+      ergue: 9,
+    },
     {
       animacao: 'crouch',
       fps: 10,
@@ -32,36 +82,23 @@ export const ROTINAS = {
       vezes: '1',
       reverso: true,
       onde: 'meio',
+      ergue: 6,
     },
   ],
   passear: (s) => [
-    {
-      animacao: 'walk',
-      fps: 10,
-      ms: 2200,
-      virado: true,
-      onde: 'fora',
-      anda: true,
-    },
+    SAI_DO_CESTO,
+    ANDA_ATE_A_BORDA,
     { animacao: null, ms: entre(2000, 4500, s), onde: 'fora' },
-    { animacao: 'walk', fps: 10, ms: 2400, onde: 'meio', anda: true },
+    ...VOLTA_PRO_CESTO,
   ],
   // Passeio pela borda de baixo da tela: sai pela esquerda e espera fora...
   sair: () => [
-    {
-      animacao: 'walk',
-      fps: 10,
-      ms: 2200,
-      virado: true,
-      onde: 'fora',
-      anda: true,
-    },
+    SAI_DO_CESTO,
+    ANDA_ATE_A_BORDA,
     { animacao: null, ms: null, onde: 'fora' },
   ],
-  // ...e, quando o passeio termina, volta andando até o meio.
-  voltar: () => [
-    { animacao: 'walk', fps: 10, ms: 2400, onde: 'meio', anda: true },
-  ],
+  // ...e, quando o passeio termina, volta andando e pula no cestinho.
+  voltar: () => [...VOLTA_PRO_CESTO],
   // Menu do computador: pula do cestinho até o lado do primeiro link
   // (Dashboard), olha em volta, corre até a parede, sobe por ela e pula de
   // volta para casa.
@@ -121,7 +158,7 @@ export const ROTINAS = {
 }
 
 /** Quanto tempo o mascote leva para sair do menu antes do passeio. */
-export const TEMPO_PARA_SAIR = 2200
+export const TEMPO_PARA_SAIR = SAI_DO_CESTO.ms + ANDA_ATE_A_BORDA.ms
 
 const SORTEAVEIS = [
   ['sentado', 2],

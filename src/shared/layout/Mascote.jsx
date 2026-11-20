@@ -90,7 +90,13 @@ const CENAS = {
     bordao: 'e-gata',
   },
   ai: { animacao: 'hurt', fps: 10, vezes: '3', miado: 'pedindo' },
-  triste: { animacao: 'liedown', fps: 15, vezes: '1', miado: 'triste' },
+  triste: {
+    animacao: 'liedown',
+    fps: 15,
+    vezes: '1',
+    miado: 'triste',
+    ergue: 9,
+  },
   // Mais uma falta anotada: fica vermelho e reclama
   falta: {
     animacao: 'hurt',
@@ -115,7 +121,11 @@ function prefereMenosMovimento() {
  * Onde o gatinho fica: no meio do palco (no celular, perto do título, pela
  * variável --mascote-meio) ou escondido além da borda esquerda.
  */
-const POSICAO = { meio: 'var(--mascote-meio, 50%)', fora: '-48px' }
+const POSICAO = {
+  meio: 'var(--mascote-meio, 50%)',
+  chao: 'var(--mascote-meio, 50%)',
+  fora: '-48px',
+}
 
 /** Tamanho do cestinho na tela (26 × 10 pixels de 3px, ver Casinha). */
 const CESTINHO = { largura: 78, altura: 30 }
@@ -134,15 +144,17 @@ const CURVAS = {
  * de lado; no menu, um ponto (x, pés) medido na tela: a casinha, fora da
  * borda, ao lado de um link ou na parede direita.
  */
-function posicao(onde, mapa) {
+function posicao(onde, mapa, ergue = 0) {
   if (!mapa) return { left: POSICAO[onde] ?? POSICAO.meio }
 
   const { largura, casa, links } = mapa
   const [lugar, numero] = onde.split(':')
   const alturaDoLink = links[Number(numero)] ?? casa.y
   const pontos = {
-    meio: [casa.x, casa.y],
-    fora: [-48, casa.y],
+    meio: [casa.x, casa.y - ergue],
+    // Fora do cestinho, os pés ficam no chão (na base do cesto)
+    chao: [casa.x - 52, casa.base - 2],
+    fora: [-48, casa.base - 2],
     link: [largura - 50, alturaDoLink],
     parede: [largura - 14, alturaDoLink],
     'parede-alto': [largura - 14, casa.y - 4],
@@ -339,7 +351,14 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
       aria-label={`${nome}, o mascote. Clique para ele miar`}
       title="Miau?"
       tabIndex={passeando ? -1 : undefined}
-      style={{ ...posicao(onde, mapa), transition: transicao }}
+      style={{
+        ...posicao(
+          onde,
+          mapa,
+          emCena ? (atual.ergue ?? 0) : (passo.ergue ?? 0),
+        ),
+        transition: transicao,
+      }}
       onClick={clicar}
     >
       {desenho}

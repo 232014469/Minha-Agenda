@@ -121,6 +121,9 @@ describe('Mascote', () => {
     const gatinho = screen.getByRole('button', { name: /Gatinho laranja/ })
 
     act(() => window.dispatchEvent(new CustomEvent(EVENTO_SAIU_PASSEAR)))
+    // Um passo de cada vez: pula do cestinho, anda até a borda e espera fora
+    act(() => vi.advanceTimersByTime(1000))
+    act(() => vi.advanceTimersByTime(3000))
     act(() => vi.advanceTimersByTime(60000))
     expect(gatinho.style.left).toBe('-48px')
     expect(container.querySelector('.sprite')).toBeNull()

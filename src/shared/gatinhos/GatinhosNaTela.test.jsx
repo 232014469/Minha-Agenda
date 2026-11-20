@@ -5,6 +5,7 @@ import '@testing-library/jest-dom/vitest'
 import { mudarPreferencia, recarregarPreferencias } from '../preferencias'
 import GatinhosNaTela from './GatinhosNaTela'
 import { EVENTO_SAIU_PASSEAR, EVENTO_VOLTOU_DO_PASSEIO } from './gatos'
+import { TEMPO_PARA_SAIR } from './rotina'
 
 afterEach(() => {
   cleanup()
@@ -27,7 +28,7 @@ describe('GatinhosNaTela', () => {
     expect(avisos).toEqual([EVENTO_SAIU_PASSEAR])
     expect(container.querySelector('.gatinho-passeio')).toBeNull()
 
-    act(() => vi.advanceTimersByTime(2200))
+    act(() => vi.advanceTimersByTime(TEMPO_PARA_SAIR))
     expect(container.querySelector('.gatinho-passeio')).not.toBeNull()
     expect(avisos).toEqual([EVENTO_SAIU_PASSEAR])
 
