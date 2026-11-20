@@ -40,6 +40,9 @@ export default function Tema() {
             />
             <span aria-hidden="true">{opcao.icone}</span>
             {opcao.nome}
+            {opcao.dica && (
+              <span className="config-tema-dica">({opcao.dica})</span>
+            )}
           </label>
         ))}
       </fieldset>

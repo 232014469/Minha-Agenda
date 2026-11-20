@@ -205,6 +205,11 @@
   cursor: pointer;
 }
 
+.config-tema-dica {
+  color: var(--cor-texto-suave);
+  font-weight: 400;
+}
+
 .config-tema-amostra {
   width: 20px;
   height: 20px;

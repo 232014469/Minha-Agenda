@@ -1,8 +1,14 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import { aplicarModo, aplicarTema, lerModo, lerTema } from '../../config/tema'
+import {
+  aplicarModo,
+  aplicarTema,
+  ehNoite,
+  lerModo,
+  lerTema,
+} from '../../config/tema'
 import Tema from './Tema'
 
 afterEach(() => {
@@ -41,15 +47,25 @@ describe('Tema', () => {
     expect(lerModo()).toBe('escuro')
   })
 
-  it('automático segue o sistema do aparelho', () => {
-    window.matchMedia = () => ({ matches: true })
+  it('automático: escuro à noite (18h às 6h) e claro de dia', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 10, 19, 21, 30))
     expect(aplicarModo('auto')).toBe('auto')
     expect(document.documentElement.dataset.modo).toBe('escuro')
 
-    window.matchMedia = () => ({ matches: false })
-    aplicarModo('auto')
+    // Amanhece: no minuto seguinte às 6h, volta a ficar claro sozinho
+    vi.setSystemTime(new Date(2026, 10, 20, 5, 59, 30))
+    vi.advanceTimersByTime(60_000)
     expect(document.documentElement.dataset.modo).toBe('claro')
 
-    delete window.matchMedia
+    aplicarModo('claro')
+    vi.useRealTimers()
+  })
+
+  it('sabe quando é noite', () => {
+    expect(ehNoite(new Date(2026, 10, 19, 18, 0))).toBe(true)
+    expect(ehNoite(new Date(2026, 10, 19, 3, 0))).toBe(true)
+    expect(ehNoite(new Date(2026, 10, 19, 6, 0))).toBe(false)
+    expect(ehNoite(new Date(2026, 10, 19, 17, 59))).toBe(false)
   })
 })

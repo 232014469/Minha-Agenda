@@ -36,11 +36,11 @@ export function aplicarTema(id) {
   return tema
 }
 
-/** Aparência: claro, escuro ou igual ao sistema do aparelho. */
+/** Aparência: claro, escuro ou automático (escuro à noite, pelo relógio). */
 export const MODOS = [
   { id: 'claro', nome: 'Claro', icone: '☀️' },
   { id: 'escuro', nome: 'Escuro', icone: '🌙' },
-  { id: 'auto', nome: 'Automático', icone: '🌗' },
+  { id: 'auto', nome: 'Automático', icone: '🌗', dica: 'escuro das 18h às 6h' },
 ]
 
 const CHAVE_MODO = `${APP.chaveDosDados}.modo`
@@ -48,16 +48,21 @@ const CHAVE_MODO = `${APP.chaveDosDados}.modo`
 /** Cor da barra do navegador no celular, igual ao menu de cada modo. */
 const COR_DA_BARRA = { claro: '#faeedb', escuro: '#2a385f' }
 
-const sistemaEscuro = () =>
-  globalThis.matchMedia?.('(prefers-color-scheme: dark)')
+/** No automático, a noite vai das 18h às 6h (hora do aparelho). */
+const ANOITECE = 18
+const AMANHECE = 6
+
+export function ehNoite(agora = new Date()) {
+  const hora = agora.getHours()
+
+  return hora >= ANOITECE || hora < AMANHECE
+}
 
 let modoAtual = 'claro'
-let ouvindoSistema = false
+let relogio = null
 
 function pintarModo() {
-  const escuro =
-    modoAtual === 'escuro' ||
-    (modoAtual === 'auto' && Boolean(sistemaEscuro()?.matches))
+  const escuro = modoAtual === 'escuro' || (modoAtual === 'auto' && ehNoite())
   const modo = escuro ? 'escuro' : 'claro'
 
   document.documentElement.dataset.modo = modo
@@ -78,15 +83,20 @@ export function lerModo() {
 }
 
 /**
- * Aplica a aparência e guarda a escolha neste aparelho. No automático, muda
- * sozinho quando o sistema troca entre claro e escuro.
+ * Aplica a aparência e guarda a escolha neste aparelho. No automático, confere
+ * o relógio a cada minuto (e ao voltar para a aba), e troca sozinho às 18h e
+ * às 6h.
  */
 export function aplicarModo(id) {
   modoAtual = MODOS.some((modo) => modo.id === id) ? id : 'claro'
 
-  if (!ouvindoSistema) {
-    sistemaEscuro()?.addEventListener?.('change', pintarModo)
-    ouvindoSistema = true
+  clearInterval(relogio)
+  relogio = null
+  document.removeEventListener('visibilitychange', pintarModo)
+
+  if (modoAtual === 'auto') {
+    relogio = setInterval(pintarModo, 60_000)
+    document.addEventListener('visibilitychange', pintarModo)
   }
 
   pintarModo()
