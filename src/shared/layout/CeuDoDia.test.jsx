@@ -34,6 +34,9 @@ function abrir(tarefas) {
   )
 }
 
+// Atrasada há 2 dias (com uma semana ela já vira "não realizada")
+const ANTEONTEM = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+
 afterEach(() => {
   cleanup()
   localStorage.clear()
@@ -50,7 +53,7 @@ describe('céu do modo claro', () => {
   })
 
   it('chove com atividade atrasada', () => {
-    const { container } = abrir([tarefa(1, '2020-01-01T23:59:00')])
+    const { container } = abrir([tarefa(1, ANTEONTEM)])
 
     expect(container.querySelector('.ceu-dia')).toHaveAttribute(
       'data-tempo',

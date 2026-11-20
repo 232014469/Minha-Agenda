@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { DadosContexto } from './contexto'
 import {
   CORES,
@@ -15,9 +15,13 @@ import {
   EVENTO_TRISTE,
 } from '../shared/gatinhos/gatos'
 import { useSincronizacao } from '../sync/useSincronizacao'
+import { encerrarAtrasadas } from './vencidas'
 
 // Quando o item mudou, para a sincronização saber qual versão é a mais nova.
 const agora = () => Date.now()
+
+/** De quanto em quanto tempo confere as atrasadas com a aba aberta (1 h). */
+const CONFERE_ATRASADAS_MS = 60 * 60 * 1000
 
 /**
  * Guarda as matérias e tarefas no navegador e entrega as ações para
@@ -25,9 +29,23 @@ const agora = () => Date.now()
  * `todos`, com todos os semestres.
  */
 export default function DadosProvider({ children, opcoesDaSincronizacao }) {
-  const [dados, setDados] = useState(lerDados)
+  // Atrasada há uma semana ou mais vira "não realizada" (ver vencidas.js)
+  const [dados, setDados] = useState(() => encerrarAtrasadas(lerDados()))
   // Dados que chegam de outro aparelho pela sincronização.
-  const substituir = useCallback((novos) => setDados(novos), [])
+  const substituir = useCallback(
+    (novos) => setDados(encerrarAtrasadas(novos)),
+    [],
+  )
+
+  // Com a aba aberta por dias, confere de novo de tempos em tempos
+  useEffect(() => {
+    const relogio = setInterval(
+      () => setDados((atuais) => encerrarAtrasadas(atuais)),
+      CONFERE_ATRASADAS_MS,
+    )
+
+    return () => clearInterval(relogio)
+  }, [])
   const sincronizacao = useSincronizacao(
     dados,
     substituir,

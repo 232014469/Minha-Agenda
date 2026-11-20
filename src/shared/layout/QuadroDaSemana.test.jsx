@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, render, screen, within } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import DadosProvider from '../../dados/DadosProvider'
@@ -48,6 +48,10 @@ describe('rotuloDoDia', () => {
 
 describe('QuadroDaSemana', () => {
   beforeEach(() => {
+    // Os dados olham o relógio (atrasada há uma semana vira "não realizada"):
+    // para eles, hoje também é 12/11/2026.
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(HOJE)
     localStorage.setItem(
       CHAVE,
       JSON.stringify({
@@ -62,6 +66,7 @@ describe('QuadroDaSemana', () => {
   afterEach(() => {
     cleanup()
     localStorage.clear()
+    vi.useRealTimers()
   })
 
   it('mostra os post-its da semana, sem links nem botões', () => {
