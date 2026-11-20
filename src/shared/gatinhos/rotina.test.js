@@ -53,15 +53,15 @@ describe('rotina do gatinho', () => {
     expect(proximaRotina('parado', () => 0.99, { links: 4 })).toBe('explorar')
   })
 
-  it('explorar: pula para perto de um link, sobe a parede e volta pra casa', () => {
+  it('explorar: pula até o Dashboard, sobe a parede e volta pra casa', () => {
     const passos = iniciarRotina('explorar', () => 0.5, { links: 4 }).passos
 
     expect(passos.map((passo) => passo.onde)).toEqual([
-      'link:2',
-      'link:2',
-      'link:2',
-      'parede:2',
-      'parede:2',
+      'link:0',
+      'link:0',
+      'link:0',
+      'parede:0',
+      'parede:0',
       'parede-alto',
       'meio',
       'meio',

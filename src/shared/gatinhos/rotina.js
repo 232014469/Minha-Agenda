@@ -62,10 +62,11 @@ export const ROTINAS = {
   voltar: () => [
     { animacao: 'walk', fps: 10, ms: 2400, onde: 'meio', anda: true },
   ],
-  // Menu do computador: pula da casinha para perto de um link, olha em volta,
-  // corre até a parede, sobe por ela e pula de volta para casa.
-  explorar: (s, { links = 1 } = {}) => {
-    const link = Math.min(links - 1, Math.floor(s() * links))
+  // Menu do computador: pula do cestinho até o lado do primeiro link
+  // (Dashboard), olha em volta, corre até a parede, sobe por ela e pula de
+  // volta para casa.
+  explorar: (s) => {
+    const link = 0
 
     return [
       {
@@ -94,7 +95,7 @@ export const ROTINAS = {
       {
         animacao: 'wallclimb',
         fps: 8,
-        ms: 1200 + link * 450,
+        ms: 1200,
         onde: 'parede-alto',
         anda: true,
       },
