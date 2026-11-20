@@ -173,8 +173,10 @@
   align-content: start;
   gap: 10px;
   min-height: 0;
-  margin: 0;
-  padding: 4px 4px 8px;
+  /* Folga por dentro (compensada pela margem negativa) para o post-it que
+     treme no alerta não ser cortado pela borda da rolagem */
+  margin: -10px -14px 0;
+  padding: 14px 18px 12px;
   overflow-y: auto;
   list-style: none;
 }
@@ -214,16 +216,16 @@
   }
 
   25% {
-    transform: rotate(-5deg) scale(1.08);
+    transform: rotate(-4deg) scale(1.05);
   }
 
   50% {
-    box-shadow: 0 0 0 8px rgb(240 90 80 / 0.35);
-    transform: rotate(3deg) scale(1.08);
+    box-shadow: 0 0 0 6px rgb(240 90 80 / 0.35);
+    transform: rotate(3deg) scale(1.05);
   }
 
   75% {
-    transform: rotate(-2deg) scale(1.04);
+    transform: rotate(-2deg) scale(1.03);
   }
 }
 
