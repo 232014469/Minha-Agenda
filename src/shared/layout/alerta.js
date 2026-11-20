@@ -28,3 +28,32 @@ export function tarefasUrgentes(tarefas, hoje = new Date()) {
 export function temAtrasadas(tarefas) {
   return tarefas.some((tarefa) => ehAtrasada(tarefa))
 }
+
+/**
+ * "Previsão do tempo" da agenda, para a placa do menu: chuva com atividade
+ * atrasada, sol com nuvem quando há entrega hoje e céu limpo quando não há
+ * nada pendente para hoje.
+ */
+export function previsaoDoTempo(tarefas, hoje = new Date()) {
+  const atrasadas = tarefas.filter((tarefa) => ehAtrasada(tarefa)).length
+
+  if (atrasadas) {
+    return {
+      tempo: 'chuva',
+      icone: '🌧️',
+      texto: `${atrasadas} ${atrasadas === 1 ? 'atividade atrasada' : 'atividades atrasadas'}`,
+    }
+  }
+
+  const paraHoje = tarefasUrgentes(tarefas, hoje).length
+
+  if (paraHoje) {
+    return {
+      tempo: 'nublado',
+      icone: '🌤️',
+      texto: `${paraHoje} ${paraHoje === 1 ? 'entrega hoje' : 'entregas hoje'}`,
+    }
+  }
+
+  return { tempo: 'sol', icone: '☀️', texto: 'Céu limpo: nada atrasado' }
+}
