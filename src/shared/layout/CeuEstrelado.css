@@ -71,7 +71,8 @@
   }
 }
 
-/* Lua crescente no alto, perto do seletor de semestre */
+/* Lua crescente no alto, perto do seletor de semestre: parte acesa à
+   esquerda e pontas para a direita, como 🌙 */
 .ceu-lua {
   position: absolute;
   top: 22px;
@@ -79,14 +80,12 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  box-shadow:
-    inset -15px 8px 0 0 #fbf1cf,
-    0 0 0 0 transparent;
+  box-shadow: inset 15px -6px 0 0 #fbf1cf;
   filter: drop-shadow(0 0 14px rgb(251 241 207 / 0.45));
-  transform: rotate(-12deg);
 }
 
-/* Estrela cadente: atravessa o alto da tela de tempos em tempos */
+/* Estrela cadente: desce para a direita com a cabeça na frente e o rastro
+   para trás (a inclinação acompanha o caminho: 84px para baixo a cada 260px) */
 .ceu-cadente {
   position: absolute;
   top: 40px;
@@ -95,8 +94,10 @@
   height: 2px;
   border-radius: 999px;
   background: linear-gradient(90deg, transparent, #fffbe8);
+  box-shadow: 0 0 6px rgb(255 251 232 / 0.6);
   opacity: 0;
-  transform: rotate(-18deg);
+  transform: rotate(18deg);
+  transform-origin: right center;
   animation: ceu-cadente 13s linear infinite 4s;
 }
 
@@ -128,7 +129,7 @@
     right: 22px;
     width: 34px;
     height: 34px;
-    box-shadow: inset -10px 5px 0 0 #fbf1cf;
+    box-shadow: inset 10px -4px 0 0 #fbf1cf;
   }
 }
 
