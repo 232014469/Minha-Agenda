@@ -8,10 +8,10 @@
   pointer-events: none;
   background: radial-gradient(
     circle 260px at calc(100% - 366px) 46px,
-    rgb(255 214 120 / 0.28),
+    rgb(255 236 150 / 0.3),
     transparent 70%
   );
-  transition: background 1.2s ease;
+  transition: background 1.6s ease;
 }
 
 :root[data-modo='escuro'] .ceu-dia {
@@ -27,7 +27,8 @@
   );
 }
 
-/* Sol: miolo amarelo e raios girando devagar em volta */
+/* Sol: miolo amarelo-claro que "respira" devagar e raios de pontas suaves
+   girando bem lentamente */
 .ceu-dia-sol {
   position: absolute;
   top: 20px;
@@ -35,11 +36,15 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 38%, #fff3b8, #ffd25a 60%, #f6b73c);
-  box-shadow: 0 0 22px rgb(255 200 80 / 0.55);
+  background: radial-gradient(circle at 42% 40%, #fffbe0, #fff0a8 45%, #ffe17a);
+  box-shadow:
+    0 0 18px rgb(255 232 140 / 0.7),
+    0 0 46px rgb(255 240 170 / 0.45);
   transition:
-    opacity 1.2s ease,
-    translate 1.2s ease;
+    opacity 1.6s ease,
+    translate 1.6s ease;
+  animation: ceu-dia-respira 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 .ceu-dia-sol::before {
@@ -48,24 +53,28 @@
   inset: -22px;
   border-radius: 50%;
   background: repeating-conic-gradient(
-    rgb(255 200 80 / 0.75) 0 7deg,
-    transparent 7deg 30deg
+    rgb(255 226 120 / 0.65) 0deg,
+    rgb(255 226 120 / 0.65) 4deg,
+    rgb(255 226 120 / 0) 11deg,
+    rgb(255 226 120 / 0) 26deg,
+    rgb(255 226 120 / 0.65) 30deg
   );
   -webkit-mask: radial-gradient(
     circle,
-    transparent 33px,
-    #000 34px,
-    #000 47px,
+    transparent 31px,
+    #000 35px,
+    #000 42px,
     transparent 48px
   );
   mask: radial-gradient(
     circle,
-    transparent 33px,
-    #000 34px,
-    #000 47px,
+    transparent 31px,
+    #000 35px,
+    #000 42px,
     transparent 48px
   );
-  animation: ceu-dia-gira 40s linear infinite;
+  animation: ceu-dia-gira 90s linear infinite;
+  will-change: transform;
 }
 
 .ceu-dia-chuva .ceu-dia-sol {
@@ -79,21 +88,51 @@
   }
 }
 
-/* Nuvem: corpo arredondado e dois "rolinhos" em cima */
+@keyframes ceu-dia-respira {
+  50% {
+    scale: 1.05;
+    box-shadow:
+      0 0 24px rgb(255 232 140 / 0.8),
+      0 0 60px rgb(255 240 170 / 0.5);
+  }
+}
+
+/* Trilho: leva a nuvem devagar de fora da esquerda até fora da direita
+   (100% = largura do céu) */
+.ceu-dia-trilho {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 0;
+  transition: opacity 1.6s ease;
+  animation: ceu-dia-atravessa linear infinite;
+  will-change: transform;
+}
+
+@keyframes ceu-dia-atravessa {
+  from {
+    translate: -140px 0;
+  }
+
+  to {
+    translate: 100% 0;
+  }
+}
+
+/* Nuvem: corpo arredondado e dois "rolinhos" em cima, balançando de leve */
 .ceu-dia-nuvem {
   --nuvem-cor: #fff;
 
   position: absolute;
+  left: 0;
   width: 92px;
   height: 28px;
   border-radius: 999px;
   background: var(--nuvem-cor);
-  box-shadow: 0 6px 14px rgb(var(--sombra) / 0.08);
+  box-shadow: 0 6px 14px rgb(var(--sombra) / 0.07);
   scale: var(--nuvem-tamanho, 1);
-  transition:
-    background 1.2s ease,
-    opacity 1.2s ease;
-  animation: ceu-dia-nuvem ease-in-out infinite alternate;
+  transition: background 1.6s ease;
+  animation: ceu-dia-balanca ease-in-out infinite alternate;
 }
 
 .ceu-dia-nuvem::before,
@@ -118,6 +157,16 @@
   height: 30px;
 }
 
+@keyframes ceu-dia-balanca {
+  from {
+    translate: 0 -3px;
+  }
+
+  to {
+    translate: 0 4px;
+  }
+}
+
 .ceu-dia-nuvem-extra {
   opacity: 0;
 }
@@ -127,15 +176,11 @@
 }
 
 .ceu-dia-chuva .ceu-dia-nuvem-extra {
-  --nuvem-cor: #8f99a6;
-
   opacity: 1;
 }
 
-@keyframes ceu-dia-nuvem {
-  to {
-    translate: var(--nuvem-vai) 0;
-  }
+.ceu-dia-chuva .ceu-dia-nuvem-extra .ceu-dia-nuvem {
+  --nuvem-cor: #8f99a6;
 }
 
 /* Chuva: gotas finas caindo inclinadas, sumindo antes do conteúdo */
@@ -228,7 +273,7 @@
   .ceu-dia {
     background: radial-gradient(
       circle 160px at calc(100% - 39px) 81px,
-      rgb(255 214 120 / 0.28),
+      rgb(255 236 150 / 0.3),
       transparent 70%
     );
   }
@@ -244,16 +289,16 @@
     inset: -15px;
     -webkit-mask: radial-gradient(
       circle,
-      transparent 22px,
-      #000 23px,
-      #000 31px,
+      transparent 21px,
+      #000 24px,
+      #000 28px,
       transparent 32px
     );
     mask: radial-gradient(
       circle,
-      transparent 22px,
-      #000 23px,
-      #000 31px,
+      transparent 21px,
+      #000 24px,
+      #000 28px,
       transparent 32px
     );
   }
@@ -277,9 +322,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ceu-dia-sol,
   .ceu-dia-sol::before,
   .ceu-dia-nuvem {
     animation: none;
+  }
+
+  /* Nuvens paradas, cada uma no seu lugar */
+  .ceu-dia-trilho {
+    animation: none;
+    translate: var(--nuvem-x) 0;
   }
 
   .ceu-dia-gotas,

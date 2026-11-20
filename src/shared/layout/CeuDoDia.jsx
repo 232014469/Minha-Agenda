@@ -16,45 +16,46 @@ function sorteador(semente) {
 
 const sortear = sorteador(20261120)
 
-/** Nuvens do alto: as "extras" só aparecem quando chove. */
+/**
+ * Nuvens do alto: cada uma atravessa o céu devagar, da esquerda para a
+ * direita, num "trilho" que dura alguns minutos; o atraso negativo espalha as
+ * nuvens desde o começo. `x` é onde ficam paradas (reduzir movimento). As
+ * "extras" só aparecem quando chove.
+ */
 const NUVENS = [
-  { id: 1, left: '16%', top: '18px', tamanho: 1, vai: '38px', tempo: '26s' },
-  {
-    id: 2,
-    left: '47%',
-    top: '64px',
-    tamanho: 0.75,
-    vai: '-30px',
-    tempo: '31s',
-  },
-  { id: 3, left: '78%', top: '96px', tamanho: 0.9, vai: '26px', tempo: '22s' },
+  { id: 1, top: 18, tamanho: 1, tempo: 150, atraso: 0.18, x: '16%' },
+  { id: 2, top: 66, tamanho: 0.75, tempo: 190, atraso: 0.52, x: '47%' },
+  { id: 3, top: 98, tamanho: 0.9, tempo: 170, atraso: 0.83, x: '78%' },
   {
     id: 4,
-    left: '30%',
-    top: '6px',
+    top: 6,
     tamanho: 1.15,
-    vai: '-24px',
-    tempo: '28s',
+    tempo: 160,
+    atraso: 0.33,
+    x: '30%',
     extra: true,
   },
   {
     id: 5,
-    left: '62%',
-    top: '14px',
+    top: 14,
     tamanho: 1.25,
-    vai: '30px',
-    tempo: '34s',
+    tempo: 200,
+    atraso: 0.66,
+    x: '62%',
     extra: true,
   },
-].map(({ id, left, top, tamanho, vai, tempo, extra }) => ({
+].map(({ id, top, tamanho, tempo, atraso, x, extra }) => ({
   id,
   extra,
-  estilo: {
-    left,
-    top,
+  trilho: {
+    top: `${top}px`,
+    '--nuvem-x': x,
+    animationDuration: `${tempo}s`,
+    animationDelay: `${-tempo * atraso}s`,
+  },
+  nuvem: {
     '--nuvem-tamanho': tamanho,
-    '--nuvem-vai': vai,
-    animationDuration: tempo,
+    animationDuration: `${7 + id * 1.3}s`,
   },
 }))
 
@@ -68,7 +69,8 @@ const GOTAS = Array.from({ length: 48 }, (_, indice) => ({
 }))
 
 /**
- * Céu do modo claro: sol com raios girando e nuvens passando no alto da tela.
+ * Céu do modo claro: sol brilhando com raios girando devagar e nuvens
+ * atravessando o alto da tela.
  * Enquanto houver atividade atrasada, o céu fecha: nuvens cinzas, chuva e
  * raios. Quando nenhuma estiver mais atrasada, o sol volta. Fica atrás do
  * conteúdo e só aparece no modo claro (o CSS esconde no escuro).
@@ -96,9 +98,11 @@ export default function CeuDoDia() {
       {NUVENS.map((nuvem) => (
         <span
           key={nuvem.id}
-          className={`ceu-dia-nuvem${nuvem.extra ? ' ceu-dia-nuvem-extra' : ''}`}
-          style={nuvem.estilo}
-        />
+          className={`ceu-dia-trilho${nuvem.extra ? ' ceu-dia-nuvem-extra' : ''}`}
+          style={nuvem.trilho}
+        >
+          <span className="ceu-dia-nuvem" style={nuvem.nuvem} />
+        </span>
       ))}
       <span className="ceu-dia-gotas">
         {GOTAS.map((gota) => (
