@@ -20,7 +20,7 @@ import './Mascote.css'
  * clique, é ele quem comemora quando uma tarefa é concluída e fica triste
  * quando não é realizada ou é excluída (se "Gatinhos pela tela" estiver
  * ligado). `noMenu`: no menu do computador ele mora numa casinha e pode
- * explorar o menu todo (pular perto dos links e subir pela parede).
+ * subir pela parede do lado dela e pular de volta.
  */
 export default function Mascote({ noMenu = false, chuva = false }) {
   const { mascote, sons, bordoes, gatinhos } = usePreferencias()
@@ -119,7 +119,6 @@ function prefereMenosMovimento() {
  */
 const POSICAO = {
   meio: 'var(--mascote-meio, 50%)',
-  chao: 'var(--mascote-meio, 50%)',
   'frente-porta': 'var(--mascote-meio, 50%)',
   dentro: 'var(--mascote-meio, 50%)',
   pote: 'var(--mascote-meio, 50%)',
@@ -143,9 +142,7 @@ const CURVAS = {
 function posicao(onde, mapa) {
   if (!mapa) return { left: POSICAO[onde] ?? POSICAO.meio }
 
-  const { largura, casa, links } = mapa
-  const [lugar, numero] = onde.split(':')
-  const alturaDoLink = links[Number(numero)] ?? casa.y
+  const { largura, casa } = mapa
   const pontos = {
     meio: [casa.x, casa.y],
     // Dia de chuva: logo antes da porta e lá dentro (atrás da parede)
@@ -153,13 +150,12 @@ function posicao(onde, mapa) {
     dentro: [casa.porta - 24, casa.y],
     // Na frente dos potinhos do quintal, do lado esquerdo da casinha
     pote: [casa.esquerda - 8, casa.y],
-    chao: [casa.x - 52, casa.base - 2],
-    fora: [-48, numero === undefined ? casa.base - 2 : alturaDoLink],
-    link: [largura - 50, alturaDoLink],
-    parede: [largura - 14, alturaDoLink],
-    'parede-alto': [largura - 14, casa.y - 4],
+    fora: [-48, casa.base - 2],
+    // Parede direita do menu: na altura da casinha e um pouco acima
+    parede: [largura - 14, casa.y],
+    'parede-alto': [largura - 14, casa.y - 40],
   }
-  const [x, y] = pontos[lugar] ?? pontos.meio
+  const [x, y] = pontos[onde] ?? pontos.meio
 
   return { left: `${x}px`, top: `${y - PES}px` }
 }
@@ -306,15 +302,12 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   const sairPassear = useCallback(() => {
     setPasseando(true)
     setCena(null)
-    // Explorando o menu ele nunca flutua: na altura do Dashboard (antes de
-    // subir a parede) sai andando por ali; já subindo, termina a volta pela
-    // parede e só então sai da casinha.
-    setRotina((atual) => {
-      if (atual.nome !== 'explorar') return iniciarRotina('sair')
-      if (atual.indice <= 4) return iniciarRotina('sairDoMenu')
-
-      return { ...atual, depois: 'sair' }
-    })
+    // Explorando (na parede), termina a volta para casa e só então sai.
+    setRotina((atual) =>
+      atual.nome === 'explorar'
+        ? { ...atual, depois: 'sair' }
+        : iniciarRotina('sair'),
+    )
   }, [])
   const voltarDoPasseio = useCallback(() => {
     setPasseando(false)
