@@ -20,7 +20,8 @@ const sortear = sorteador(20261120)
  * Nuvens do alto: cada uma atravessa o céu devagar, da esquerda para a
  * direita, num "trilho" que dura alguns minutos; o atraso negativo espalha as
  * nuvens desde o começo. `x` é onde ficam paradas (reduzir movimento). As
- * "extras" só aparecem quando chove.
+ * "extras" só aparecem quando chove, e cada uma solta um raio (`raio` é o
+ * atraso dele: as duas se revezam a cada 3,5 s).
  */
 const NUVENS = [
   { id: 1, top: 18, tamanho: 1, tempo: 150, atraso: 0.18, x: '16%' },
@@ -34,6 +35,7 @@ const NUVENS = [
     atraso: 0.33,
     x: '30%',
     extra: true,
+    raio: '1.5s',
   },
   {
     id: 5,
@@ -43,10 +45,12 @@ const NUVENS = [
     atraso: 0.66,
     x: '62%',
     extra: true,
+    raio: '5s',
   },
-].map(({ id, top, tamanho, tempo, atraso, x, extra }) => ({
+].map(({ id, top, tamanho, tempo, atraso, x, extra, raio }) => ({
   id,
   extra,
+  raio,
   trilho: {
     top: `${top}px`,
     '--nuvem-x': x,
@@ -101,6 +105,12 @@ export default function CeuDoDia() {
           className={`ceu-dia-trilho${nuvem.extra ? ' ceu-dia-nuvem-extra' : ''}`}
           style={nuvem.trilho}
         >
+          {nuvem.raio && (
+            <span
+              className="ceu-dia-raio"
+              style={{ animationDelay: nuvem.raio }}
+            />
+          )}
           <span className="ceu-dia-nuvem" style={nuvem.nuvem} />
         </span>
       ))}
@@ -110,7 +120,6 @@ export default function CeuDoDia() {
         ))}
       </span>
       <span className="ceu-dia-clarao" />
-      <span className="ceu-dia-raio" />
     </div>
   )
 }

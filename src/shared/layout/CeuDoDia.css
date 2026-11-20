@@ -285,11 +285,13 @@
   opacity: 0;
 }
 
+/* Raio: sai de baixo de uma nuvem de tempestade e anda junto com ela (fica
+   no trilho da nuvem, desenhado antes dela, então a nuvem cobre o topo) */
 .ceu-dia-raio {
-  top: 52px;
-  left: 64%;
-  width: 26px;
-  height: 64px;
+  top: 22px;
+  left: 30px;
+  width: 22px;
+  height: 56px;
   background: #ffe066;
   clip-path: polygon(
     45% 0,
@@ -311,9 +313,15 @@
   background: rgb(255 255 255 / 0.55);
 }
 
-.ceu-dia-chuva .ceu-dia-raio,
+/* Cada nuvem solta um raio a cada 7 s (o atraso vem do JSX: 1,5 s e 5 s,
+   revezando a cada 3,5 s). O clarão pisca a cada 3,5 s, junto com cada raio:
+   começa 4,685 s depois (1,5 + 91% de 7 s − 91% de 3,5 s). */
+.ceu-dia-chuva .ceu-dia-raio {
+  animation: ceu-dia-raio 7s linear infinite;
+}
+
 .ceu-dia-chuva .ceu-dia-clarao {
-  animation: ceu-dia-raio 7s linear infinite 1.5s;
+  animation: ceu-dia-raio 3.5s linear infinite 4.685s;
 }
 
 @keyframes ceu-dia-raio {
