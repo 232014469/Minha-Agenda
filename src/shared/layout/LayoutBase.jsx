@@ -11,7 +11,6 @@ import AlertaPodeNao from './AlertaPodeNao'
 import { temAtrasadas } from './alerta'
 import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
-import PlacaDoTempo from './PlacaDoTempo'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
 import './LayoutBase.css'
@@ -59,11 +58,7 @@ export default function LayoutBase() {
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
           {!celular && <Mascote noMenu chuva={chuva} />}
-          {celular ? (
-            <p className="layout-lema">{APP.lema}</p>
-          ) : (
-            <PlacaDoTempo />
-          )}
+          <p className="layout-lema">{APP.lema}</p>
         </div>
 
         <ul className="layout-links">
