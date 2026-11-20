@@ -32,3 +32,8 @@ cortados e com o volume igualado. Tocam no lugar de alguns miados quando
 - Origem dos áudios: _preencher com o link de onde vieram_
 - Autorização: _preencher (a voz é da Wanessa Wolf; como o site é público,
   vale ter a autorização dela ou da equipe)_
+
+## Casinha
+
+`casinha.png` e `casinha-telhado.png` vêm de um desenho em pixel art do dono
+do projeto. O telhado foi separado em tons de cinza para receber a cor do tema.

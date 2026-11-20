@@ -7,17 +7,16 @@
  *
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
- * - onde: 'meio' (o cestinho), 'chao' (no chão, do lado do cestinho),
+ * - onde: 'meio' (a porta da casinha), 'chao' (no chão, do lado dela),
  *   'fora' (escondido além da borda esquerda; 'fora:N' na altura do link N),
  *   'link:N' (ao lado do link N do menu), 'parede:N' (na parede direita, na
  *   altura do link N) ou 'parede-alto' (na parede, na altura da casinha);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
  *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto;
- * - ergue: sobe o desenho alguns px (deitado no cestinho).
  */
 const entre = (min, max, sorteio) => Math.round(min + (max - min) * sorteio())
 
-/** Sai do cestinho pulando para o chão, do lado esquerdo dele... */
+/** Sai da casinha pulando para o chão, do lado esquerdo... */
 const SAI_DO_CESTO = {
   animacao: 'jump',
   fps: 10,
@@ -38,7 +37,7 @@ const ANDA_ATE_A_BORDA = {
   anda: true,
 }
 
-/** ...e, na volta, anda até o lado do cestinho e pula para dentro. */
+/** ...e, na volta, anda até o lado da casinha e pula para a porta. */
 const VOLTA_PRO_CESTO = [
   { animacao: 'walk', fps: 10, ms: 2000, onde: 'chao', anda: true },
   {
@@ -58,7 +57,6 @@ export const ROTINAS = {
   sentado: (s) => [
     { animacao: 'sit', fps: 6, ms: entre(5000, 9000, s), onde: 'meio' },
   ],
-  // Deitado no cestinho: `ergue` sobe o desenho para ele não sumir dentro
   deitar: (s) => [
     {
       animacao: 'crouch',
@@ -66,14 +64,12 @@ export const ROTINAS = {
       ms: 800,
       vezes: '1',
       onde: 'meio',
-      ergue: 6,
     },
     {
       animacao: 'liedown',
       fps: 6,
       ms: entre(6000, 11000, s),
       onde: 'meio',
-      ergue: 9,
     },
     {
       animacao: 'crouch',
@@ -82,7 +78,6 @@ export const ROTINAS = {
       vezes: '1',
       reverso: true,
       onde: 'meio',
-      ergue: 6,
     },
   ],
   passear: (s) => [
@@ -103,9 +98,9 @@ export const ROTINAS = {
     { ...ANDA_ATE_A_BORDA, onde: 'fora:0' },
     { animacao: null, ms: null, onde: 'fora:0' },
   ],
-  // ...e, quando o passeio termina, volta andando e pula no cestinho.
+  // ...e, quando o passeio termina, volta andando e pula para a porta da casinha.
   voltar: () => [...VOLTA_PRO_CESTO],
-  // Menu do computador: pula do cestinho até o lado do primeiro link
+  // Menu do computador: pula da casinha até o lado do primeiro link
   // (Dashboard), olha em volta, corre até a parede, sobe por ela e pula de
   // volta para casa.
   explorar: (s) => {

@@ -18,7 +18,7 @@ import './Mascote.css'
  * O mascote do menu: o gatinho escolhido nas Configurações. Além de reagir ao
  * clique, é ele quem comemora quando uma tarefa é concluída e fica triste
  * quando não é realizada ou é excluída (se "Gatinhos pela tela" estiver
- * ligado). `noMenu`: no menu do computador ele mora num cestinho e pode
+ * ligado). `noMenu`: no menu do computador ele mora numa casinha e pode
  * explorar o menu todo (pular perto dos links e subir pela parede).
  */
 export default function Mascote({ noMenu = false }) {
@@ -90,13 +90,7 @@ const CENAS = {
     bordao: 'e-gata',
   },
   ai: { animacao: 'hurt', fps: 10, vezes: '3', miado: 'pedindo' },
-  triste: {
-    animacao: 'liedown',
-    fps: 15,
-    vezes: '1',
-    miado: 'triste',
-    ergue: 9,
-  },
+  triste: { animacao: 'liedown', fps: 15, vezes: '1', miado: 'triste' },
   // Mais uma falta anotada: fica vermelho e reclama
   falta: {
     animacao: 'hurt',
@@ -127,9 +121,6 @@ const POSICAO = {
   fora: '-48px',
 }
 
-/** Tamanho do cestinho na tela (26 × 10 pixels de 3px, ver Casinha). */
-const CESTINHO = { largura: 78, altura: 30 }
-
 /** Altura dos pés do gatinho dentro do botão de 64px (o desenho fica no meio). */
 const PES = 43
 
@@ -144,15 +135,14 @@ const CURVAS = {
  * de lado; no menu, um ponto (x, pés) medido na tela: a casinha, fora da
  * borda, ao lado de um link ou na parede direita.
  */
-function posicao(onde, mapa, ergue = 0) {
+function posicao(onde, mapa) {
   if (!mapa) return { left: POSICAO[onde] ?? POSICAO.meio }
 
   const { largura, casa, links } = mapa
   const [lugar, numero] = onde.split(':')
   const alturaDoLink = links[Number(numero)] ?? casa.y
   const pontos = {
-    meio: [casa.x, casa.y - ergue],
-    // Fora do cestinho, os pés ficam no chão (na base do cesto)
+    meio: [casa.x, casa.y],
     chao: [casa.x - 52, casa.base - 2],
     fora: [-48, numero === undefined ? casa.base - 2 : alturaDoLink],
     link: [largura - 50, alturaDoLink],
@@ -194,9 +184,9 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
       setMapa({
         largura: caixa.width,
         casa: {
-          x: casa.left + casa.width / 2 - caixa.left,
-          // Pés dentro do cestinho: a frente dele cobre a barriga do gatinho
-          y: casa.bottom - caixa.top - 8,
+          // Na frente da porta, que fica do lado direito da casinha
+          x: casa.left + casa.width * 0.66 - caixa.left,
+          y: casa.bottom - caixa.top - 2,
           base: casa.bottom - caixa.top,
         },
         links,
@@ -274,7 +264,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
     setCena(null)
     // Explorando o menu ele nunca flutua: na altura do Dashboard (antes de
     // subir a parede) sai andando por ali; já subindo, termina a volta pela
-    // parede e só então sai do cestinho.
+    // parede e só então sai da casinha.
     setRotina((atual) => {
       if (atual.nome !== 'explorar') return iniciarRotina('sair')
       if (atual.indice <= 4) return iniciarRotina('sairDoMenu')
@@ -360,11 +350,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
       title="Miau?"
       tabIndex={passeando ? -1 : undefined}
       style={{
-        ...posicao(
-          onde,
-          mapa,
-          emCena ? (atual.ergue ?? 0) : (passo.ergue ?? 0),
-        ),
+        ...posicao(onde, mapa),
         transition: transicao,
       }}
       onClick={clicar}
@@ -386,16 +372,6 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
         ref={palcoRef}
       >
         {botao}
-        {mapa && (
-          <Casinha
-            frente
-            className="cestinho-frente"
-            style={{
-              left: `${mapa.casa.x - CESTINHO.largura / 2}px`,
-              top: `${mapa.casa.base - CESTINHO.altura}px`,
-            }}
-          />
-        )}
       </div>
     </>
   )
