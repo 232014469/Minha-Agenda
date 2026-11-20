@@ -14,11 +14,6 @@
   transition: background 3.6s ease;
 }
 
-/* À noite só aparece quando chove (o sol e as nuvens brancas são do dia) */
-:root[data-modo='escuro'] .ceu-dia:not(.ceu-dia-chuva) {
-  display: none;
-}
-
 /* Dia de chuva: o alto da tela fica cinza-azulado */
 .ceu-dia-chuva {
   background: linear-gradient(
@@ -28,43 +23,67 @@
   );
 }
 
-/* Chuva à noite: céu fechado azul-escuro, nuvens de tempestade, gotas
-   claras, e a lua e as estrelas quase somem atrás das nuvens */
-:root[data-modo='escuro'] .ceu-dia-chuva {
+/* Chuva à noite: céu fechado azul-escuro, nuvens de tempestade e gotas
+   claras. Sem chuva, tudo isso some aos poucos (e a lua e as estrelas voltam
+   a brilhar); o sol e as nuvens brancas são só do dia. */
+:root[data-modo='escuro'] .ceu-dia {
+  visibility: hidden;
+  opacity: 0;
   background: linear-gradient(
     rgb(8 12 28 / 0.55),
     rgb(8 12 28 / 0.28) 45%,
     rgb(8 12 28 / 0) 100%
   );
+  transition:
+    opacity 3.6s ease,
+    visibility 0s linear 3.6s;
 }
 
-:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-sol {
+:root[data-modo='escuro'] .ceu-dia-chuva {
+  visibility: visible;
+  opacity: 1;
+  transition:
+    opacity 1.6s ease,
+    visibility 0s;
+}
+
+:root[data-modo='escuro'] .ceu-dia-sol {
   display: none;
 }
 
-:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-nuvem {
+:root[data-modo='escuro'] .ceu-dia-nuvem {
   --nuvem-cor: #46527a;
 }
 
-:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-nuvem-extra .ceu-dia-nuvem {
+:root[data-modo='escuro'] .ceu-dia-nuvem-extra {
+  opacity: 1;
+}
+
+:root[data-modo='escuro'] .ceu-dia-nuvem-extra .ceu-dia-nuvem {
   --nuvem-cor: #38426a;
 }
 
-:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-gota {
-  background: rgb(170 190 235 / 0.55);
+/* As gotas continuam caindo enquanto a chuva some */
+:root[data-modo='escuro'] .ceu-dia-gotas {
+  opacity: 1;
 }
 
-:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-clarao {
+:root[data-modo='escuro'] .ceu-dia-gota {
+  background: rgb(170 190 235 / 0.55);
+  animation-play-state: running;
+}
+
+:root[data-modo='escuro'] .ceu-dia-clarao {
   background: rgb(200 210 255 / 0.3);
 }
 
-:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu-lua {
-  opacity: 0.15;
+/* Lua e estrelas apagam atrás das nuvens e voltam devagar */
+:root[data-modo='escuro'] .ceu {
+  transition: opacity 3.6s ease;
 }
 
-:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu-estrela,
-:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu-cadente {
-  opacity: 0.25 !important;
+:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu {
+  opacity: 0.25;
 }
 
 /* Sol: miolo amarelo-claro que "respira" devagar e raios de pontas suaves
