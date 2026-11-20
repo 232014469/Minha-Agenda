@@ -9,11 +9,11 @@ import './Quintal.css'
  */
 
 const GRAMA = [
-  'g.g........g.....g..g........g....g...g........g...g....g........g..g.....g........g.g......g........gg.......g........g........g.......gg........g......g.g........g.....',
-  'gGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGG',
-  'dGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGd',
-  'dGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdG',
-  'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
+  '..gg.....gg....gg.....gg.......gg.....gg.......gg......gg....gg.......gg...gg.',
+  'gGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGgGGGGGGGGGGg',
+  'dGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGGdGGGGGGGGGGGG',
+  'dGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGdGGGGGGd',
+  'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',
 ]
 
 const FLOR = ['.b.', 'bab', '.b.', '.c.']
@@ -74,12 +74,8 @@ export default function Quintal({ chuva }) {
       className={`quintal${chuva ? ' quintal-chuva' : ''}`}
       aria-hidden="true"
     >
-      {/* A grama vai da borda esquerda do menu até depois da cerquinha */}
-      <span className="quintal-gramado">
-        <PixelArte desenho={GRAMA} cores={CORES} />
-      </span>
+      <PixelArte desenho={GRAMA} cores={CORES} style={no(-78)} />
       <PixelArte desenho={FLOR} cores={CORES_FLOR} style={no(-74, 8)} />
-      <PixelArte desenho={FLOR} cores={CORES_FLOR_ROSA} style={no(-110, 8)} />
       <PixelArte desenho={FLOR} cores={CORES_FLOR_ROSA} style={no(66, 8)} />
       <PixelArte desenho={POTE_RACAO} cores={CORES_POTE} style={no(-62, 6)} />
       <PixelArte desenho={POTE_AGUA} cores={CORES_POTE} style={no(-49, 6)} />
