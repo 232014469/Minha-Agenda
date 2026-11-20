@@ -49,15 +49,13 @@ describe('rotina do gatinho', () => {
     expect(passos.reduce((soma, passo) => soma + passo.ms, 0)).toBe(4200)
   })
 
-  it('explorar: apoia na parede da casinha, pula pro telhado e pro chão', () => {
+  it('explorar: sobe pela parede da casinha e pula pro chão', () => {
     const passos = iniciarRotina('explorar', () => 0.5, { links: 4 }).passos
 
     expect(passos.map((passo) => passo.onde)).toEqual([
       'lateral',
       'lateral',
-      'telhado',
-      'telhado',
-      'telhado',
+      'lateral-alto',
       'chao-esq',
       'chao-esq',
       'meio',
@@ -65,9 +63,7 @@ describe('rotina do gatinho', () => {
     expect(passos.map((passo) => passo.animacao)).toEqual([
       'run',
       'wallgrab',
-      'jump',
-      'land',
-      'idle_blink',
+      'wallclimb',
       'jump',
       'land',
       'walk',

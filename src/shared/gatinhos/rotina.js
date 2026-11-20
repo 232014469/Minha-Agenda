@@ -1,7 +1,7 @@
 /**
  * Rotina do gatinho mascote quando ninguém mexe nele: fica parado piscando,
  * senta, deita e levanta, ou (no menu do computador, sem sair do quintal)
- * sobe pela parede da casinha até o telhado, vai comer nos potinhos ou brinca com
+ * sobe pela parede da casinha, vai comer nos potinhos ou brinca com
  * as borboletas e os vaga-lumes. Cada rotina é uma lista de
  * passos; os tempos são sorteados para não ficar repetitivo.
  *
@@ -9,8 +9,9 @@
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (a porta da casinha), 'frente-porta' (do lado direito da
  *   porta), 'dentro' (atrás da parede), 'pote' (nos potinhos), 'brinca-esq'
- *   e 'brinca-dir' (pontas do quintal), 'lateral' (na parede de fora da
- *   casinha), 'telhado' ou 'chao-esq' (no chão, do lado esquerdo da casinha);
+ *   e 'brinca-dir' (pontas do quintal), 'lateral' e 'lateral-alto' (na parede
+ *   de fora da casinha, embaixo e em cima) ou 'chao-esq' (no chão, do lado
+ *   esquerdo da casinha);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
  *   'cai' (pulo para baixo), 'sobe' (pulo para cima) ou reto.
  */
@@ -139,9 +140,8 @@ export const ROTINAS = {
     { animacao: 'walk', fps: 10, ms: 1300, onde: 'meio', anda: true },
   ],
   // Menu do computador: corre até a parede de fora da casinha, se apoia nela,
-  // pula para a pontinha do telhado, olha em volta lá de cima e pula de
-  // volta para o chão.
-  explorar: (s) => [
+  // sobe escalando e de lá pula de volta para o chão.
+  explorar: () => [
     {
       animacao: 'run',
       fps: 12,
@@ -151,22 +151,15 @@ export const ROTINAS = {
       anda: true,
     },
     { animacao: 'wallgrab', fps: 10, ms: 600, onde: 'lateral' },
-    // ...e, apoiado na parede, pula direto para a pontinha do telhado
+    // ...começa a escalar a parede...
     {
-      animacao: 'jump',
-      fps: 10,
-      ms: 550,
-      onde: 'telhado',
+      animacao: 'wallclimb',
+      fps: 8,
+      ms: 400,
+      onde: 'lateral-alto',
       anda: true,
-      curva: 'sobe',
     },
-    { animacao: 'land', fps: 10, ms: 300, vezes: '1', onde: 'telhado' },
-    {
-      animacao: 'idle_blink',
-      fps: 7,
-      ms: entre(1500, 3000, s),
-      onde: 'telhado',
-    },
+    // ...e já pula para o chão
     {
       animacao: 'jump',
       fps: 9,
