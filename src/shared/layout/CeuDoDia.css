@@ -11,7 +11,7 @@
     rgb(255 236 150 / 0.3),
     transparent 70%
   );
-  transition: background 1.6s ease;
+  transition: background 3.6s ease;
 }
 
 /* À noite só aparece quando chove (o sol e as nuvens brancas são do dia) */
@@ -81,8 +81,8 @@
     0 0 18px rgb(255 232 140 / 0.7),
     0 0 46px rgb(255 240 170 / 0.45);
   transition:
-    opacity 1.6s ease,
-    translate 1.6s ease;
+    opacity 3.6s ease,
+    translate 3.6s ease;
   animation: ceu-dia-respira 6s ease-in-out infinite;
   will-change: transform;
 }
