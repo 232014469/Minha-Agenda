@@ -8,6 +8,7 @@ import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
 import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
 import AlertaPodeNao from './AlertaPodeNao'
+import { temAtrasadas } from './alerta'
 import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
@@ -28,7 +29,9 @@ const itens = [
 
 /** Moldura das telas: menu de caderno na lateral (barra inferior no celular). */
 export default function LayoutBase() {
-  const { salvou, semestre, semestres, escolherSemestre } = useDados()
+  const { salvou, semestre, semestres, escolherSemestre, tarefas } = useDados()
+  // Dia de chuva (atividade atrasada): o gatinho dorme na casinha
+  const chuva = temAtrasadas(tarefas)
   const [configAberta, setConfigAberta] = useState(false)
   // No celular o menu vira a barra de baixo: o gatinho vai para cima do
   // título da tela. Só um gatinho existe por vez (miados não se repetem).
@@ -54,7 +57,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && <Mascote noMenu />}
+          {!celular && <Mascote noMenu chuva={chuva} />}
           <p className="layout-lema">{APP.lema}</p>
         </div>
 
@@ -122,7 +125,7 @@ export default function LayoutBase() {
           )}
           <Outlet />
         </main>
-        <GatinhosNaTela />
+        <GatinhosNaTela chuva={chuva} />
         <AlertaPodeNao />
       </div>
     </div>

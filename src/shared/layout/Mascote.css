@@ -140,3 +140,69 @@
 .mascote-palco-menu .mascote-gato {
   pointer-events: auto;
 }
+
+/* Dia de chuva: o gatinho dorme dentro da casinha e os "Z" saem pela porta,
+   subindo e sumindo, um depois do outro */
+.casinha-zzz {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.casinha-zzz span {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: var(--cor-texto);
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  text-shadow: 0 0 3px var(--cor-menu);
+  opacity: 0;
+  animation: casinha-zzz 3s ease-in infinite;
+}
+
+.casinha-zzz span:nth-child(1) {
+  font-size: 0.9rem;
+}
+
+.casinha-zzz span:nth-child(2) {
+  font-size: 1.15rem;
+  animation-delay: 1s;
+}
+
+.casinha-zzz span:nth-child(3) {
+  font-size: 1.4rem;
+  animation-delay: 2s;
+}
+
+@keyframes casinha-zzz {
+  0% {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    translate: 22px -40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .casinha-zzz span {
+    animation: none;
+    opacity: 1;
+  }
+
+  .casinha-zzz span:nth-child(2) {
+    translate: 6px -12px;
+  }
+
+  .casinha-zzz span:nth-child(3) {
+    translate: 12px -26px;
+  }
+}

@@ -107,4 +107,19 @@ describe('rotina do gatinho', () => {
     expect(passos.map((passo) => passo.onde)).toEqual(['fora:0', 'fora:0'])
     expect(passos[0]).toMatchObject({ animacao: 'walk', virado: true })
   })
+
+  it('na chuva entra na casinha e dorme; quando para, acorda', () => {
+    expect(proximaRotina('parado', () => 0.5, { chuva: true })).toBe('dormir')
+    expect(proximaRotina('dormir', () => 0.5, { chuva: true })).toBe('dormindo')
+    expect(proximaRotina('dormindo', () => 0.5, { chuva: true })).toBe(
+      'dormindo',
+    )
+    expect(proximaRotina('dormindo', () => 0.5)).toBe('acordar')
+    expect(proximaRotina('acordar', () => 0.5)).toBe('parado')
+
+    const dormir = iniciarRotina('dormir').passos
+
+    expect(dormir[0]).toMatchObject({ onde: 'porta', some: true })
+    expect(dormir[1]).toMatchObject({ animacao: null, dorme: true })
+  })
 })

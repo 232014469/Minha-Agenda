@@ -21,7 +21,7 @@ import './Mascote.css'
  * ligado). `noMenu`: no menu do computador ele mora numa casinha e pode
  * explorar o menu todo (pular perto dos links e subir pela parede).
  */
-export default function Mascote({ noMenu = false }) {
+export default function Mascote({ noMenu = false, chuva = false }) {
   const { mascote, sons, bordoes, gatinhos } = usePreferencias()
 
   return (
@@ -31,6 +31,7 @@ export default function Mascote({ noMenu = false }) {
       bordoes={bordoes}
       comemora={gatinhos}
       noMenu={noMenu}
+      chuva={chuva}
     />
   )
 }
@@ -118,6 +119,7 @@ function prefereMenosMovimento() {
 const POSICAO = {
   meio: 'var(--mascote-meio, 50%)',
   chao: 'var(--mascote-meio, 50%)',
+  porta: 'var(--mascote-meio, 50%)',
   fora: '-48px',
 }
 
@@ -143,6 +145,8 @@ function posicao(onde, mapa) {
   const alturaDoLink = links[Number(numero)] ?? casa.y
   const pontos = {
     meio: [casa.x, casa.y],
+    // Entrando pela porta (dia de chuva)
+    porta: [casa.x, casa.y - 6],
     chao: [casa.x - 52, casa.base - 2],
     fora: [-48, numero === undefined ? casa.base - 2 : alturaDoLink],
     link: [largura - 50, alturaDoLink],
@@ -213,7 +217,7 @@ function useMapaDoMenu(ativo, palcoRef, casaRef) {
  * depois. Quando sai para passear pela borda de baixo da tela, deixa o menu
  * e só volta no fim do passeio.
  */
-function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
+function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
   const [cena, setCena] = useState(null)
   const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
   const [semRotina] = useState(prefereMenosMovimento)
@@ -222,6 +226,8 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
   const casaRef = useRef(null)
   const mapa = useMapaDoMenu(noMenu, palcoRef, casaRef)
   const quantosLinks = mapa?.links.length ?? 0
+  // Só dorme na chuva quando tem casinha (menu do computador)
+  const dormeNaChuva = Boolean(mapa) && chuva
   const passo = rotina.passos[rotina.indice]
 
   useEffect(() => {
@@ -230,13 +236,16 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
     const espera = setTimeout(
       () =>
         setRotina((atual) =>
-          avancar(atual, Math.random, { links: quantosLinks }),
+          avancar(atual, Math.random, {
+            links: quantosLinks,
+            chuva: dormeNaChuva,
+          }),
         ),
       passo.ms,
     )
 
     return () => clearTimeout(espera)
-  }, [cena, semRotina, passo, quantosLinks])
+  }, [cena, semRotina, passo, quantosLinks, dormeNaChuva])
   const [cliques, setCliques] = useState([])
   const nome = GATOS.find((item) => item.id === gato)?.nome ?? 'Gatinho'
 
@@ -351,7 +360,11 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
       tabIndex={passeando ? -1 : undefined}
       style={{
         ...posicao(onde, mapa),
-        transition: transicao,
+        // Entrando na casinha some aos poucos; lá dentro fica invisível
+        opacity: !emCena && (passo.some || passo.dorme) ? 0 : 1,
+        transition: `${transicao === 'none' ? '' : `${transicao}, `}opacity ${
+          passo.some ? passo.ms : 500
+        }ms ease`,
       }}
       onClick={clicar}
     >
@@ -372,6 +385,20 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
         ref={palcoRef}
       >
         {botao}
+        {mapa && passo.dorme && !emCena && (
+          <span
+            className="casinha-zzz"
+            aria-hidden="true"
+            style={{
+              left: `${mapa.casa.x}px`,
+              top: `${mapa.casa.y - 22}px`,
+            }}
+          >
+            <span>Z</span>
+            <span>Z</span>
+            <span>Z</span>
+          </span>
+        )}
       </div>
     </>
   )

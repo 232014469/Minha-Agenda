@@ -22,10 +22,16 @@ const proximaEspera = (primeira) =>
  * a tela andando e só então volta. Comemorar e ficar triste é com o próprio
  * mascote. Desliga nas Configurações e com "reduzir movimento" no sistema.
  */
-export default function GatinhosNaTela() {
+export default function GatinhosNaTela({ chuva = false }) {
   const { gatinhos, mascote, sons } = usePreferencias()
   const [passeio, setPasseio] = useState(null)
   const foraDoMenu = useRef(false)
+  // Na chuva o gatinho está dormindo na casinha: não sai para passear
+  const chovendo = useRef(chuva)
+
+  useEffect(() => {
+    chovendo.current = chuva
+  }, [chuva])
   const ligado = gatinhos && !movimentoReduzido()
 
   /** Fim do passeio (ou gatinhos desligados): o mascote volta ao lugar. */
@@ -44,6 +50,11 @@ export default function GatinhosNaTela() {
     let saida
     const agendar = (primeira) => {
       espera = setTimeout(() => {
+        if (chovendo.current) {
+          agendar(false)
+          return
+        }
+
         // Primeiro o mascote sai do lugar; depois aparece lá embaixo.
         foraDoMenu.current = true
         window.dispatchEvent(new CustomEvent(EVENTO_SAIU_PASSEAR))

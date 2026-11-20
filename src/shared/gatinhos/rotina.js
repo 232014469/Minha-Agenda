@@ -100,6 +100,24 @@ export const ROTINAS = {
   ],
   // ...e, quando o passeio termina, volta andando e pula para a porta da casinha.
   voltar: () => [...VOLTA_PRO_CESTO],
+  // Dia de chuva: anda até a porta e some lá dentro, dormindo...
+  dormir: () => [
+    {
+      animacao: 'walk',
+      fps: 8,
+      ms: 700,
+      onde: 'porta',
+      anda: true,
+      some: true,
+    },
+    { animacao: null, ms: 4000, onde: 'porta', dorme: true },
+  ],
+  // ...e continua dormindo enquanto chover...
+  dormindo: () => [{ animacao: null, ms: 4000, onde: 'porta', dorme: true }],
+  // ...até a chuva passar: sai pela porta e volta ao seu lugar.
+  acordar: () => [
+    { animacao: 'walk', fps: 8, ms: 700, onde: 'meio', anda: true },
+  ],
   // Menu do computador: pula da casinha até o lado do primeiro link
   // (Dashboard), olha em volta, corre até a parede, sobe por ela e pula de
   // volta para casa.
@@ -172,6 +190,11 @@ const SORTEAVEIS = [
  * Explorar o menu só entra no sorteio quando há menu (`opcoes.links`).
  */
 export function proximaRotina(atual, sorteio = Math.random, opcoes = {}) {
+  const dormindo = atual === 'dormir' || atual === 'dormindo'
+
+  // Chovendo (só no menu, onde há casinha): entra e dorme até a chuva passar
+  if (opcoes.chuva) return dormindo ? 'dormindo' : 'dormir'
+  if (dormindo) return 'acordar'
   if (atual !== 'parado') return 'parado'
 
   const sorteaveis = opcoes.links
