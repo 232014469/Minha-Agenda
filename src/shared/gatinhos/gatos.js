@@ -13,6 +13,15 @@ export const EVENTO_CONCLUIU = 'wolf-study:concluiu'
 /** Avisado quando uma tarefa vai para "Não realizadas" ou é excluída. */
 export const EVENTO_TRISTE = 'wolf-study:triste'
 
+/** Avisado quando mais uma falta é anotada (o gatinho reclama). */
+export const EVENTO_FALTA = 'wolf-study:falta'
+
+/**
+ * Avisado pelo alerta de entrada ("Pode não!") com o id da tarefa atrasada
+ * ou para hoje: o post-it dela no quadro "Esta semana" pisca.
+ */
+export const EVENTO_ALERTA_POSTIT = 'wolf-study:alerta-postit'
+
 /**
  * O passeio pela borda de baixo é do próprio mascote: ele sai do menu pela
  * esquerda antes (EVENTO_SAIU_PASSEAR) e só volta quando o passeio termina

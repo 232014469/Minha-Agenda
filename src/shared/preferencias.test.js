@@ -16,6 +16,7 @@ describe('preferências do aparelho', () => {
     expect(lerPreferencias()).toEqual({
       mascote: 'gato01',
       sons: true,
+      bordoes: true,
       gatinhos: true,
     })
   })

@@ -1,0 +1,113 @@
+/* Alerta "Pode não!" ao entrar com atividade atrasada ou para hoje */
+.alerta-pode-nao {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(var(--sombra) / 0.35);
+  cursor: pointer;
+  transition: background 0.5s ease;
+}
+
+.alerta-voando {
+  background: transparent;
+  pointer-events: none;
+}
+
+.alerta-cartao {
+  position: relative;
+  max-width: 420px;
+  padding: 26px 34px 22px;
+  border: 2px solid var(--cor-alerta);
+  border-radius: 4px 4px 22px 4px;
+  background: var(--cor-perigo-claro);
+  color: var(--cor-texto);
+  text-align: center;
+  box-shadow: 0 18px 40px rgb(var(--sombra) / 0.35);
+  animation: alerta-zoom 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  transition:
+    transform 0.75s cubic-bezier(0.5, 0, 0.7, 0.4),
+    opacity 0.75s ease-in;
+}
+
+/* Fita adesiva no alto, como nos post-its */
+.alerta-cartao::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 70px;
+  height: 20px;
+  background: var(--tema);
+  opacity: 0.55;
+  transform: translateX(-50%) rotate(-4deg);
+}
+
+.alerta-voando .alerta-cartao {
+  opacity: 0.35;
+}
+
+.alerta-cartao p {
+  margin: 0;
+}
+
+.alerta-frase {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(2.2rem, 8vw, 3.2rem);
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--cor-alerta);
+}
+
+.alerta-resumo {
+  margin-top: 8px !important;
+  font-weight: 700;
+}
+
+.alerta-tarefa {
+  margin-top: 2px !important;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.alerta-toque {
+  margin-top: 12px !important;
+  font-size: 0.8rem;
+  animation: alerta-toque 1.2s ease-in-out infinite;
+}
+
+@keyframes alerta-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.2) rotate(-8deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(2deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes alerta-toque {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alerta-cartao,
+  .alerta-toque {
+    animation: none;
+  }
+
+  .alerta-cartao {
+    transition: opacity 0.4s;
+  }
+}

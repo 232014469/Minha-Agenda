@@ -200,6 +200,33 @@
   outline: 2px solid var(--cor-texto);
 }
 
+/* Avisado pelo alerta "Pode não!": treme e pisca em vermelho */
+.semana-postit.semana-alerta {
+  outline: 3px solid var(--cor-alerta);
+  animation: semana-alerta 0.9s ease-in-out 5;
+}
+
+@keyframes semana-alerta {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(240 90 80 / 0);
+    transform: rotate(-1.5deg) scale(1);
+  }
+
+  25% {
+    transform: rotate(-5deg) scale(1.08);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgb(240 90 80 / 0.35);
+    transform: rotate(3deg) scale(1.08);
+  }
+
+  75% {
+    transform: rotate(-2deg) scale(1.04);
+  }
+}
+
 .semana-dia {
   font-size: 0.65rem;
   font-weight: 700;
@@ -231,6 +258,10 @@
   .semana-postit,
   .semana-postit:nth-child(even) {
     transform: none;
+  }
+
+  .semana-postit.semana-alerta {
+    animation: none;
   }
 }
 

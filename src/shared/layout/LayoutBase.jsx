@@ -7,6 +7,7 @@ import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
 import GatinhosNaTela from '../gatinhos/GatinhosNaTela'
+import AlertaPodeNao from './AlertaPodeNao'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
@@ -120,6 +121,7 @@ export default function LayoutBase() {
           <Outlet />
         </main>
         <GatinhosNaTela />
+        <AlertaPodeNao />
       </div>
     </div>
   )

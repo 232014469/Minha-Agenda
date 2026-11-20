@@ -21,15 +21,19 @@ describe('Mascote e sons', () => {
     expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeChecked()
 
     fireEvent.click(screen.getByRole('radio', { name: 'Gatinho preto' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: /Bordões/ }))
     fireEvent.click(screen.getByRole('checkbox', { name: /Miados/ }))
     fireEvent.click(
       screen.getByRole('checkbox', { name: /Gatinhos pela tela/ }),
     )
 
     expect(screen.getByRole('radio', { name: 'Gatinho preto' })).toBeChecked()
+    // Sem sons, os bordões ficam desligados também
+    expect(screen.getByRole('checkbox', { name: /Bordões/ })).toBeDisabled()
     expect(lerPreferencias()).toEqual({
       mascote: 'gato05',
       sons: false,
+      bordoes: false,
       gatinhos: false,
     })
   })

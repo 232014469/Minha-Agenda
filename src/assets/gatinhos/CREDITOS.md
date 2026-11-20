@@ -17,3 +17,18 @@ volume igualado:
 - `miado-fome.mp3`: "Domestic cat hungry meow"
 - `miado-pedindo.mp3`: "Cartoon kitty begging meow"
 - `miado-triste.mp3`: "Little cat pain meow"
+
+## Bordões da Wanessa Wolf
+
+Os bordões em `src/assets/sons` foram trazidos pelo dono do projeto e só
+cortados e com o volume igualado. Tocam no lugar de alguns miados quando
+"Bordões da Wanessa Wolf" está ligado nas Configurações:
+
+- `bordao-e-gata.mp3`: ao concluir uma tarefa
+- `bordao-eu-hein.mp3`: quando mais uma falta é anotada
+- `bordao-pode-nao.mp3`: no alerta ao entrar, com atividade atrasada ou
+  para hoje
+
+- Origem dos áudios: _preencher com o link de onde vieram_
+- Autorização: _preencher (a voz é da Wanessa Wolf; como o site é público,
+  vale ter a autorização dela ou da equipe)_

@@ -3,7 +3,7 @@ import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
 /** Quem fica no menu, se os sons tocam e se os gatinhos aparecem pela tela. */
 export default function MascoteESons() {
-  const { mascote, sons, gatinhos } = usePreferencias()
+  const { mascote, sons, bordoes, gatinhos } = usePreferencias()
 
   return (
     <section
@@ -40,6 +40,18 @@ export default function MascoteESons() {
           onChange={(evento) => mudarPreferencia('sons', evento.target.checked)}
         />
         Miados ao clicar no gatinho
+      </label>
+      <label className="config-chave-liga">
+        <input
+          type="checkbox"
+          checked={bordoes}
+          disabled={!sons}
+          onChange={(evento) =>
+            mudarPreferencia('bordoes', evento.target.checked)
+          }
+        />
+        Bordões da Wanessa Wolf (ao concluir, ao anotar falta e no alerta de
+        atividade atrasada)
       </label>
       <label className="config-chave-liga">
         <input

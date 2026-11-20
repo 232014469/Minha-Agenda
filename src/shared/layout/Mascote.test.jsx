@@ -1,15 +1,21 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { mudarPreferencia, recarregarPreferencias } from '../preferencias'
 import {
   EVENTO_CONCLUIU,
+  EVENTO_FALTA,
   EVENTO_SAIU_PASSEAR,
   EVENTO_TRISTE,
   EVENTO_VOLTOU_DO_PASSEIO,
 } from '../gatinhos/gatos'
 import Mascote from './Mascote'
+
+// Os testes de sempre usam os miados; os bordões têm testes próprios no fim.
+beforeEach(() => {
+  mudarPreferencia('bordoes', false)
+})
 
 afterEach(() => {
   cleanup()
@@ -128,5 +134,30 @@ describe('Mascote', () => {
     expect(container.querySelector('.sprite').style.backgroundImage).toContain(
       '-walk',
     )
+  })
+
+  it('reclama quando mais uma falta é anotada', () => {
+    mudarPreferencia('mascote', 'gato03')
+    render(<Mascote />)
+    const gatinho = screen.getByRole('button', { name: /Gatinho laranja/ })
+
+    act(() => window.dispatchEvent(new CustomEvent(EVENTO_FALTA)))
+    expect(gatinho).toHaveTextContent('Mais uma falta? 😾')
+    expect(gatinho.querySelector('.sprite').style.backgroundImage).toContain(
+      '-hurt',
+    )
+  })
+
+  it('com os bordões ligados: "É gata!" ao concluir e "Eu, hein!" na falta', () => {
+    mudarPreferencia('bordoes', true)
+    mudarPreferencia('mascote', 'gato03')
+    render(<Mascote />)
+    const gatinho = screen.getByRole('button', { name: /Gatinho laranja/ })
+
+    act(() => window.dispatchEvent(new CustomEvent(EVENTO_CONCLUIU)))
+    expect(gatinho).toHaveTextContent('É gata! ✨')
+
+    act(() => window.dispatchEvent(new CustomEvent(EVENTO_FALTA)))
+    expect(gatinho).toHaveTextContent('Eu, hein! 😾')
   })
 })

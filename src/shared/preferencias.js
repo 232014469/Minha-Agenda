@@ -4,9 +4,10 @@ import { ehGato } from './gatinhos/gatos'
 
 /**
  * Preferências deste aparelho (não vão na sincronização): o mascote do menu,
- * se os sons tocam e se os gatinhos aparecem pela tela.
+ * se os sons tocam, se os bordões substituem alguns miados e se os gatinhos
+ * aparecem pela tela.
  */
-const PADRAO = { mascote: 'gato01', sons: true, gatinhos: true }
+const PADRAO = { mascote: 'gato01', sons: true, bordoes: true, gatinhos: true }
 const CHAVE = `${APP.chaveDosDados}.preferencias`
 const ouvintes = new Set()
 

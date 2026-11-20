@@ -9,7 +9,11 @@ import {
   validarDados,
   validarProgressoCurso,
 } from './armazenamento'
-import { EVENTO_CONCLUIU, EVENTO_TRISTE } from '../shared/gatinhos/gatos'
+import {
+  EVENTO_CONCLUIU,
+  EVENTO_FALTA,
+  EVENTO_TRISTE,
+} from '../shared/gatinhos/gatos'
 import { useSincronizacao } from '../sync/useSincronizacao'
 
 // Quando o item mudou, para a sincronização saber qual versão é a mais nova.
@@ -51,6 +55,9 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
           : materia,
       ),
     }))
+
+    // Mais uma falta: o mascote reclama (ver Mascote).
+    if (horas > 0) window.dispatchEvent(new CustomEvent(EVENTO_FALTA))
   }, [])
 
   const definirCargaHoraria = useCallback((id, horas) => {
