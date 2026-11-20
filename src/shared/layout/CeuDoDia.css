@@ -14,17 +14,57 @@
   transition: background 1.6s ease;
 }
 
-:root[data-modo='escuro'] .ceu-dia {
+/* À noite só aparece quando chove (o sol e as nuvens brancas são do dia) */
+:root[data-modo='escuro'] .ceu-dia:not(.ceu-dia-chuva) {
   display: none;
 }
 
 /* Dia de chuva: o alto da tela fica cinza-azulado */
 .ceu-dia-chuva {
   background: linear-gradient(
-    rgb(110 122 140 / 0.3),
-    rgb(110 122 140 / 0.14) 45%,
-    rgb(110 122 140 / 0) 100%
+    rgb(92 104 124 / 0.48),
+    rgb(92 104 124 / 0.24) 45%,
+    rgb(92 104 124 / 0) 100%
   );
+}
+
+/* Chuva à noite: céu fechado azul-escuro, nuvens de tempestade, gotas
+   claras, e a lua e as estrelas quase somem atrás das nuvens */
+:root[data-modo='escuro'] .ceu-dia-chuva {
+  background: linear-gradient(
+    rgb(8 12 28 / 0.55),
+    rgb(8 12 28 / 0.28) 45%,
+    rgb(8 12 28 / 0) 100%
+  );
+}
+
+:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-sol {
+  display: none;
+}
+
+:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-nuvem {
+  --nuvem-cor: #46527a;
+}
+
+:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-nuvem-extra .ceu-dia-nuvem {
+  --nuvem-cor: #38426a;
+}
+
+:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-gota {
+  background: rgb(170 190 235 / 0.55);
+}
+
+:root[data-modo='escuro'] .ceu-dia-chuva .ceu-dia-clarao {
+  background: rgb(200 210 255 / 0.3);
+}
+
+:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu-lua {
+  opacity: 0.15;
+}
+
+:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu-estrela,
+:root[data-modo='escuro'] .layout-coluna:has(.ceu-dia-chuva) .ceu-cadente {
+  opacity: 0.25 !important;
 }
 
 /* Sol: miolo amarelo-claro que "respira" devagar e raios de pontas suaves

@@ -80,8 +80,8 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
-        <CeuDoDia />
         <CeuEstrelado />
+        <CeuDoDia />
         <div className="layout-semestre" ref={cantoRef}>
           <label htmlFor="layout-semestre">Semestre</label>
           <select

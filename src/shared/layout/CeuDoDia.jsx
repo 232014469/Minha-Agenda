@@ -73,7 +73,7 @@ const GOTAS = Array.from({ length: 48 }, (_, indice) => ({
  * atravessando o alto da tela.
  * Enquanto houver atividade atrasada, o céu fecha: nuvens cinzas, chuva e
  * raios. Quando nenhuma estiver mais atrasada, o sol volta. Fica atrás do
- * conteúdo e só aparece no modo claro (o CSS esconde no escuro).
+ * conteúdo. No modo escuro só aparece a chuva, por cima do céu estrelado.
  */
 export default function CeuDoDia() {
   const { tarefas } = useDados()
