@@ -39,6 +39,7 @@ export const QUADROS = {
   sit: 8,
   crouch: 8,
   hurt: 5,
+  attack: 6,
 }
 
 const imagens = import.meta.glob('../../assets/gatinhos/*.png', {

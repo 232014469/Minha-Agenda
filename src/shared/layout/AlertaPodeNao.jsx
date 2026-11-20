@@ -3,6 +3,7 @@ import { useDados } from '../../dados/useDados'
 import { ehAtrasada } from '../../features/agenda/agendaUtils'
 import { EVENTO_ALERTA_POSTIT } from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
+import Sprite from '../gatinhos/Sprite'
 import { miar } from '../sons'
 import { tarefasUrgentes } from './alerta'
 import './AlertaPodeNao.css'
@@ -76,13 +77,13 @@ function comecarVoo(atual, cartaoEl) {
 
 /**
  * Alerta ao entrar no site quando há atividade atrasada ou para hoje: a frase
- * "Pode não!" aparece com zoom no meio da tela (com o bordão, se os sons e os
+ * "Pode não!", com o gatinho do mascote dando patadas, aparece com zoom no meio da tela (com o bordão, se os sons e os
  * bordões estão ligados) e depois voa até o post-it da atividade no quadro
  * "Esta semana", que fica piscando. Aparece uma vez por dia em cada aba.
  */
 export default function AlertaPodeNao({ hoje = new Date() }) {
   const { tarefas } = useDados()
-  const { sons, bordoes } = usePreferencias()
+  const { mascote, sons, bordoes } = usePreferencias()
   const cartaoRef = useRef(null)
   const jaTocou = useRef(false)
   const [alerta, setAlerta] = useState(() => {
@@ -177,7 +178,12 @@ export default function AlertaPodeNao({ hoje = new Date() }) {
             : undefined
         }
       >
-        <p className="alerta-frase">Pode não! 😾</p>
+        <p className="alerta-frase">
+          <span className="alerta-gato" aria-hidden="true">
+            <Sprite gato={mascote} animacao="attack" fps={11} escala={4} />
+          </span>
+          Pode não!
+        </p>
         <p className="alerta-resumo">{resumir(urgentes)}</p>
         <p className="alerta-tarefa">
           {primeira.titulo}

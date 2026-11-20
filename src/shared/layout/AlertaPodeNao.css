@@ -18,7 +18,7 @@
 
 .alerta-cartao {
   position: relative;
-  max-width: 420px;
+  max-width: 560px;
   padding: 26px 34px 22px;
   border: 2px solid var(--cor-alerta);
   border-radius: 4px 4px 22px 4px;
@@ -54,11 +54,30 @@
 }
 
 .alerta-frase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 10px;
   font-family: var(--fonte-titulo);
   font-size: clamp(2.2rem, 8vw, 3.2rem);
   line-height: 1.1;
   white-space: nowrap;
   color: var(--cor-alerta);
+}
+
+/* Gatinho dando patadas: o desenho ocupa só a faixa do meio do quadro de
+   32px, então a caixa é baixa e o sprite sobe para alinhar com o texto */
+.alerta-gato {
+  position: relative;
+  width: 128px;
+  height: 56px;
+}
+
+.alerta-gato .sprite {
+  position: absolute;
+  top: -50px;
+  left: 0;
 }
 
 .alerta-resumo {
