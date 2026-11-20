@@ -89,17 +89,17 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  height: 80px;
+  height: 64px;
   margin-top: 6px;
 }
 
-/* Casinha em pixel art (50 × 40 pixels, 2px cada) com o telhado na cor do
+/* Casinha em pixel art (50 × 40 pixels, 1,6px cada) com o telhado na cor do
    tema: o telhado cinza da imagem é multiplicado pela cor */
 .casinha {
   position: relative;
   display: block;
-  width: 100px;
-  height: 80px;
+  width: 80px;
+  height: 64px;
   isolation: isolate;
 }
 
@@ -207,13 +207,10 @@
   }
 }
 
-/* Parede do lado esquerdo da porta (colunas 0 a 33, linhas 21 a 40 do
-   desenho), por cima do gatinho quando ele entra ou sai da casinha */
-.casinha-frente {
+/* Lado esquerdo da porta (colunas 0 a 33 do desenho, parede e telhado), por
+   cima do gatinho quando ele entra ou sai da casinha */
+.casinha.casinha-frente {
   position: absolute;
-  width: 100px;
-  height: 80px;
-  clip-path: inset(52.5% 34% 0 0);
-  image-rendering: pixelated;
+  clip-path: inset(0 34% 0 0);
   pointer-events: none;
 }

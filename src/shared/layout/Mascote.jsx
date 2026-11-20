@@ -417,7 +417,7 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu, chuva }) {
             frente
             style={{
               left: `${mapa.casa.esquerda}px`,
-              top: `${mapa.casa.base - 80}px`,
+              top: `${mapa.casa.base - 64}px`,
             }}
           />
         )}

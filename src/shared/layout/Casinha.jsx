@@ -8,25 +8,15 @@ import telhado from '../../assets/gatinhos/casinha-telhado.png'
  * fachada, por cima do gatinho quando ele entra pela porta.
  */
 export default function Casinha({ frente = false, style }) {
-  if (frente) {
-    // Só a parede à esquerda da porta (abaixo do telhado): o gatinho entra
-    // andando da direita para a esquerda e some atrás dela
-    return (
-      <img
-        className="casinha-frente"
-        src={casa}
-        alt=""
-        aria-hidden="true"
-        width="100"
-        height="80"
-        style={style}
-      />
-    )
-  }
-
+  // `frente`: só o lado esquerdo da porta (parede e telhado), por cima do
+  // gatinho quando ele entra andando da direita para a esquerda
   return (
-    <span className="casinha" aria-hidden="true">
-      <img src={casa} alt="" width="100" height="80" />
+    <span
+      className={`casinha${frente ? ' casinha-frente' : ''}`}
+      aria-hidden="true"
+      style={style}
+    >
+      <img src={casa} alt="" width="80" height="64" />
       <span
         className="casinha-telhado"
         style={{
