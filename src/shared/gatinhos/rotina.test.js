@@ -92,4 +92,19 @@ describe('rotina do gatinho', () => {
       'land',
     ])
   })
+
+  it('rotina pedida no meio do caminho começa só quando esta termina', () => {
+    let rotina = { ...iniciarRotina('explorar', () => 0, { links: 4 }) }
+
+    rotina = { ...rotina, indice: rotina.passos.length - 1, depois: 'sair' }
+
+    expect(avancar(rotina).nome).toBe('sair')
+  })
+
+  it('sair do menu: anda até a borda na altura do Dashboard', () => {
+    const passos = iniciarRotina('sairDoMenu').passos
+
+    expect(passos.map((passo) => passo.onde)).toEqual(['fora:0', 'fora:0'])
+    expect(passos[0]).toMatchObject({ animacao: 'walk', virado: true })
+  })
 })

@@ -8,7 +8,7 @@
  * Passo: { animacao, fps, ms, vezes?, reverso?, virado?, onde, anda? }
  * - ms: quanto dura; `null` espera até alguém mandar seguir;
  * - onde: 'meio' (o cestinho), 'chao' (no chão, do lado do cestinho),
- *   'fora' (escondido além da borda esquerda),
+ *   'fora' (escondido além da borda esquerda; 'fora:N' na altura do link N),
  *   'link:N' (ao lado do link N do menu), 'parede:N' (na parede direita, na
  *   altura do link N) ou 'parede-alto' (na parede, na altura da casinha);
  * - anda: o gatinho vai até `onde` durante o passo; `curva` diz como:
@@ -96,6 +96,12 @@ export const ROTINAS = {
     SAI_DO_CESTO,
     ANDA_ATE_A_BORDA,
     { animacao: null, ms: null, onde: 'fora' },
+  ],
+  // Se o passeio pela tela começa enquanto ele explora o menu (na altura do
+  // Dashboard), sai andando por essa altura mesmo, sem flutuar até o cesto.
+  sairDoMenu: () => [
+    { ...ANDA_ATE_A_BORDA, onde: 'fora:0' },
+    { animacao: null, ms: null, onde: 'fora:0' },
   ],
   // ...e, quando o passeio termina, volta andando e pula no cestinho.
   voltar: () => [...VOLTA_PRO_CESTO],
@@ -201,6 +207,9 @@ export function avancar(rotina, sorteio = Math.random, opcoes = {}) {
   if (rotina.indice + 1 < rotina.passos.length) {
     return { ...rotina, indice: rotina.indice + 1 }
   }
+
+  // Uma rotina pedida no meio do caminho começa só quando esta termina
+  if (rotina.depois) return iniciarRotina(rotina.depois, sorteio, opcoes)
 
   return iniciarRotina(
     proximaRotina(rotina.nome, sorteio, opcoes),

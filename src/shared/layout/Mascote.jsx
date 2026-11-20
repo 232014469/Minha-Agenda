@@ -154,7 +154,7 @@ function posicao(onde, mapa, ergue = 0) {
     meio: [casa.x, casa.y - ergue],
     // Fora do cestinho, os pés ficam no chão (na base do cesto)
     chao: [casa.x - 52, casa.base - 2],
-    fora: [-48, casa.base - 2],
+    fora: [-48, numero === undefined ? casa.base - 2 : alturaDoLink],
     link: [largura - 50, alturaDoLink],
     parede: [largura - 14, alturaDoLink],
     'parede-alto': [largura - 14, casa.y - 4],
@@ -272,7 +272,15 @@ function MascoteGato({ gato, sons, bordoes, comemora, noMenu }) {
   const sairPassear = useCallback(() => {
     setPasseando(true)
     setCena(null)
-    setRotina(iniciarRotina('sair'))
+    // Explorando o menu ele nunca flutua: na altura do Dashboard (antes de
+    // subir a parede) sai andando por ali; já subindo, termina a volta pela
+    // parede e só então sai do cestinho.
+    setRotina((atual) => {
+      if (atual.nome !== 'explorar') return iniciarRotina('sair')
+      if (atual.indice <= 4) return iniciarRotina('sairDoMenu')
+
+      return { ...atual, depois: 'sair' }
+    })
   }, [])
   const voltarDoPasseio = useCallback(() => {
     setPasseando(false)
