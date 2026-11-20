@@ -17,6 +17,12 @@
   );
 }
 
+/* No escuro, as manchas do tema dão lugar ao céu */
+:root[data-modo='escuro'] .layout-coluna::before,
+:root[data-modo='escuro'] .layout-coluna::after {
+  display: none;
+}
+
 .ceu-estrela {
   position: absolute;
   width: 2px;
