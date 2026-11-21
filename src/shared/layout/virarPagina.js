@@ -1,8 +1,8 @@
 import { flushSync } from 'react-dom'
 
 /**
- * Troca de tela virando a página do caderno: a tela atual gira presa na
- * borda das argolas (para a esquerda, indo para a frente no menu) ou a nova
+ * Troca de tela virando a página do caderno: a página inteira (com o céu e
+ * as manchas) gira presa na borda das argolas (para a esquerda, indo para a frente no menu) ou a nova
  * volta por cima (indo para trás). Usa as transições de tela do navegador;
  * sem elas, ou com "reduzir movimento", o clique segue normal.
  *
@@ -18,15 +18,26 @@ export function navegarVirandoPagina(evento, navegar, para, sentido) {
 
   evento.preventDefault()
 
-  const raiz = document.documentElement
+  function virar() {
+    const raiz = document.documentElement
 
-  raiz.dataset.virada = sentido
+    raiz.dataset.virada = sentido
 
-  const transicao = document.startViewTransition(() => {
-    flushSync(() => navegar(para))
-  })
+    const transicao = document.startViewTransition(() => {
+      flushSync(() => navegar(para))
+    })
 
-  transicao.finished.finally(() => {
-    delete raiz.dataset.virada
-  })
+    transicao.finished.finally(() => {
+      delete raiz.dataset.virada
+    })
+  }
+
+  // Com uma janela aberta (dia da agenda, cartão ampliado), fecha antes com
+  // o Esc dela e só então vira, para a janela não virar junto com a página
+  if (document.querySelector('[aria-modal="true"]')) {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    requestAnimationFrame(() => requestAnimationFrame(virar))
+  } else {
+    virar()
+  }
 }

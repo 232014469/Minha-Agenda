@@ -390,16 +390,32 @@
   padding: 40px clamp(20px, 4vw, 48px) 40px;
 }
 
-/* Troca de tela virando a página (ver virarPagina.js): só o conteúdo vira,
-   presa na borda das argolas; o menu e o resto ficam parados */
-.layout-conteudo {
+/* Troca de tela virando a página (ver virarPagina.js): a coluna inteira
+   (com o céu e as manchas) vira presa na borda das argolas. O menu fica
+   parado e por cima, para as argolas não serem cobertas pela folha. */
+.layout-coluna {
   view-transition-name: pagina;
+}
+
+.layout-menu {
+  view-transition-name: menu;
 }
 
 ::view-transition-old(root),
 ::view-transition-new(root),
-::view-transition-group(pagina) {
+::view-transition-group(pagina),
+::view-transition-group(menu),
+::view-transition-old(menu),
+::view-transition-new(menu) {
   animation: none;
+}
+
+::view-transition-group(pagina) {
+  z-index: 1;
+}
+
+::view-transition-group(menu) {
+  z-index: 2;
 }
 
 ::view-transition-image-pair(pagina) {
@@ -410,13 +426,6 @@
 ::view-transition-new(pagina) {
   transform-origin: left center;
   backface-visibility: hidden;
-}
-
-/* Só a folha que está virando ganha papel por trás (a de baixo deixa ver o
-   céu e as manchas da página) */
-:root[data-virada='frente']::view-transition-old(pagina),
-:root[data-virada='tras']::view-transition-new(pagina) {
-  background: var(--cor-fundo);
 }
 
 /* Para a frente: a página atual vira para a esquerda e revela a nova */
