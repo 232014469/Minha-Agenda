@@ -586,7 +586,8 @@
 
 .inicio-mes-fundo {
   position: fixed;
-  inset: 0;
+  /* Só a página: o menu lateral (250px) fica de fora e sem escurecer */
+  inset: 0 0 0 250px;
   z-index: 50;
   display: grid;
   place-items: center;
@@ -605,6 +606,59 @@
   border-radius: 16px;
   background: var(--cor-verde);
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.25);
+}
+
+/* Abrir o cartão: o fundo escurece, a janela sai do cartão clicado e cresce
+   até o meio da tela, e as barras sobem uma depois da outra */
+.inicio-mes-fundo {
+  animation: inicio-mes-fundo 0.25s ease-out both;
+}
+
+.inicio-mes-janela {
+  animation: inicio-mes-abre 0.45s cubic-bezier(0.2, 0.9, 0.25, 1.06) both;
+}
+
+.inicio-mes-barras .inicio-semana-barra {
+  transform-origin: 50% 100%;
+  animation: inicio-mes-barra-sobe 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+  animation-delay: calc(0.25s + var(--ordem, 0) * 0.015s);
+}
+
+@keyframes inicio-mes-fundo {
+  from {
+    background-color: rgb(40 28 20 / 0);
+  }
+}
+
+@keyframes inicio-mes-abre {
+  from {
+    opacity: 0;
+    transform: translate(var(--de-x, 0), var(--de-y, 0))
+      scale(var(--de-escala, 0.6));
+  }
+
+  40% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes inicio-mes-barra-sobe {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inicio-mes-fundo,
+  .inicio-mes-janela,
+  .inicio-mes-barras .inicio-semana-barra {
+    animation: none;
+  }
 }
 
 .inicio-mes-topo {
@@ -756,4 +810,11 @@
 
 :root[data-modo='escuro'] .etiqueta-rosa {
   color: #f2a594;
+}
+
+/* No celular o menu é a barra de baixo: a janela fica acima dela */
+@media (max-width: 760px) {
+  .inicio-mes-fundo {
+    inset: 0 0 68px;
+  }
 }

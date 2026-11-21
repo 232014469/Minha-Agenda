@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
 import { useDados } from '../../dados/useDados'
 import { EstadoVazio } from '../../shared/components/Estados'
@@ -97,7 +98,7 @@ function BarrasDeEntregas({ dias, materias, classe = '' }) {
 
   return (
     <ol className={`inicio-semana-barras ${classe}`.trim()}>
-      {dias.map((dia) => {
+      {dias.map((dia, indice) => {
         const partes = dia.porMateria.map(({ materiaId, total }) => {
           const materia = materiaDe(materiaId)
 
@@ -128,7 +129,10 @@ function BarrasDeEntregas({ dias, materias, classe = '' }) {
             <span className="inicio-semana-total">{dia.total || ''}</span>
             <span
               className="inicio-semana-barra"
-              style={{ height: `${(dia.total / maior) * 100}%` }}
+              style={{
+                height: `${(dia.total / maior) * 100}%`,
+                '--ordem': indice,
+              }}
             >
               {partes.map((parte) => (
                 <span
@@ -153,10 +157,33 @@ const NOME_DO_MES = new Intl.DateTimeFormat('pt-BR', {
 })
 
 /**
- * O cartão ampliado, por cima do Dashboard: as entregas do mês inteiro, com
- * setas para os outros meses. Fecha no ×, no Esc ou clicando fora.
+ * De onde a janela do mês nasce: o deslocamento do cartão clicado até o meio
+ * da área da página (sem o menu) e o tamanho dele perto da janela (ver
+ * inicio-mes-abre).
  */
-function EntregasDoMes({ tarefas, materias, agora, aoFechar }) {
+function origemDaJanela(origem) {
+  if (!origem) return undefined
+
+  const pagina = document
+    .querySelector('.layout-coluna')
+    ?.getBoundingClientRect()
+  const meio = pagina ? pagina.left + pagina.width / 2 : window.innerWidth / 2
+  const x = origem.left + origem.width / 2 - meio
+  const y = origem.top + origem.height / 2 - window.innerHeight / 2
+
+  return {
+    '--de-x': `${Math.round(x)}px`,
+    '--de-y': `${Math.round(y)}px`,
+    '--de-escala': Math.min(0.6, Math.max(0.15, origem.width / 960)),
+  }
+}
+
+/**
+ * O cartão ampliado, por cima da página (fora do conteúdo, para o menu não
+ * cobrir a janela, mas sem cobrir o menu): as entregas do mês inteiro, com setas para os outros
+ * meses. Abre saindo do cartão clicado; fecha no ×, no Esc ou clicando fora.
+ */
+function EntregasDoMes({ tarefas, materias, agora, origem, aoFechar }) {
   const [mes, setMes] = useState(
     () => new Date(agora.getFullYear(), agora.getMonth(), 1),
   )
@@ -197,7 +224,7 @@ function EntregasDoMes({ tarefas, materias, agora, aoFechar }) {
   const andar = (passo) =>
     setMes(new Date(mes.getFullYear(), mes.getMonth() + passo, 1))
 
-  return (
+  return createPortal(
     <div
       className="inicio-mes-fundo"
       onClick={(evento) => {
@@ -206,6 +233,7 @@ function EntregasDoMes({ tarefas, materias, agora, aoFechar }) {
     >
       <section
         className="inicio-mes-janela"
+        style={origemDaJanela(origem)}
         role="dialog"
         aria-modal="true"
         aria-labelledby="inicio-mes-titulo"
@@ -269,7 +297,8 @@ function EntregasDoMes({ tarefas, materias, agora, aoFechar }) {
           </ul>
         )}
       </section>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
@@ -279,7 +308,8 @@ function EntregasDoMes({ tarefas, materias, agora, aoFechar }) {
  */
 export function CartaoSemana({ agora = new Date() }) {
   const { materias, tarefas } = useDados()
-  const [ampliado, setAmpliado] = useState(false)
+  // Aberto: onde estava o cartão, para a janela sair dele (fechado: null)
+  const [ampliado, setAmpliado] = useState(null)
   const dias = entregasPorDia(tarefas, agora).map((dia) => ({
     ...dia,
     chave: dia.dia,
@@ -292,7 +322,9 @@ export function CartaoSemana({ agora = new Date() }) {
       className="inicio-caixa inicio-semana-cartao"
       aria-labelledby="semana-painel-titulo"
       onClick={(evento) => {
-        if (!evento.target.closest('.inicio-mes-fundo')) setAmpliado(true)
+        if (!evento.target.closest('.inicio-mes-fundo')) {
+          setAmpliado(evento.currentTarget.getBoundingClientRect())
+        }
       }}
     >
       <div className="inicio-caixa-topo">
@@ -312,7 +344,8 @@ export function CartaoSemana({ agora = new Date() }) {
           tarefas={tarefas}
           materias={materias}
           agora={agora}
-          aoFechar={() => setAmpliado(false)}
+          origem={ampliado}
+          aoFechar={() => setAmpliado(null)}
         />
       )}
     </section>
