@@ -114,6 +114,7 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
+        <span className="layout-furos" aria-hidden="true" />
         <CeuEstrelado />
         <CeuDoDia />
         <div className="layout-semestre" ref={cantoRef}>
