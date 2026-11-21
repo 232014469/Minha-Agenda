@@ -250,6 +250,64 @@ button.agenda-dia-numero:focus-visible {
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.25);
 }
 
+/* Abrir um dia: o fundo escurece e a janela sai do quadradinho clicado,
+   crescendo até o meio da tela; depois os cartões entram um a um. */
+.agenda-dia-fundo {
+  animation: agenda-fundo-aparece 0.25s ease-out both;
+}
+
+.agenda-dia-janela {
+  animation: agenda-dia-abre 0.42s cubic-bezier(0.2, 0.9, 0.25, 1.08) both;
+}
+
+.agenda-dia-janela .agenda-cartao {
+  animation: agenda-cartao-entra 0.35s ease-out both;
+  animation-delay: calc(0.22s + var(--ordem, 0) * 0.06s);
+}
+
+@keyframes agenda-fundo-aparece {
+  from {
+    background-color: rgb(40 28 20 / 0);
+  }
+}
+
+@keyframes agenda-dia-abre {
+  from {
+    opacity: 0;
+    transform: translate(var(--de-x, 0), var(--de-y, 0))
+      scale(var(--de-escala, 0.6));
+  }
+
+  40% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes agenda-cartao-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agenda-dia-fundo,
+  .agenda-dia-janela,
+  .agenda-dia-janela .agenda-cartao {
+    animation: none;
+  }
+}
+
 .agenda-dia-janela-topo {
   display: flex;
   align-items: center;

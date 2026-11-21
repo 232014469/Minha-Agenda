@@ -106,7 +106,15 @@ function Calendario({ ano, mes, porDia, corDe, hoje, aoAbrirDia }) {
                 <td
                   key={dia.chave}
                   className={classes.join(' ')}
-                  onClick={dia.foraDoMes ? undefined : () => aoAbrirDia(dia)}
+                  onClick={
+                    dia.foraDoMes
+                      ? undefined
+                      : (evento) =>
+                          aoAbrirDia(
+                            dia,
+                            evento.currentTarget.getBoundingClientRect(),
+                          )
+                  }
                 >
                   {dia.foraDoMes ? (
                     <span className="agenda-dia-numero">
@@ -147,12 +155,13 @@ function Calendario({ ano, mes, porDia, corDe, hoje, aoAbrirDia }) {
 }
 
 // Cartão com todos os detalhes de uma entrega (vista Semana e dia ampliado).
-function CartaoDeEntrega({ item, cor }) {
+function CartaoDeEntrega({ item, cor, ordem }) {
   return (
     <li
       className={`agenda-cartao agenda-chip-${cor}${
         ehConcluida(item.status) ? ' agenda-chip-concluida' : ''
       }${ehAtrasada(item) ? ' agenda-chip-atrasada' : ''}`}
+      style={ordem === undefined ? undefined : { '--ordem': ordem }}
     >
       <span className="agenda-cartao-hora">{formatarHora(item.prazo)}</span>
       <strong>{item.titulo}</strong>
@@ -165,8 +174,26 @@ function CartaoDeEntrega({ item, cor }) {
   )
 }
 
-// Um dia do mês ampliado, por cima da página. Fecha no ×, no Esc ou fora.
-function DiaAmpliado({ dia, itens, corDe, aoFechar }) {
+/**
+ * De onde a janela do dia nasce: o deslocamento do quadradinho clicado até
+ * o meio da tela e o tamanho dele perto da janela (ver agenda-dia-abre).
+ */
+function origemDaJanela(origem) {
+  if (!origem || typeof window === 'undefined') return undefined
+
+  const x = origem.left + origem.width / 2 - window.innerWidth / 2
+  const y = origem.top + origem.height / 2 - window.innerHeight / 2
+
+  return {
+    '--de-x': `${Math.round(x)}px`,
+    '--de-y': `${Math.round(y)}px`,
+    '--de-escala': Math.min(0.5, Math.max(0.12, origem.width / 480)),
+  }
+}
+
+// Um dia do mês ampliado, por cima da página: a janela sai do dia clicado.
+// Fecha no ×, no Esc ou fora.
+function DiaAmpliado({ dia, origem, itens, corDe, aoFechar }) {
   useEffect(() => {
     function tecla(evento) {
       if (evento.key === 'Escape') aoFechar()
@@ -188,6 +215,7 @@ function DiaAmpliado({ dia, itens, corDe, aoFechar }) {
     >
       <section
         className="agenda-dia-janela"
+        style={origemDaJanela(origem)}
         role="dialog"
         aria-modal="true"
         aria-labelledby="agenda-dia-titulo"
@@ -208,11 +236,12 @@ function DiaAmpliado({ dia, itens, corDe, aoFechar }) {
           <p className="agenda-semana-vazio">Sem atividades</p>
         ) : (
           <ul className="agenda-semana-cartoes">
-            {itens.map((item) => (
+            {itens.map((item, ordem) => (
               <CartaoDeEntrega
                 key={item.id}
                 item={item}
                 cor={corDe(item.disciplina)}
+                ordem={Math.min(ordem, 8)}
               />
             ))}
           </ul>
@@ -555,6 +584,8 @@ export default function AgendaPage() {
   const [semana, setSemana] = useState(() => inicioDaSemana(new Date()))
   const [ocultas, setOcultas] = useState(() => new Set())
   const [diaAberto, setDiaAberto] = useState(null)
+  // Onde estava o dia clicado, para a janela nascer dali
+  const [origemDoDia, setOrigemDoDia] = useState(null)
   const itens = tarefas.map((tarefa) => ({
     ...tarefa,
     disciplina: materias.find((materia) => materia.id === tarefa.materiaId)
@@ -746,7 +777,10 @@ export default function AgendaPage() {
             porDia={porDia}
             corDe={corDe}
             hoje={new Date()}
-            aoAbrirDia={(dia) => setDiaAberto(dia.data)}
+            aoAbrirDia={(dia, origem) => {
+              setOrigemDoDia(origem ?? null)
+              setDiaAberto(dia.data)
+            }}
           />
         ) : vista === 'semana' ? (
           <SemanaDetalhada
@@ -783,6 +817,7 @@ export default function AgendaPage() {
       {diaAberto && vista === 'mes' && (
         <DiaAmpliado
           dia={diaAberto}
+          origem={origemDoDia}
           itens={porDia.get(chaveDoDia(diaAberto)) ?? []}
           corDe={corDe}
           aoFechar={fecharDia}
