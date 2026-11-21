@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router'
+import { NavLink, Outlet } from 'react-router'
 import { APP } from '../../config/app'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -14,7 +14,6 @@ import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
-import { navegarVirandoPagina } from './virarPagina'
 import './LayoutBase.css'
 
 const itens = [
@@ -46,19 +45,6 @@ export default function LayoutBase() {
   const comBichinho = !celular && tamagotchi
   const bichinho = useBichinho({ tarefas, materias, ativo: comBichinho })
   const cantoRef = useRef(null)
-  const navegar = useNavigate()
-  const { pathname } = useLocation()
-
-  // Clique no menu: vira a página do caderno (para a frente ou para trás,
-  // pela ordem do menu). Na mesma tela, não vira nada.
-  function virarPara(evento, para, indice) {
-    if (pathname === para) return
-
-    const atual = itens.findIndex((item) => pathname.startsWith(item.para))
-    const sentido = atual !== -1 && indice < atual ? 'tras' : 'frente'
-
-    navegarVirandoPagina(evento, navegar, para, sentido)
-  }
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 
   // Fecha o painel ao clicar fora dele (e fora da engrenagem).
@@ -90,12 +76,9 @@ export default function LayoutBase() {
         </div>
 
         <ul className="layout-links">
-          {itens.map((item, indice) => (
+          {itens.map((item) => (
             <li key={item.para}>
-              <NavLink
-                to={item.para}
-                onClick={(evento) => virarPara(evento, item.para, indice)}
-              >
+              <NavLink to={item.para}>
                 <Icone nome={item.icone} />
                 {item.curto ? (
                   <>
@@ -114,7 +97,6 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
-        <span className="layout-furos" aria-hidden="true" />
         <CeuEstrelado />
         <CeuDoDia />
         <div className="layout-semestre" ref={cantoRef}>

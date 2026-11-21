@@ -38,30 +38,6 @@
   pointer-events: none;
 }
 
-/* Virando a página (ver virarPagina.js): a metade da argola que atravessa a
-   folha vai junto com ela (a ponta encolhe e some enquanto a folha vira),
-   e só a metade presa no menu fica parada */
-.layout-furos {
-  display: none;
-}
-
-:root[data-virada] .layout-menu::after {
-  clip-path: inset(0 50% 0 0);
-}
-
-:root[data-virada] .layout-furos {
-  position: fixed;
-  top: 52px;
-  bottom: 24px;
-  left: calc(250px - var(--argola-largura) / 2);
-  z-index: 5;
-  display: block;
-  width: var(--argola-largura);
-  background: var(--argolas) 0 0 / 100% 96px repeat-y;
-  clip-path: inset(0 0 0 50%);
-  pointer-events: none;
-}
-
 /* O nome no menu e o título de cada tela têm o mesmo tamanho e ficam na mesma
    altura: os dois começam 40px abaixo do topo. */
 .layout-marca,
@@ -415,98 +391,6 @@
   padding: 40px clamp(20px, 4vw, 48px) 40px;
 }
 
-/* Troca de tela virando a página (ver virarPagina.js): a coluna inteira
-   (com o céu e as manchas) vira presa na borda das argolas. O menu fica
-   parado e por cima, para as argolas não serem cobertas pela folha. */
-.layout-coluna {
-  view-transition-name: pagina;
-}
-
-.layout-menu {
-  view-transition-name: menu;
-}
-
-::view-transition-old(root),
-::view-transition-new(root),
-::view-transition-group(pagina),
-::view-transition-group(menu),
-::view-transition-old(menu),
-::view-transition-new(menu) {
-  animation: none;
-}
-
-::view-transition-group(pagina) {
-  z-index: 1;
-}
-
-::view-transition-group(menu) {
-  z-index: 2;
-}
-
-::view-transition-image-pair(pagina) {
-  perspective: 2400px;
-  perspective-origin: 50% var(--virada-meio, 50%);
-}
-
-::view-transition-old(pagina),
-::view-transition-new(pagina) {
-  transform-origin: left center;
-  backface-visibility: hidden;
-}
-
-/* Enquanto vira, o resto da tela pausa as animações (nuvens, gatinho,
-   bichinhos): a folha não precisa ser redesenhada a cada quadro */
-:root[data-virada] *,
-:root[data-virada] *::before,
-:root[data-virada] *::after {
-  animation-play-state: paused !important;
-}
-
-/* Para a frente: a página atual vira para a esquerda e revela a nova */
-:root[data-virada='frente']::view-transition-old(pagina) {
-  z-index: 1;
-  animation: pagina-vira 0.55s cubic-bezier(0.45, 0.05, 0.55, 0.95) both;
-}
-
-:root[data-virada='frente']::view-transition-new(pagina) {
-  animation: pagina-clareia 0.55s ease-out both;
-}
-
-/* Para trás: a página nova volta por cima da atual */
-:root[data-virada='tras']::view-transition-new(pagina) {
-  z-index: 1;
-  animation: pagina-vira 0.55s cubic-bezier(0.45, 0.05, 0.55, 0.95) reverse both;
-}
-
-:root[data-virada='tras']::view-transition-old(pagina) {
-  animation: pagina-clareia 0.55s ease-in reverse both;
-}
-
-@keyframes pagina-vira {
-  from {
-    transform: rotateY(0);
-  }
-
-  to {
-    transform: rotateY(-100deg);
-  }
-}
-
-/* A página de baixo aparece um pouco apagada e vai acendendo (só opacidade,
-   que o navegador anima sem redesenhar a página) */
-@keyframes pagina-clareia {
-  from {
-    opacity: 0.75;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(pagina),
-  ::view-transition-new(pagina) {
-    animation: none !important;
-  }
-}
-
 /* Semestre que as telas mostram: no canto, sem empurrar o título para baixo */
 .layout-semestre {
   position: absolute;
@@ -601,7 +485,6 @@
   }
 
   .layout-menu::after,
-  :root[data-virada] .layout-furos,
   .layout-marca-bloco,
   .semana,
   .layout-engrenagem {
