@@ -93,37 +93,6 @@
     no-repeat left center / 100% 100%;
 }
 
-.layout-lema {
-  margin: 4px 0 0;
-  min-height: 2.6em;
-  font-size: 0.875rem;
-  text-align: center;
-}
-
-/* A frase do gatinho troca com um fade suave */
-.frase-do-gatinho > span {
-  display: inline-block;
-  animation: frase-aparece 0.8s ease-out both;
-}
-
-@keyframes frase-aparece {
-  from {
-    opacity: 0;
-    transform: translateY(3px);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .frase-do-gatinho > span {
-    animation: none;
-  }
-}
-
 .layout-links {
   display: grid;
   gap: 6px;

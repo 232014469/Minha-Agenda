@@ -6,7 +6,6 @@ import { useDados } from '../../dados/useDados'
 import { useBichinho } from '../gatinhos/useBichinho'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
-import FraseDoGatinho from './FraseDoGatinho'
 import Icone from './Icone'
 import AlertaPodeNao from './AlertaPodeNao'
 import { temAtrasadas } from './alerta'
@@ -41,7 +40,6 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho).
   const bichinho = useBichinho({ tarefas, materias, ativo: !celular })
-  const { felicidade } = bichinho
   const cantoRef = useRef(null)
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 
@@ -64,7 +62,6 @@ export default function LayoutBase() {
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
           {!celular && <Mascote noMenu chuva={chuva} bichinho={bichinho} />}
-          <FraseDoGatinho className="layout-lema" humor={felicidade.nivel} />
         </div>
 
         <ul className="layout-links">
