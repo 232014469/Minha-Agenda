@@ -12,6 +12,7 @@ import { miar } from '../sons'
 import Casinha from './Casinha'
 import BarraFelicidade from './BarraFelicidade'
 import Quintal from './Quintal'
+import Tamagotchi from './Tamagotchi'
 import './Mascote.css'
 
 /**
@@ -405,45 +406,47 @@ function MascoteGato({
   if (!noMenu) return <div className="mascote-palco">{botao}</div>
 
   return (
-    <>
-      <div className="mascote-casa" ref={casaRef}>
-        <Quintal
-          chuva={chuva}
-          humor={humor}
-          brincando={rotina.nome === 'brincar' ? rotina.vez : null}
-        />
-        <Casinha />
-      </div>
-      {felicidade && <BarraFelicidade felicidade={felicidade} />}
-      <div
-        className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
-        ref={palcoRef}
-      >
-        {botao}
-        {mapa && passo.atras && !emCena && (
-          <Casinha
-            frente
-            style={{
-              left: `${mapa.casa.esquerda}px`,
-              top: `${mapa.casa.base - 64}px`,
-            }}
+    <Tamagotchi>
+      <div className="tamagotchi-tela">
+        <div className="mascote-casa" ref={casaRef}>
+          <Quintal
+            chuva={chuva}
+            humor={humor}
+            brincando={rotina.nome === 'brincar' ? rotina.vez : null}
           />
-        )}
-        {mapa && passo.dorme && !emCena && (
-          <span
-            className="casinha-zzz"
-            aria-hidden="true"
-            style={{
-              left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
-              top: `${mapa.casa.y - 34}px`,
-            }}
-          >
-            <span>Z</span>
-            <span>Z</span>
-            <span>Z</span>
-          </span>
-        )}
+          <Casinha />
+        </div>
+        {felicidade && <BarraFelicidade felicidade={felicidade} />}
+        <div
+          className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
+          ref={palcoRef}
+        >
+          {botao}
+          {mapa && passo.atras && !emCena && (
+            <Casinha
+              frente
+              style={{
+                left: `${mapa.casa.esquerda}px`,
+                top: `${mapa.casa.base - 64}px`,
+              }}
+            />
+          )}
+          {mapa && passo.dorme && !emCena && (
+            <span
+              className="casinha-zzz"
+              aria-hidden="true"
+              style={{
+                left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
+                top: `${mapa.casa.y - 34}px`,
+              }}
+            >
+              <span>Z</span>
+              <span>Z</span>
+              <span>Z</span>
+            </span>
+          )}
+        </div>
       </div>
-    </>
+    </Tamagotchi>
   )
 }
