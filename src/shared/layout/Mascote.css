@@ -220,45 +220,84 @@
 
 /* Fases do bichinho virtual (ver bichinho.js) */
 
-/* Ovo: balança de leve; clicar faz chocar */
-.mascote-ovo {
+/* Caixinha: o gatinho chega abandonado nela. Fechada, balança (tem alguém
+   aí dentro); clicar abre as abas e ele sai */
+.mascote-caixa {
   pointer-events: auto;
 }
 
-.mascote-ovo-casca {
+.caixinha-papel {
   position: absolute;
-  top: 13px;
-  left: 20px;
-  width: 24px;
-  height: 30px;
-  border: 2px solid #3a2a20;
-  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
-  background:
-    radial-gradient(circle at 30% 35%, var(--tema) 3px, transparent 4px),
-    radial-gradient(circle at 68% 60%, var(--tema) 4px, transparent 5px),
-    radial-gradient(circle at 35% 78%, var(--tema) 2px, transparent 3px),
-    radial-gradient(circle at 35% 25%, #fff, #fbf3e6 60%, #ead9c2);
+  bottom: 21px;
+  left: 15.5px;
   transform-origin: 50% 100%;
-  animation: mascote-ovo-balanca 1.6s ease-in-out infinite;
+  animation: mascote-caixa-mexe 2.2s ease-in-out infinite;
 }
 
-@keyframes mascote-ovo-balanca {
+.caixinha-papel.aberta {
+  animation: mascote-caixa-abre 0.35s ease-out both;
+}
+
+.mascote-caixa.abrindo .mascote-balao {
+  opacity: 1;
+  transform: none;
+}
+
+.caixinha-contorno {
+  fill: #2a1d14;
+}
+
+.caixinha-papelao {
+  fill: #ce944e;
+}
+
+.caixinha-sombra {
+  fill: #aa7034;
+}
+
+.caixinha-brilho {
+  fill: #e8ba78;
+}
+
+.caixinha-dentro {
+  fill: #784c24;
+}
+
+.caixinha-aba {
+  fill: #d8a05a;
+}
+
+@keyframes mascote-caixa-mexe {
   0%,
-  60%,
+  55%,
   100% {
-    transform: rotate(0);
+    transform: none;
+  }
+
+  62% {
+    transform: rotate(-5deg);
   }
 
   70% {
-    transform: rotate(-10deg);
+    transform: rotate(4deg);
   }
 
-  80% {
-    transform: rotate(8deg);
+  78% {
+    transform: translateY(-2px);
   }
 
-  90% {
-    transform: rotate(-4deg);
+  86% {
+    transform: none;
+  }
+}
+
+@keyframes mascote-caixa-abre {
+  from {
+    transform: scaleY(0.85);
+  }
+
+  60% {
+    transform: scaleY(1.08);
   }
 }
 
@@ -365,7 +404,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mascote-ovo-casca,
+  .caixinha-papel,
   .gato-bonitinho::after,
   .gato-largado::after,
   .mascote-estrelinha {

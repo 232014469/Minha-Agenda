@@ -21,10 +21,10 @@ function anotar(bichinho, valores, de) {
 }
 
 describe('bichinho virtual', () => {
-  it('nasce de um ovo, é filhote na primeira semana e depois adulto', () => {
+  it('chega numa caixinha, é filhote na primeira semana e depois adulto', () => {
     const bichinho = novoBichinho(NASCEU)
 
-    expect(situacaoDoBichinho(bichinho, NASCEU + 1000).fase).toBe('ovo')
+    expect(situacaoDoBichinho(bichinho, NASCEU + 1000).fase).toBe('caixa')
     expect(situacaoDoBichinho(bichinho, depois(2)).fase).toBe('filhote')
     expect(situacaoDoBichinho(bichinho, depois(8)).fase).toBe('adulto')
   })
@@ -43,7 +43,7 @@ describe('bichinho virtual', () => {
 
     expect(situacaoDoBichinho(doente, depois(3)).doente).toBe(true)
     expect(situacaoDoBichinho(estrelinha, depois(4)).fase).toBe('estrelinha')
-    // Melhorar depois não traz de volta: precisa chocar outro ovo
+    // Melhorar depois não traz de volta: precisa adotar outro
     expect(
       situacaoDoBichinho(anotar(estrelinha, [90], 5), depois(5)).fase,
     ).toBe('estrelinha')

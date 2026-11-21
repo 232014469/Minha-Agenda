@@ -1,9 +1,10 @@
 /**
- * Ciclo de vida do gatinho no bichinho virtual, como num Tamagotchi: nasce de
- * um ovo, é filhote na primeira semana e vira adulto. O adulto fica
+ * Ciclo de vida do gatinho no bichinho virtual, como num Tamagotchi: chega
+ * numa caixinha (foi abandonado e você adota), é filhote na primeira semana
+ * e vira adulto. O adulto fica
  * bonitinho quando foi bem cuidado (felicidade boa na média) e largado
  * quando não. Dias seguidos tristinho deixam ele doente e, se continuar,
- * ele vira estrelinha; aí choca um ovo novo.
+ * ele vira estrelinha; aí chega outra caixinha.
  *
  * O cuidado do dia vem dos botões: comida (com fome depois de um dia sem
  * comer) e brincadeira.
@@ -18,8 +19,8 @@ const MINUTO = 60 * 1000
 const HORA = 60 * MINUTO
 const DIA = 24 * HORA
 
-/** Quanto tempo o ovo leva para chocar sozinho. */
-export const OVO_MS = MINUTO
+/** Quanto tempo a caixinha leva para abrir sozinha. */
+export const CAIXA_MS = MINUTO
 /** Dias como filhote antes de virar adulto. */
 export const DIAS_DE_FILHOTE = 7
 /** Dias seguidos tristinho até ficar doente e até virar estrelinha. */
@@ -52,7 +53,7 @@ export function lerBichinho(agora = Date.now()) {
 
     if (salvo && Number.isFinite(salvo.nasceuEm) && salvo.dias) return salvo
   } catch {
-    // Sem nada salvo (ou estragado): começa com um ovo novo
+    // Sem nada salvo (ou estragado): começa com uma caixinha nova
   }
 
   return novoBichinho(agora)
@@ -76,10 +77,10 @@ export const brincar = (bichinho, agora = Date.now()) => ({
   brincouEm: agora,
 })
 
-/** Faz o ovo chocar na hora (clique no ovo). */
-export const chocar = (bichinho, agora = Date.now()) => ({
+/** Abre a caixinha na hora (clique nela). */
+export const abrirCaixa = (bichinho, agora = Date.now()) => ({
   ...bichinho,
-  nasceuEm: Math.min(bichinho.nasceuEm, agora - OVO_MS),
+  nasceuEm: Math.min(bichinho.nasceuEm, agora - CAIXA_MS),
   comeuEm: agora,
 })
 
@@ -102,7 +103,7 @@ function diasTristes(dias, agora) {
 }
 
 /**
- * Como o bichinho está agora: { fase: 'ovo' | 'filhote' | 'adulto' |
+ * Como o bichinho está agora: { fase: 'caixa' | 'filhote' | 'adulto' |
  * 'estrelinha', forma (adulto): 'bonitinho' | 'largado', doente, comFome,
  * idade (em dias, a partir de 1) }.
  */
@@ -114,8 +115,8 @@ export function situacaoDoBichinho(bichinho, agora = Date.now()) {
   if (bichinho.virouEstrelinhaEm) {
     return { fase: 'estrelinha', forma: null, doente: false, comFome, idade }
   }
-  if (vida < OVO_MS) {
-    return { fase: 'ovo', forma: null, doente: false, comFome: false, idade }
+  if (vida < CAIXA_MS) {
+    return { fase: 'caixa', forma: null, doente: false, comFome: false, idade }
   }
 
   const tristes = diasTristes(bichinho.dias, agora)
@@ -166,7 +167,8 @@ export function anotarDia(bichinho, pontos, agora = Date.now()) {
 export function cuidadoDoDia(bichinho, agora = Date.now()) {
   const { fase, comFome } = situacaoDoBichinho(bichinho, agora)
 
-  if (fase === 'ovo' || fase === 'estrelinha') return { pontos: 0, motivos: [] }
+  if (fase === 'caixa' || fase === 'estrelinha')
+    return { pontos: 0, motivos: [] }
 
   const motivos = []
   let pontos = comFome ? -5 : 3

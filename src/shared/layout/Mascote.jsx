@@ -9,6 +9,7 @@ import {
 } from '../gatinhos/gatos'
 import { usePreferencias } from '../preferencias'
 import { miar } from '../sons'
+import Caixinha from './Caixinha'
 import Casinha from './Casinha'
 import BarraFelicidade from './BarraFelicidade'
 import Quintal from './Quintal'
@@ -127,7 +128,7 @@ function classeDaFase(situacao) {
 
 /** Texto no alto da telinha: fase, idade e se está doente. */
 function textoDoStatus({ fase, forma, doente, idade }) {
-  if (fase === 'ovo') return 'Chocando...'
+  if (fase === 'caixa') return 'Uma caixinha...'
   if (fase === 'estrelinha') return 'Estrelinha'
 
   const nomeDaFase = {
@@ -383,6 +384,23 @@ function MascoteGato({
   )
 
   useEvento(noMenu, EVENTO_CUIDADO, cuidarDele)
+
+  // Abrindo a caixinha: as abas abrem, ele mia e logo sai
+  const [abrindo, setAbrindo] = useState(false)
+  const abrirCaixa = bichinho?.abrirCaixa
+
+  useEffect(() => {
+    if (!abrindo) return undefined
+
+    if (sons) miar('fofo', { volume: 0.6 })
+
+    const espera = setTimeout(() => {
+      setAbrindo(false)
+      abrirCaixa?.()
+    }, 1100)
+
+    return () => clearTimeout(espera)
+  }, [abrindo, abrirCaixa, sons])
   useEvento(comemora, EVENTO_CONCLUIU, comemorar)
   useEvento(comemora, EVENTO_TRISTE, entristecer)
   useEvento(comemora, EVENTO_FALTA, reclamar)
@@ -467,17 +485,24 @@ function MascoteGato({
   const fase = situacao?.fase
   let bicho = botao
 
-  if (fase === 'ovo') {
+  if (fase === 'caixa') {
     bicho = (
       <button
         type="button"
-        className="mascote mascote-gato mascote-ovo"
-        aria-label="Ovo do gatinho. Clique para chocar"
-        title="Chocando... clique para ajudar"
+        className={`mascote mascote-gato mascote-caixa${
+          abrindo ? ' abrindo' : ''
+        }`}
+        aria-label="Uma caixinha abandonada... tem alguém aí dentro? Clique para abrir"
+        title="Tem alguém aí dentro?"
         style={posicao('meio', mapa)}
-        onClick={bichinho.chocarOvo}
+        onClick={() => setAbrindo(true)}
       >
-        <span className="mascote-ovo-casca" />
+        <Caixinha aberta={abrindo} />
+        {abrindo && (
+          <span className="mascote-balao" aria-hidden="true">
+            Miau?
+          </span>
+        )}
       </button>
     )
   } else if (fase === 'estrelinha') {
@@ -505,7 +530,7 @@ function MascoteGato({
           <div className="tamagotchi-estrelinha" role="status">
             <p>{nome} virou estrelinha ✨</p>
             <button type="button" onClick={bichinho.recomecar}>
-              Chocar outro ovo
+              Adotar outro gatinho
             </button>
           </div>
         )}
@@ -523,29 +548,35 @@ function MascoteGato({
           ref={palcoRef}
         >
           {bicho}
-          {mapa && !fase?.match(/ovo|estrelinha/) && passo.atras && !emCena && (
-            <Casinha
-              frente
-              style={{
-                left: `${mapa.casa.esquerda}px`,
-                top: `${mapa.casa.base - 64}px`,
-              }}
-            />
-          )}
-          {mapa && !fase?.match(/ovo|estrelinha/) && passo.dorme && !emCena && (
-            <span
-              className="casinha-zzz"
-              aria-hidden="true"
-              style={{
-                left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
-                top: `${mapa.casa.y - 34}px`,
-              }}
-            >
-              <span>Z</span>
-              <span>Z</span>
-              <span>Z</span>
-            </span>
-          )}
+          {mapa &&
+            !fase?.match(/caixa|estrelinha/) &&
+            passo.atras &&
+            !emCena && (
+              <Casinha
+                frente
+                style={{
+                  left: `${mapa.casa.esquerda}px`,
+                  top: `${mapa.casa.base - 64}px`,
+                }}
+              />
+            )}
+          {mapa &&
+            !fase?.match(/caixa|estrelinha/) &&
+            passo.dorme &&
+            !emCena && (
+              <span
+                className="casinha-zzz"
+                aria-hidden="true"
+                style={{
+                  left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
+                  top: `${mapa.casa.y - 34}px`,
+                }}
+              >
+                <span>Z</span>
+                <span>Z</span>
+                <span>Z</span>
+              </span>
+            )}
         </div>
       </div>
     </Tamagotchi>

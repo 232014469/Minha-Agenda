@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
   EVENTO_CUIDADO,
+  abrirCaixa,
   alimentar,
   anotarDia,
   brincar,
   chaveDoDia,
-  chocar,
   cuidadoDoDia,
   lerBichinho,
   novoBichinho,
@@ -41,7 +41,7 @@ export function useBichinho({ tarefas, materias, ativo = true }) {
   const cuidado = ativo ? cuidadoDoDia(bichinho, agora) : null
   const felicidade = felicidadeDoGatinho({ tarefas, materias, cuidado })
 
-  // Anota a felicidade de hoje (só com o gatinho vivo e fora do ovo)
+  // Anota a felicidade de hoje (só com o gatinho vivo e fora da caixinha)
   const vivo = situacao.fase === 'filhote' || situacao.fase === 'adulto'
 
   if (ativo && vivo && bichinho.dias[chaveDoDia(agora)] !== felicidade.pontos) {
@@ -57,10 +57,10 @@ export function useBichinho({ tarefas, materias, ativo = true }) {
     window.dispatchEvent(new CustomEvent(EVENTO_CUIDADO, { detail: acao }))
   }, [])
 
-  const chocarOvo = useCallback(() => {
+  const abrir = useCallback(() => {
     const instante = Date.now()
 
-    setBichinho((atual) => chocar(atual, instante))
+    setBichinho((atual) => abrirCaixa(atual, instante))
     setAgora(instante)
   }, [])
 
@@ -71,5 +71,5 @@ export function useBichinho({ tarefas, materias, ativo = true }) {
     setAgora(instante)
   }, [])
 
-  return { situacao, felicidade, cuidar, chocarOvo, recomecar }
+  return { situacao, felicidade, cuidar, abrirCaixa: abrir, recomecar }
 }

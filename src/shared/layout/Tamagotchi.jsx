@@ -15,8 +15,8 @@ const BOTOES = [
 ]
 
 export default function Tamagotchi({ children, fase, comFome, aoCuidar }) {
-  // No ovo e virando estrelinha não tem como cuidar
-  const parado = !aoCuidar || fase === 'ovo' || fase === 'estrelinha'
+  // Na caixinha e virando estrelinha não tem como cuidar
+  const parado = !aoCuidar || fase === 'caixa' || fase === 'estrelinha'
 
   return (
     <div className="tamagotchi">
