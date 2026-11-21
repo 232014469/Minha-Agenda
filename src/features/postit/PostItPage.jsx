@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import JanelaNaPagina from '../../shared/components/JanelaNaPagina'
 import { Link } from 'react-router'
 import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -109,71 +110,60 @@ function FormularioDoPostIt({
   )
 }
 
-/** Post-it em branco: ao clicar, vira o formulário da nova atividade. */
+/**
+ * Post-it em branco: ao clicar, abre a janelinha para escrever a nova
+ * atividade (saindo dele). Fechar a janela (Esc ou fora) deixa o post-it em
+ * branco esperando; "Descartar" tira ele do mural.
+ */
 function PostItEmBranco({ rascunho, materia, aoSalvar, aoDescartar }) {
-  const [aberto, setAberto] = useState(false)
-
-  if (!aberto) {
-    return (
-      <li className={`postit postit-branco materia-cor-${materia.cor}`}>
-        <button
-          type="button"
-          className="postit-abrir"
-          onClick={() => setAberto(true)}
-          title={materia.nome}
-          aria-label={`Clique para escrever a atividade de ${materia.nome}`}
-        >
-          + Escrever
-        </button>
-      </li>
-    )
-  }
+  const [origem, setOrigem] = useState(null)
 
   return (
-    <li
-      className={`postit postit-branco postit-aberto materia-cor-${materia.cor}`}
-    >
-      <FormularioDoPostIt
-        id={`rascunho-${rascunho.chave}`}
-        materia={materia}
-        rotulo={`Nova atividade de ${materia.nome}`}
-        textoSalvar="Colar"
-        textoCancelar="Descartar"
-        aoSalvar={(campos) =>
-          aoSalvar({ ...campos, materiaId: materia.id, descricao: '' })
+    <li className={`postit postit-branco materia-cor-${materia.cor}`}>
+      <button
+        type="button"
+        className="postit-abrir"
+        onClick={(evento) =>
+          setOrigem(evento.currentTarget.getBoundingClientRect())
         }
-        aoCancelar={aoDescartar}
-      />
+        title={materia.nome}
+        aria-label={`Clique para escrever a atividade de ${materia.nome}`}
+      >
+        + Escrever
+      </button>
+      {origem && (
+        <JanelaNaPagina
+          origem={origem}
+          rotulo={`Nova atividade de ${materia.nome}`}
+          className={`postit-janela materia-cor-${materia.cor}`}
+          aoFechar={() => setOrigem(null)}
+        >
+          <FormularioDoPostIt
+            id={`rascunho-${rascunho.chave}`}
+            materia={materia}
+            rotulo={`Nova atividade de ${materia.nome}`}
+            textoSalvar="Colar"
+            textoCancelar="Descartar"
+            aoSalvar={(campos) =>
+              aoSalvar({ ...campos, materiaId: materia.id, descricao: '' })
+            }
+            aoCancelar={aoDescartar}
+          />
+        </JanelaNaPagina>
+      )}
     </li>
   )
 }
 
 function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
-  const [editando, setEditando] = useState(false)
+  // Editando: onde estava o post-it, para a janelinha sair dele
+  const [editando, setEditando] = useState(null)
   const atrasada = ehAtrasada(tarefa)
+  function editar(evento) {
+    // A janelinha é filha do post-it no React: cliques nela não reabrem
+    if (evento.target.closest('.janela')) return
 
-  if (editando) {
-    return (
-      <li
-        className={`postit postit-branco postit-aberto materia-cor-${
-          materia?.cor ?? 'amarelo'
-        }`}
-      >
-        <FormularioDoPostIt
-          id={`editar-${tarefa.id}`}
-          materia={materia ?? { nome: '' }}
-          rotulo={`Editar ${tarefa.titulo}`}
-          inicial={tarefa}
-          textoSalvar="Salvar"
-          textoCancelar="Cancelar"
-          aoSalvar={(campos) => {
-            aoEditar(campos)
-            setEditando(false)
-          }}
-          aoCancelar={() => setEditando(false)}
-        />
-      </li>
-    )
+    setEditando(evento.currentTarget.closest('.postit').getBoundingClientRect())
   }
 
   return (
@@ -182,8 +172,12 @@ function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
         atrasada ? ' postit-atrasado' : ''
       }`}
       draggable
-      onDragStart={(evento) => arrastar(evento, `tarefa:${tarefa.id}`)}
-      onDoubleClick={() => setEditando(true)}
+      onDragStart={(evento) => {
+        if (!evento.target.closest?.('.janela')) {
+          arrastar(evento, `tarefa:${tarefa.id}`)
+        }
+      }}
+      onDoubleClick={editar}
       title={`${tarefa.titulo} · ${materia?.nome ?? ''} · ${tarefa.tipo ?? ''}`}
     >
       <span className="postit-escondido">
@@ -201,7 +195,7 @@ function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
           className="postit-editar"
           aria-label={`Editar ${tarefa.titulo}`}
           title="Editar (ou dê dois cliques no post-it)"
-          onClick={() => setEditando(true)}
+          onClick={editar}
         >
           <Icone nome="lapis" tamanho={13} />
         </button>
@@ -216,6 +210,28 @@ function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
           tamanho={14}
         />
       </span>
+      {editando && (
+        <JanelaNaPagina
+          origem={editando}
+          rotulo={`Editar ${tarefa.titulo}`}
+          className={`postit-janela materia-cor-${materia?.cor ?? 'amarelo'}`}
+          aoFechar={() => setEditando(null)}
+        >
+          <FormularioDoPostIt
+            id={`editar-${tarefa.id}`}
+            materia={materia ?? { nome: '' }}
+            rotulo={`Editar ${tarefa.titulo}`}
+            inicial={tarefa}
+            textoSalvar="Salvar"
+            textoCancelar="Cancelar"
+            aoSalvar={(campos) => {
+              aoEditar(campos)
+              setEditando(null)
+            }}
+            aoCancelar={() => setEditando(null)}
+          />
+        </JanelaNaPagina>
+      )}
     </li>
   )
 }
