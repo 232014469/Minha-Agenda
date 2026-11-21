@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -578,6 +578,38 @@ export default function AgendaPage() {
   const abrindo = Boolean(useLocation().state?.abrindo)
   const [alvo, setAlvo] = useState(null)
   const [vista, setVista] = useState('mes')
+  const vistasRef = useRef(null)
+
+  // O destaque das vistas corre até o botão escolhido (posicionado direto no
+  // elemento, medindo o botão; acompanha mudanças de tamanho)
+  useLayoutEffect(() => {
+    const grupo = vistasRef.current
+
+    if (!grupo) return undefined
+
+    function posicionar() {
+      const ativo = grupo.querySelector('button[aria-pressed="true"]')
+      const marcador = grupo.querySelector('.agenda-vistas-marcador')
+
+      if (!ativo || !marcador) return
+
+      marcador.style.transform = `translate(${ativo.offsetLeft}px, ${ativo.offsetTop}px)`
+      marcador.style.width = `${ativo.offsetWidth}px`
+      marcador.style.height = `${ativo.offsetHeight}px`
+      // Só anima depois de já estar no lugar (não corre ao abrir a tela)
+      requestAnimationFrame(() => grupo.classList.add('pronto'))
+    }
+
+    posicionar()
+
+    if (typeof ResizeObserver === 'undefined') return undefined
+
+    const observador = new ResizeObserver(posicionar)
+
+    observador.observe(grupo)
+
+    return () => observador.disconnect()
+  }, [vista])
   const [mostrado, setMostrado] = useState(() => {
     const hoje = new Date()
 
@@ -705,7 +737,13 @@ export default function AgendaPage() {
     >
       <section className="agenda-calendario" aria-label="Calendário">
         <div className="agenda-barra">
-          <div className="agenda-vistas" role="group" aria-label="Vista">
+          <div
+            className="agenda-vistas"
+            role="group"
+            aria-label="Vista"
+            ref={vistasRef}
+          >
+            <span className="agenda-vistas-marcador" aria-hidden="true" />
             <button
               type="button"
               aria-pressed={vista === 'mes'}
@@ -763,37 +801,40 @@ export default function AgendaPage() {
             </div>
           )}
         </div>
-        {vista === 'quadro' ? (
-          <Quadro
-            itens={itens}
-            alvo={alvo}
-            setAlvo={setAlvo}
-            soltar={soltar}
-            mover={mover}
-            corDe={corDe}
-          />
-        ) : vista === 'mes' ? (
-          <Calendario
-            ano={mostrado.ano}
-            mes={mostrado.mes}
-            porDia={porDia}
-            corDe={corDe}
-            hoje={new Date()}
-            aoAbrirDia={(dia, origem) => {
-              setOrigemDoDia(origem ?? null)
-              setDiaAberto(dia.data)
-            }}
-          />
-        ) : vista === 'semana' ? (
-          <SemanaDetalhada
-            inicio={semana}
-            porDia={porDia}
-            corDe={corDe}
-            hoje={new Date()}
-          />
-        ) : (
-          <ListaDoMes itens={doMes} corDe={corDe} />
-        )}
+        {/* A key faz a vista nova aparecer com animação a cada troca */}
+        <div key={vista} className="agenda-vista">
+          {vista === 'quadro' ? (
+            <Quadro
+              itens={itens}
+              alvo={alvo}
+              setAlvo={setAlvo}
+              soltar={soltar}
+              mover={mover}
+              corDe={corDe}
+            />
+          ) : vista === 'mes' ? (
+            <Calendario
+              ano={mostrado.ano}
+              mes={mostrado.mes}
+              porDia={porDia}
+              corDe={corDe}
+              hoje={new Date()}
+              aoAbrirDia={(dia, origem) => {
+                setOrigemDoDia(origem ?? null)
+                setDiaAberto(dia.data)
+              }}
+            />
+          ) : vista === 'semana' ? (
+            <SemanaDetalhada
+              inicio={semana}
+              porDia={porDia}
+              corDe={corDe}
+              hoje={new Date()}
+            />
+          ) : (
+            <ListaDoMes itens={doMes} corDe={corDe} />
+          )}
+        </div>
       </section>
       {vista !== 'quadro' && (
         <aside className="agenda-lateral">
