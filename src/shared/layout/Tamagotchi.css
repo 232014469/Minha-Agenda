@@ -2,7 +2,7 @@
 .tamagotchi {
   position: relative;
   width: fit-content;
-  margin: 14px auto 26px;
+  margin: 4px auto 14px;
 }
 
 /* Aro: quadrado de cantos bem redondos, na cor do tema, com brilho em cima
@@ -115,10 +115,10 @@
 .tamagotchi-cordinha {
   position: absolute;
   right: 6px;
-  bottom: -22px;
+  bottom: -16px;
   z-index: 0;
   width: 10px;
-  height: 38px;
+  height: 30px;
   border-radius: 5px;
   background:
     repeating-linear-gradient(
