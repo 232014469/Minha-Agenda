@@ -445,3 +445,103 @@
     min-width: 0;
   }
 }
+
+/* Abertura da página: o topo desce, os números saltam, as caixas se
+   desdobram de cima para baixo e as entregas entram uma depois da outra
+   (de novo a cada troca de filtro). */
+.materia-topo {
+  animation: materia-desce 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.materia-resumo > div {
+  animation: materia-salta 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+
+.materia-resumo > div:nth-child(1) {
+  animation-delay: 0.15s;
+}
+
+.materia-resumo > div:nth-child(2) {
+  animation-delay: 0.22s;
+}
+
+.materia-resumo > div:nth-child(3) {
+  animation-delay: 0.29s;
+}
+
+.materia-grade .materia-caixa {
+  animation: materia-desdobra 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.12s
+    backwards;
+}
+
+.materia-lateral > :nth-child(1) {
+  animation-delay: 0.22s;
+}
+
+.materia-lateral > :nth-child(2) {
+  animation-delay: 0.32s;
+}
+
+.materia-entregas > .entrega {
+  animation: materia-entra 0.4s ease-out both;
+  animation-delay: calc(0.25s + var(--ordem, 0) * 0.05s);
+}
+
+@keyframes materia-desce {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes materia-salta {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes materia-desdobra {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0 round 14px);
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 14px);
+    transform: none;
+  }
+}
+
+@keyframes materia-entra {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .materia-topo,
+  .materia-resumo > div,
+  .materia-grade .materia-caixa,
+  .materia-entregas > .entrega {
+    animation: none;
+  }
+}

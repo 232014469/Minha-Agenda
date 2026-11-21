@@ -49,7 +49,7 @@ function formatarData(prazo, agora) {
   })
 }
 
-function Entrega({ entrega, agora, aoAlternar, aoExcluir }) {
+function Entrega({ entrega, agora, ordem, aoAlternar, aoExcluir }) {
   const categoria = categoriaDaEntrega(entrega)
   const atrasada = estaAtrasada(entrega, agora)
   const situacao = SITUACAO[categoria]
@@ -60,6 +60,7 @@ function Entrega({ entrega, agora, aoAlternar, aoExcluir }) {
       className={`entrega entrega-${situacao.classe}${
         atrasada ? ' entrega-atrasada' : ''
       }`}
+      style={{ '--ordem': Math.min(ordem, 10) }}
     >
       <div className="entrega-conteudo">
         <div className="entrega-linha">
@@ -110,8 +111,17 @@ function Entrega({ entrega, agora, aoAlternar, aoExcluir }) {
   )
 }
 
+/**
+ * Página da matéria. A `key` faz a página nascer de novo ao trocar de
+ * matéria, para a animação de abertura (e o filtro) recomeçar.
+ */
 export default function PaginaMateria() {
   const { id } = useParams()
+
+  return <DetalhesDaMateria key={id} id={id} />
+}
+
+function DetalhesDaMateria({ id }) {
   const navegar = useNavigate()
   const {
     materias,
@@ -224,12 +234,13 @@ export default function PaginaMateria() {
               </p>
             </div>
           ) : (
-            <ul className="materia-entregas">
-              {visiveis.map((entrega) => (
+            <ul className="materia-entregas" key={filtro}>
+              {visiveis.map((entrega, ordem) => (
                 <Entrega
                   key={entrega.id}
                   entrega={entrega}
                   agora={agora}
+                  ordem={ordem}
                   aoAlternar={alternar}
                   aoExcluir={(item) => removerTarefa(item.id)}
                 />
