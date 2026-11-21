@@ -1,0 +1,165 @@
+/* Tutorial do primeiro acesso (ver Tutorial.jsx) */
+.tutorial {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+/* Destaque: um recorte na tela escurecida (a sombra enorme escurece o resto)
+   que desliza de um passo para o outro */
+.tutorial-foco {
+  position: fixed;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 3px var(--tema),
+    0 0 0 9999px rgb(30 20 14 / 0.62);
+  pointer-events: none;
+  transition:
+    top 0.45s cubic-bezier(0.3, 1.1, 0.4, 1),
+    left 0.45s cubic-bezier(0.3, 1.1, 0.4, 1),
+    width 0.45s cubic-bezier(0.3, 1.1, 0.4, 1),
+    height 0.45s cubic-bezier(0.3, 1.1, 0.4, 1);
+  animation: tutorial-pulsa 1.8s ease-in-out infinite;
+}
+
+/* Sem alvo (boas-vindas e final): a tela toda escurecida */
+.tutorial-foco.sem-alvo {
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  box-shadow: 0 0 0 9999px rgb(30 20 14 / 0.62);
+  animation: none;
+}
+
+@keyframes tutorial-pulsa {
+  50% {
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--tema) 60%, transparent),
+      0 0 0 9999px rgb(30 20 14 / 0.62);
+  }
+}
+
+.tutorial-pular {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 8px 14px;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+  color: #fff;
+  font-weight: 700;
+  backdrop-filter: blur(2px);
+}
+
+.tutorial-pular:hover {
+  background: rgb(255 255 255 / 0.25);
+}
+
+/* Balão do passo */
+.tutorial-cartao {
+  position: fixed;
+  display: grid;
+  gap: 8px;
+  width: min(320px, calc(100vw - 32px));
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  background: var(--cor-papel);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.3);
+  color: var(--cor-texto);
+  animation: tutorial-cartao-entra 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+
+.tutorial-cartao.no-meio {
+  top: 50%;
+  left: 50%;
+  justify-items: center;
+  text-align: center;
+  translate: -50% -50%;
+}
+
+.tutorial-cartao h2 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+}
+
+.tutorial-cartao p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.tutorial-contador {
+  color: var(--cor-texto-suave);
+  font-size: 0.72rem !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tutorial-gatinho {
+  display: grid;
+  justify-items: center;
+}
+
+.tutorial-pontos {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.tutorial-pontos span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cor-borda-forte);
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.tutorial-pontos span.atual {
+  width: 20px;
+  border-radius: 4px;
+  background: var(--tema);
+}
+
+.tutorial-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.tutorial-no-meio .tutorial-acoes,
+.tutorial-cartao.no-meio .tutorial-acoes {
+  justify-content: center;
+}
+
+.tutorial-acoes button {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.tutorial-acoes .tutorial-principal {
+  border-color: var(--tema);
+  background: var(--tema);
+  color: var(--tema-texto);
+}
+
+@keyframes tutorial-cartao-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-foco,
+  .tutorial-cartao {
+    transition: none;
+    animation: none;
+  }
+}

@@ -4,6 +4,7 @@ import Backup from './Backup'
 import MascoteESons from './MascoteESons'
 import Sincronizacao from './Sincronizacao'
 import Tema from './Tema'
+import { EVENTO_TUTORIAL } from '../../shared/layout/tutorialPassos'
 import './ConfiguracoesPage.css'
 
 /**
@@ -48,6 +49,16 @@ export default function ConfiguracoesPage({ aoFechar }) {
           </button>
         )}
       </header>
+      <button
+        type="button"
+        className="config-tutorial"
+        onClick={() => {
+          aoFechar?.()
+          window.dispatchEvent(new CustomEvent(EVENTO_TUTORIAL))
+        }}
+      >
+        Ver o tutorial de novo
+      </button>
       <Tema />
       <MascoteESons />
       <Sincronizacao />

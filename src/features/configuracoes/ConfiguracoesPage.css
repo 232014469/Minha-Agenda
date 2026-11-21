@@ -294,3 +294,11 @@
   width: 15px;
   height: 15px;
 }
+
+/* Reabre o tour do primeiro acesso */
+.config-tutorial {
+  justify-self: start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+}

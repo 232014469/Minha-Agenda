@@ -14,6 +14,7 @@ import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
+import Tutorial from './Tutorial'
 import './LayoutBase.css'
 
 const itens = [
@@ -30,8 +31,15 @@ const itens = [
 
 /** Moldura das telas: menu de caderno na lateral (barra inferior no celular). */
 export default function LayoutBase() {
-  const { salvou, semestre, semestres, escolherSemestre, tarefas, materias } =
-    useDados()
+  const {
+    salvou,
+    semestre,
+    semestres,
+    escolherSemestre,
+    tarefas,
+    materias,
+    todos,
+  } = useDados()
   // Dia de chuva (atividade atrasada): o gatinho dorme na casinha
   const chuva = temAtrasadas(tarefas)
   const [configAberta, setConfigAberta] = useState(false)
@@ -140,6 +148,12 @@ export default function LayoutBase() {
           <Outlet />
         </main>
         <AlertaPodeNao />
+        {/* Primeiro acesso (nada cadastrado ainda): o tour pelo site */}
+        <Tutorial
+          primeiroAcesso={
+            todos.materias.length === 0 && todos.tarefas.length === 0
+          }
+        />
       </div>
     </div>
   )
