@@ -333,15 +333,12 @@ button.agenda-dia-numero:focus-visible {
   }
 }
 
+/* Sem quadro final: cada cartão termina na opacidade dele (as concluídas
+   ficam apagadas, ver agenda-chip-concluida) */
 @keyframes agenda-cartao-entra {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
   }
 }
 
@@ -440,6 +437,16 @@ button.agenda-dia-numero:focus-visible {
 
 .agenda-chip-concluida {
   opacity: 0.6;
+}
+
+/* Nos cartões (dia aberto e semana), a concluída fica riscada e apagada,
+   para as que ainda estão a fazer se destacarem */
+.agenda-cartao.agenda-chip-concluida {
+  opacity: 0.5;
+}
+
+.agenda-cartao.agenda-chip-concluida strong {
+  text-decoration: line-through;
 }
 
 .agenda-chip-atrasada {
