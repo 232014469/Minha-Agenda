@@ -955,3 +955,93 @@ button.agenda-dia-numero:focus-visible {
     min-height: 0;
   }
 }
+
+/* Abrindo pelo "Ver tudo" do Dashboard: o título desce, o calendário se
+   desdobra de cima para baixo, as semanas entram uma a uma e as caixas da
+   lateral vêm logo depois (como ao abrir uma matéria) */
+.agenda-abrindo .titulo-pagina,
+.agenda-abrindo .subtitulo-pagina {
+  animation: agenda-desce 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.agenda-abrindo .subtitulo-pagina {
+  animation-delay: 0.06s;
+}
+
+.agenda-abrindo .agenda-calendario {
+  animation: agenda-desdobra 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.12s backwards;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr {
+  animation: agenda-entra 0.4s ease-out backwards;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr:nth-child(1) {
+  animation-delay: 0.3s;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr:nth-child(2) {
+  animation-delay: 0.36s;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr:nth-child(3) {
+  animation-delay: 0.42s;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr:nth-child(4) {
+  animation-delay: 0.48s;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr:nth-child(5) {
+  animation-delay: 0.54s;
+}
+
+.agenda-abrindo .agenda-tabela tbody tr:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.agenda-abrindo .agenda-lateral > * {
+  animation: agenda-desdobra 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.22s backwards;
+}
+
+.agenda-abrindo .agenda-lateral > :nth-child(2) {
+  animation-delay: 0.32s;
+}
+
+@keyframes agenda-desce {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes agenda-desdobra {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0 round 14px);
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 14px);
+    transform: none;
+  }
+}
+
+@keyframes agenda-entra {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agenda-abrindo .titulo-pagina,
+  .agenda-abrindo .subtitulo-pagina,
+  .agenda-abrindo .agenda-calendario,
+  .agenda-abrindo .agenda-tabela tbody tr,
+  .agenda-abrindo .agenda-lateral > * {
+    animation: none;
+  }
+}

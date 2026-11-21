@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import MenuDeOpcoes from '../../shared/components/MenuDeOpcoes'
@@ -574,6 +574,8 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
 
 export default function AgendaPage() {
   const { materias, tarefas, adicionarTarefa, alterarStatus } = useDados()
+  // Vindo do "Ver tudo" do Dashboard: a agenda abre com animação
+  const abrindo = Boolean(useLocation().state?.abrindo)
   const [alvo, setAlvo] = useState(null)
   const [vista, setVista] = useState('mes')
   const [mostrado, setMostrado] = useState(() => {
@@ -808,7 +810,7 @@ export default function AgendaPage() {
   )
 
   return (
-    <div className="agenda-pagina">
+    <div className={`agenda-pagina${abrindo ? ' agenda-abrindo' : ''}`}>
       <h1 className="titulo-pagina">Agenda</h1>
       <p className="subtitulo-pagina">
         Organize seus compromissos acadêmicos e nunca perca um prazo.
