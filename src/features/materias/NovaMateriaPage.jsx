@@ -11,6 +11,7 @@ import {
   creditosDoFluxograma,
 } from '../faltas/faltas'
 import Fluxograma from './Fluxograma'
+import { lembrarMateriaNova, voarParaODashboard } from './vooDaMateria'
 import './NovaMateriaPage.css'
 
 /** Primeira cor que nenhuma matéria usa ainda (ou a próxima da fila). */
@@ -52,6 +53,13 @@ export default function NovaMateriaPage() {
       cor,
       cargaHoraria: carga,
     })
+    // A matéria "voa" até o Dashboard no menu, e lá ela chega com destaque
+    voarParaODashboard({
+      nome: nome.trim(),
+      cor,
+      de: evento.currentTarget.querySelector('[type="submit"]'),
+    })
+    lembrarMateriaNova(nome.trim())
     setAdicionada({ nome: nome.trim(), periodo: periodo.trim() })
     setNome('')
     setCor(corSugerida([...materias, { cor }]))

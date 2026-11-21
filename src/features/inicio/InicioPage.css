@@ -818,3 +818,48 @@
     inset: 0 0 68px;
   }
 }
+
+/* Matéria recém-adicionada: chega no Dashboard com um pulinho e um brilho
+   em volta (ver vooDaMateria.js) */
+.inicio-materia-nova .inicio-materia {
+  position: relative;
+  animation: inicio-materia-chega 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) 0.2s
+    backwards;
+}
+
+.inicio-materia-nova .inicio-materia::after {
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--painel-forte);
+  border-radius: inherit;
+  content: '';
+  opacity: 0;
+  animation: inicio-materia-brilho 1.6s ease-out 0.6s 2;
+  pointer-events: none;
+}
+
+@keyframes inicio-materia-chega {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.6) rotate(-6deg);
+  }
+}
+
+@keyframes inicio-materia-brilho {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inicio-materia-nova .inicio-materia,
+  .inicio-materia-nova .inicio-materia::after {
+    animation: none;
+  }
+}

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -18,6 +19,10 @@ import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
 import { fraseDoDia } from '../../config/frases'
 import GatinhoDormindo from '../../shared/gatinhos/GatinhoDormindo'
 import ProgressoGeral from './ProgressoGeral'
+import {
+  esquecerMateriasNovas,
+  lerMateriasNovas,
+} from '../materias/vooDaMateria'
 import './InicioPage.css'
 
 /** Uma frase por dia, alternando na ordem da lista. */
@@ -169,6 +174,11 @@ function Proximas({ proximas, atrasadas }) {
 }
 
 function MinhasMaterias({ materias, tarefas }) {
+  // Recém-adicionadas (ver vooDaMateria.js): chegam com um pulinho
+  const [novas] = useState(lerMateriasNovas)
+
+  useEffect(() => esquecerMateriasNovas(), [])
+
   return (
     <section className="inicio-caixa">
       <div className="inicio-caixa-topo">
@@ -186,7 +196,12 @@ function MinhasMaterias({ materias, tarefas }) {
             )
 
             return (
-              <li key={materia.id}>
+              <li
+                key={materia.id}
+                className={
+                  novas.has(materia.nome) ? 'inicio-materia-nova' : undefined
+                }
+              >
                 <Link
                   className={`inicio-materia materia-cor-${materia.cor}`}
                   to={`/materias/${materia.id}`}
