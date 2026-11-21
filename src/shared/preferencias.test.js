@@ -12,12 +12,13 @@ afterEach(() => {
 })
 
 describe('preferências do aparelho', () => {
-  it('começa com o gatinho marrom, sons e gatinhos ligados', () => {
+  it('começa com o gatinho marrom, sons, gatinhos e bichinho ligados', () => {
     expect(lerPreferencias()).toEqual({
       mascote: 'gato01',
       sons: true,
       bordoes: true,
       gatinhos: true,
+      tamagotchi: true,
     })
   })
 

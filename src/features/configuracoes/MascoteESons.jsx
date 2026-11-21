@@ -1,9 +1,12 @@
 import { GATOS, urlDoSprite } from '../../shared/gatinhos/gatos'
 import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
-/** Quem fica no menu, se os sons tocam e se os gatinhos aparecem pela tela. */
+/**
+ * Quem fica no menu, se os sons tocam, se os gatinhos aparecem pela tela e se
+ * o gatinho do menu mora no bichinho virtual.
+ */
 export default function MascoteESons() {
-  const { mascote, sons, bordoes, gatinhos } = usePreferencias()
+  const { mascote, sons, bordoes, gatinhos, tamagotchi } = usePreferencias()
 
   return (
     <section
@@ -62,6 +65,17 @@ export default function MascoteESons() {
           }
         />
         Gatinhos pela tela (passeio, comemoração e cochilo)
+      </label>
+      <label className="config-chave-liga">
+        <input
+          type="checkbox"
+          checked={tamagotchi}
+          onChange={(evento) =>
+            mudarPreferencia('tamagotchi', evento.target.checked)
+          }
+        />
+        Bichinho virtual no menu (moldura, botões de cuidar e o ciclo de vida do
+        gatinho)
       </label>
     </section>
   )

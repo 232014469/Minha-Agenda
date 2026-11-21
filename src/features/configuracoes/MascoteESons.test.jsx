@@ -15,7 +15,7 @@ afterEach(() => {
 })
 
 describe('Mascote e sons', () => {
-  it('escolhe o mascote e liga ou desliga sons e gatinhos', () => {
+  it('escolhe o mascote e liga ou desliga sons, gatinhos e o bichinho', () => {
     render(<MascoteESons />)
 
     expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeChecked()
@@ -26,6 +26,7 @@ describe('Mascote e sons', () => {
     fireEvent.click(
       screen.getByRole('checkbox', { name: /Gatinhos pela tela/ }),
     )
+    fireEvent.click(screen.getByRole('checkbox', { name: /Bichinho virtual/ }))
 
     expect(screen.getByRole('radio', { name: 'Gatinho preto' })).toBeChecked()
     // Sem sons, os bordões ficam desligados também
@@ -35,6 +36,7 @@ describe('Mascote e sons', () => {
       sons: false,
       bordoes: false,
       gatinhos: false,
+      tamagotchi: false,
     })
   })
 })

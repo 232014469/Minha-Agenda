@@ -218,6 +218,16 @@
   pointer-events: none;
 }
 
+/* Cantinho sem o bichinho virtual (desligado nas Configurações) */
+.mascote-cantinho {
+  position: relative;
+  margin-top: 6px;
+}
+
+.mascote-cantinho .felicidade {
+  margin-top: 4px;
+}
+
 /* Fases do bichinho virtual (ver bichinho.js) */
 
 /* Caixinha: o gatinho chega abandonado nela. Fechada, balança (tem alguém

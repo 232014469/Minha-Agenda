@@ -27,6 +27,7 @@ import './Mascote.css'
 export default function Mascote({
   noMenu = false,
   chuva = false,
+  felicidade = null,
   bichinho = null,
 }) {
   const { mascote, sons, bordoes, gatinhos } = usePreferencias()
@@ -39,6 +40,7 @@ export default function Mascote({
       comemora={gatinhos}
       noMenu={noMenu}
       chuva={chuva}
+      felicidade={felicidade}
       bichinho={bichinho}
     />
   )
@@ -280,9 +282,9 @@ function MascoteGato({
   comemora,
   noMenu,
   chuva,
+  felicidade,
   bichinho,
 }) {
-  const felicidade = bichinho?.felicidade ?? null
   const situacao = bichinho?.situacao ?? null
   // Doente, fica quietinho como quando está tristinho
   const humor = situacao?.doente ? 'triste' : (felicidade?.nivel ?? 'feliz')
@@ -516,69 +518,71 @@ function MascoteGato({
     )
   }
 
+  // Sem o bichinho virtual (desligado nas Configurações), o cantinho fica
+  // solto no menu, sem moldura, botões nem ciclo de vida
+  const tela = (
+    <div className={bichinho ? 'tamagotchi-tela' : 'mascote-cantinho'}>
+      {situacao && fase !== 'estrelinha' && (
+        <p className="tamagotchi-status">{textoDoStatus(situacao)}</p>
+      )}
+      {fase === 'estrelinha' && (
+        <div className="tamagotchi-estrelinha" role="status">
+          <p>{nome} virou estrelinha ✨</p>
+          <button type="button" onClick={bichinho.recomecar}>
+            Adotar outro gatinho
+          </button>
+        </div>
+      )}
+      <div className="mascote-casa" ref={casaRef}>
+        <Quintal
+          chuva={chuva}
+          humor={humor}
+          brincando={rotina.nome === 'brincar' ? rotina.vez : null}
+        />
+        <Casinha />
+      </div>
+      {felicidade && <BarraFelicidade felicidade={felicidade} />}
+      <div
+        className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
+        ref={palcoRef}
+      >
+        {bicho}
+        {mapa && !fase?.match(/caixa|estrelinha/) && passo.atras && !emCena && (
+          <Casinha
+            frente
+            style={{
+              left: `${mapa.casa.esquerda}px`,
+              top: `${mapa.casa.base - 64}px`,
+            }}
+          />
+        )}
+        {mapa && !fase?.match(/caixa|estrelinha/) && passo.dorme && !emCena && (
+          <span
+            className="casinha-zzz"
+            aria-hidden="true"
+            style={{
+              left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
+              top: `${mapa.casa.y - 34}px`,
+            }}
+          >
+            <span>Z</span>
+            <span>Z</span>
+            <span>Z</span>
+          </span>
+        )}
+      </div>
+    </div>
+  )
+
+  if (!bichinho) return tela
+
   return (
     <Tamagotchi
       fase={fase}
       comFome={situacao?.comFome}
-      aoCuidar={bichinho?.cuidar}
+      aoCuidar={bichinho.cuidar}
     >
-      <div className="tamagotchi-tela">
-        {situacao && fase !== 'estrelinha' && (
-          <p className="tamagotchi-status">{textoDoStatus(situacao)}</p>
-        )}
-        {fase === 'estrelinha' && (
-          <div className="tamagotchi-estrelinha" role="status">
-            <p>{nome} virou estrelinha ✨</p>
-            <button type="button" onClick={bichinho.recomecar}>
-              Adotar outro gatinho
-            </button>
-          </div>
-        )}
-        <div className="mascote-casa" ref={casaRef}>
-          <Quintal
-            chuva={chuva}
-            humor={humor}
-            brincando={rotina.nome === 'brincar' ? rotina.vez : null}
-          />
-          <Casinha />
-        </div>
-        {felicidade && <BarraFelicidade felicidade={felicidade} />}
-        <div
-          className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
-          ref={palcoRef}
-        >
-          {bicho}
-          {mapa &&
-            !fase?.match(/caixa|estrelinha/) &&
-            passo.atras &&
-            !emCena && (
-              <Casinha
-                frente
-                style={{
-                  left: `${mapa.casa.esquerda}px`,
-                  top: `${mapa.casa.base - 64}px`,
-                }}
-              />
-            )}
-          {mapa &&
-            !fase?.match(/caixa|estrelinha/) &&
-            passo.dorme &&
-            !emCena && (
-              <span
-                className="casinha-zzz"
-                aria-hidden="true"
-                style={{
-                  left: `${mapa.casa.esquerda + mapa.casa.largura * 0.96}px`,
-                  top: `${mapa.casa.y - 34}px`,
-                }}
-              >
-                <span>Z</span>
-                <span>Z</span>
-                <span>Z</span>
-              </span>
-            )}
-        </div>
-      </div>
+      {tela}
     </Tamagotchi>
   )
 }

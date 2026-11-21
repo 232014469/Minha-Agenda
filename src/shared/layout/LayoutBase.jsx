@@ -5,6 +5,7 @@ import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import { useBichinho } from '../gatinhos/useBichinho'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
+import { usePreferencias } from '../preferencias'
 import { useTelaPequena } from '../useTelaPequena'
 import Icone from './Icone'
 import AlertaPodeNao from './AlertaPodeNao'
@@ -38,8 +39,11 @@ export default function LayoutBase() {
   // título da tela. Só um gatinho existe por vez (miados não se repetem).
   const celular = useTelaPequena()
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
-  // florido. No computador ele vive num bichinho virtual (ver useBichinho).
-  const bichinho = useBichinho({ tarefas, materias, ativo: !celular })
+  // florido. No computador ele vive num bichinho virtual (ver useBichinho)
+  // (dá para desligar nas Configurações).
+  const { tamagotchi } = usePreferencias()
+  const comBichinho = !celular && tamagotchi
+  const bichinho = useBichinho({ tarefas, materias, ativo: comBichinho })
   const cantoRef = useRef(null)
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 
@@ -61,7 +65,14 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && <Mascote noMenu chuva={chuva} bichinho={bichinho} />}
+          {!celular && (
+            <Mascote
+              noMenu
+              chuva={chuva}
+              felicidade={bichinho.felicidade}
+              bichinho={comBichinho ? bichinho : null}
+            />
+          )}
         </div>
 
         <ul className="layout-links">
