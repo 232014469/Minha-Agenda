@@ -419,7 +419,8 @@
 }
 
 ::view-transition-image-pair(pagina) {
-  perspective: 1800px;
+  perspective: 2400px;
+  perspective-origin: 50% var(--virada-meio, 50%);
 }
 
 ::view-transition-old(pagina),

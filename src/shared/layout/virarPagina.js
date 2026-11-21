@@ -20,8 +20,17 @@ export function navegarVirandoPagina(evento, navegar, para, sentido) {
 
   function virar() {
     const raiz = document.documentElement
+    const pagina = document.querySelector('.layout-coluna')
+    const topo = pagina ? pagina.getBoundingClientRect().top : 0
 
     raiz.dataset.virada = sentido
+    // A perspectiva olha para o meio do que está na tela (não para o meio da
+    // página inteira, que pode ser bem mais alta): assim a folha vira reta,
+    // sem entortar perto das argolas
+    raiz.style.setProperty(
+      '--virada-meio',
+      `${window.innerHeight / 2 - topo}px`,
+    )
 
     const transicao = document.startViewTransition(() => {
       flushSync(() => navegar(para))
@@ -29,6 +38,7 @@ export function navegarVirandoPagina(evento, navegar, para, sentido) {
 
     transicao.finished.finally(() => {
       delete raiz.dataset.virada
+      raiz.style.removeProperty('--virada-meio')
     })
   }
 
