@@ -390,6 +390,82 @@
   padding: 40px clamp(20px, 4vw, 48px) 40px;
 }
 
+/* Troca de tela virando a página (ver virarPagina.js): só o conteúdo vira,
+   presa na borda das argolas; o menu e o resto ficam parados */
+.layout-conteudo {
+  view-transition-name: pagina;
+}
+
+::view-transition-old(root),
+::view-transition-new(root),
+::view-transition-group(pagina) {
+  animation: none;
+}
+
+::view-transition-image-pair(pagina) {
+  perspective: 1800px;
+}
+
+::view-transition-old(pagina),
+::view-transition-new(pagina) {
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+
+/* Só a folha que está virando ganha papel por trás (a de baixo deixa ver o
+   céu e as manchas da página) */
+:root[data-virada='frente']::view-transition-old(pagina),
+:root[data-virada='tras']::view-transition-new(pagina) {
+  background: var(--cor-fundo);
+}
+
+/* Para a frente: a página atual vira para a esquerda e revela a nova */
+:root[data-virada='frente']::view-transition-old(pagina) {
+  z-index: 1;
+  animation: pagina-vira 0.55s cubic-bezier(0.45, 0.05, 0.55, 0.95) both;
+}
+
+:root[data-virada='frente']::view-transition-new(pagina) {
+  animation: pagina-clareia 0.55s ease-out both;
+}
+
+/* Para trás: a página nova volta por cima da atual */
+:root[data-virada='tras']::view-transition-new(pagina) {
+  z-index: 1;
+  animation: pagina-vira 0.55s cubic-bezier(0.45, 0.05, 0.55, 0.95) reverse both;
+}
+
+:root[data-virada='tras']::view-transition-old(pagina) {
+  animation: pagina-clareia 0.55s ease-in reverse both;
+}
+
+@keyframes pagina-vira {
+  from {
+    box-shadow: 0 0 0 rgb(0 0 0 / 0);
+    transform: rotateY(0);
+  }
+
+  to {
+    box-shadow: -30px 0 40px rgb(0 0 0 / 0.25);
+    filter: brightness(0.85);
+    transform: rotateY(-100deg);
+  }
+}
+
+/* A página de baixo começa na sombra da que está virando */
+@keyframes pagina-clareia {
+  from {
+    filter: brightness(0.85);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(pagina),
+  ::view-transition-new(pagina) {
+    animation: none !important;
+  }
+}
+
 /* Semestre que as telas mostram: no canto, sem empurrar o título para baixo */
 .layout-semestre {
   position: absolute;
