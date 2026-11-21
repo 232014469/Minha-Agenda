@@ -138,24 +138,28 @@ function PostItEmBranco({ rascunho, materia, aoSalvar, aoDescartar }) {
           className={`postit-janela materia-cor-${materia.cor}`}
           aoFechar={() => setOrigem(null)}
         >
-          <FormularioDoPostIt
-            id={`rascunho-${rascunho.chave}`}
-            materia={materia}
-            rotulo={`Nova atividade de ${materia.nome}`}
-            textoSalvar="Colar"
-            textoCancelar="Descartar"
-            aoSalvar={(campos) =>
-              aoSalvar({ ...campos, materiaId: materia.id, descricao: '' })
-            }
-            aoCancelar={aoDescartar}
-          />
+          {(fechar) => (
+            <FormularioDoPostIt
+              id={`rascunho-${rascunho.chave}`}
+              materia={materia}
+              rotulo={`Nova atividade de ${materia.nome}`}
+              textoSalvar="Colar"
+              textoCancelar="Descartar"
+              aoSalvar={(campos) =>
+                fechar(() =>
+                  aoSalvar({ ...campos, materiaId: materia.id, descricao: '' }),
+                )
+              }
+              aoCancelar={() => fechar(aoDescartar)}
+            />
+          )}
         </JanelaNaPagina>
       )}
     </li>
   )
 }
 
-function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
+function PostIt({ tarefa, materia, area, colado, aoMover, aoEditar }) {
   // Editando: onde estava o post-it, para a janelinha sair dele
   const [editando, setEditando] = useState(null)
   const atrasada = ehAtrasada(tarefa)
@@ -170,7 +174,7 @@ function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
     <li
       className={`postit materia-cor-${materia?.cor ?? 'amarelo'}${
         atrasada ? ' postit-atrasado' : ''
-      }`}
+      }${colado ? ' postit-colado' : ''}`}
       draggable
       onDragStart={(evento) => {
         if (!evento.target.closest?.('.janela')) {
@@ -217,19 +221,18 @@ function PostIt({ tarefa, materia, area, aoMover, aoEditar }) {
           className={`postit-janela materia-cor-${materia?.cor ?? 'amarelo'}`}
           aoFechar={() => setEditando(null)}
         >
-          <FormularioDoPostIt
-            id={`editar-${tarefa.id}`}
-            materia={materia ?? { nome: '' }}
-            rotulo={`Editar ${tarefa.titulo}`}
-            inicial={tarefa}
-            textoSalvar="Salvar"
-            textoCancelar="Cancelar"
-            aoSalvar={(campos) => {
-              aoEditar(campos)
-              setEditando(null)
-            }}
-            aoCancelar={() => setEditando(null)}
-          />
+          {(fechar) => (
+            <FormularioDoPostIt
+              id={`editar-${tarefa.id}`}
+              materia={materia ?? { nome: '' }}
+              rotulo={`Editar ${tarefa.titulo}`}
+              inicial={tarefa}
+              textoSalvar="Salvar"
+              textoCancelar="Cancelar"
+              aoSalvar={(campos) => fechar(() => aoEditar(campos))}
+              aoCancelar={() => fechar()}
+            />
+          )}
         </JanelaNaPagina>
       )}
     </li>
@@ -247,6 +250,9 @@ export default function PostItPage() {
   const [rascunhos, setRascunhos] = useState([])
   const [alvo, setAlvo] = useState(null)
   const [proximaChave, setProximaChave] = useState(1)
+  // Hora do último post-it colado ou salvo: os mudados desde então dão um
+  // pulinho ao aparecer (ver postit-colado)
+  const [coladoDesde, setColadoDesde] = useState(null)
 
   const materiaDe = (id) => materias.find((materia) => materia.id === id)
 
@@ -391,6 +397,7 @@ export default function PostItPage() {
                             rascunho={rascunho}
                             materia={materia}
                             aoSalvar={(tarefa) => {
+                              setColadoDesde(Date.now())
                               adicionarTarefa(tarefa)
                               tirarRascunho(rascunho.chave)
                             }}
@@ -403,10 +410,15 @@ export default function PostItPage() {
                             tarefa={tarefa}
                             materia={materia}
                             area={area.chave}
-                            aoMover={(destino) => mover(tarefa, destino)}
-                            aoEditar={(campos) =>
-                              editarTarefa(tarefa.id, campos)
+                            colado={
+                              coladoDesde !== null &&
+                              (tarefa.alteradoEm ?? 0) >= coladoDesde
                             }
+                            aoMover={(destino) => mover(tarefa, destino)}
+                            aoEditar={(campos) => {
+                              setColadoDesde(Date.now())
+                              editarTarefa(tarefa.id, campos)
+                            }}
                           />
                         ))}
                       </ul>

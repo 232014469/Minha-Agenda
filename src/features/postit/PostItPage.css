@@ -243,7 +243,9 @@
 }
 
 .postit select,
-.postit input {
+.postit input,
+.postit-janela select,
+.postit-janela input {
   min-width: 0;
   padding: 4px 6px;
   border: 1px solid rgb(var(--sombra) / 0.3);
@@ -252,6 +254,29 @@
   color: var(--cor-texto);
   font: inherit;
   font-size: 0.85rem;
+}
+
+/* Recém-colado ou salvo: cai no mural com um pulinho, como quem cola um
+   post-it de verdade */
+.postit-colado {
+  animation: postit-cola 0.5s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+
+@keyframes postit-cola {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(1.25) rotate(-6deg);
+  }
+
+  60% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .postit-colado {
+    animation: none;
+  }
 }
 
 /* Post-it em branco: só a cor da matéria, esperando o texto */
