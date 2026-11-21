@@ -217,3 +217,158 @@
   clip-path: inset(0 34% 0 0);
   pointer-events: none;
 }
+
+/* Fases do bichinho virtual (ver bichinho.js) */
+
+/* Ovo: balança de leve; clicar faz chocar */
+.mascote-ovo {
+  pointer-events: auto;
+}
+
+.mascote-ovo-casca {
+  position: absolute;
+  top: 13px;
+  left: 20px;
+  width: 24px;
+  height: 30px;
+  border: 2px solid #3a2a20;
+  border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%;
+  background:
+    radial-gradient(circle at 30% 35%, var(--tema) 3px, transparent 4px),
+    radial-gradient(circle at 68% 60%, var(--tema) 4px, transparent 5px),
+    radial-gradient(circle at 35% 78%, var(--tema) 2px, transparent 3px),
+    radial-gradient(circle at 35% 25%, #fff, #fbf3e6 60%, #ead9c2);
+  transform-origin: 50% 100%;
+  animation: mascote-ovo-balanca 1.6s ease-in-out infinite;
+}
+
+@keyframes mascote-ovo-balanca {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0);
+  }
+
+  70% {
+    transform: rotate(-10deg);
+  }
+
+  80% {
+    transform: rotate(8deg);
+  }
+
+  90% {
+    transform: rotate(-4deg);
+  }
+}
+
+/* Filhote: menorzinho (encolhe a partir dos pés) */
+.gato-filhote .sprite {
+  scale: 0.7;
+  transform-origin: 50% 75px;
+}
+
+/* Adulto bonitinho: brilhinhos em volta */
+.gato-bonitinho::after {
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  color: #ffd45e;
+  font-size: 10px;
+  text-shadow:
+    30px 8px 0 #ffd45e,
+    44px -2px 0 #fff;
+  content: '✦';
+  animation: mascote-brilha 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes mascote-brilha {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Adulto largado: desbotado e com uma mosquinha rodando */
+.gato-largado .sprite {
+  filter: saturate(0.45) brightness(0.92);
+}
+
+.gato-largado::after {
+  position: absolute;
+  top: 6px;
+  left: 30px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #3a2a20;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.4);
+  content: '';
+  animation: mascote-mosca 1.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes mascote-mosca {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(10px, -4px);
+  }
+
+  50% {
+    transform: translate(2px, -8px);
+  }
+
+  75% {
+    transform: translate(-8px, -3px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Doente: esverdeado */
+.gato-doente .sprite {
+  filter: hue-rotate(60deg) saturate(0.6) brightness(0.95);
+}
+
+/* Estrelinha: clarinho, com auréola, flutuando */
+.mascote-estrelinha {
+  pointer-events: none;
+  opacity: 0.75;
+  animation: mascote-flutua 2.4s ease-in-out infinite;
+}
+
+.mascote-estrelinha .sprite {
+  filter: grayscale(1) brightness(1.6);
+}
+
+.mascote-estrelinha::before {
+  position: absolute;
+  top: 10px;
+  left: 22px;
+  z-index: 1;
+  width: 18px;
+  height: 5px;
+  border: 2px solid #ffd45e;
+  border-radius: 50%;
+  content: '';
+}
+
+@keyframes mascote-flutua {
+  50% {
+    translate: 0 -8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascote-ovo-casca,
+  .gato-bonitinho::after,
+  .gato-largado::after,
+  .mascote-estrelinha {
+    animation: none;
+  }
+}

@@ -4,7 +4,8 @@ import './Tamagotchi.css'
  * Bichinho virtual em formato de ovo em volta do cantinho do gatinho: casca
  * brilhante na cor do tema, placa decorada (corações e brilhos de dia,
  * estrelas à noite, arco-íris e nuvens) em volta da tela e três botões de
- * gelatina embaixo. A tela (`children`) fica no meio da placa.
+ * gelatina embaixo (comida, brincadeira e carinho, por `aoCuidar`). A tela
+ * (`children`) fica no meio da placa.
  */
 
 const CORACAO = 'M5 9.5 1.2 5.6A2.4 2.4 0 0 1 5 2.4a2.4 2.4 0 0 1 3.8 3.2Z'
@@ -65,7 +66,17 @@ function ArcoIris({ x, y, espelhado }) {
   )
 }
 
-export default function Tamagotchi({ children }) {
+/** Os três botões: comida, brincadeira e carinho (ver useBichinho). */
+const BOTOES = [
+  { acao: 'comer', rotulo: 'Dar comida' },
+  { acao: 'brincar', rotulo: 'Brincar' },
+  { acao: 'carinho', rotulo: 'Fazer carinho' },
+]
+
+export default function Tamagotchi({ children, fase, comFome, aoCuidar }) {
+  // No ovo e virando estrelinha não tem como cuidar
+  const parado = !aoCuidar || fase === 'ovo' || fase === 'estrelinha'
+
   return (
     <div className="tamagotchi">
       <div className="tamagotchi-placa">
@@ -91,10 +102,26 @@ export default function Tamagotchi({ children }) {
         </svg>
         {children}
         <span className="tamagotchi-nuvens" aria-hidden="true" />
-        <div className="tamagotchi-botoes" aria-hidden="true">
-          <span />
-          <span />
-          <span />
+        <div
+          className="tamagotchi-botoes"
+          role="group"
+          aria-label="Cuidar do gatinho"
+        >
+          {BOTOES.map(({ acao, rotulo }) => {
+            const fome = acao === 'comer' && comFome && !parado
+
+            return (
+              <button
+                key={acao}
+                type="button"
+                className={fome ? 'tamagotchi-botao-pede' : undefined}
+                aria-label={fome ? `${rotulo} (ele está com fome!)` : rotulo}
+                title={fome ? `${rotulo}: ele está com fome!` : rotulo}
+                disabled={parado}
+                onClick={() => aoCuidar(acao)}
+              />
+            )
+          })}
         </div>
       </div>
     </div>

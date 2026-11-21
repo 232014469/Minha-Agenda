@@ -13,6 +13,7 @@ import Casinha from './Casinha'
 import BarraFelicidade from './BarraFelicidade'
 import Quintal from './Quintal'
 import Tamagotchi from './Tamagotchi'
+import { EVENTO_CUIDADO } from '../gatinhos/bichinho'
 import './Mascote.css'
 
 /**
@@ -25,7 +26,7 @@ import './Mascote.css'
 export default function Mascote({
   noMenu = false,
   chuva = false,
-  felicidade = null,
+  bichinho = null,
 }) {
   const { mascote, sons, bordoes, gatinhos } = usePreferencias()
 
@@ -37,7 +38,7 @@ export default function Mascote({
       comemora={gatinhos}
       noMenu={noMenu}
       chuva={chuva}
-      felicidade={felicidade}
+      bichinho={bichinho}
     />
   )
 }
@@ -59,6 +60,7 @@ const TEXTO_DO_BALAO = {
   triste: 'Ah… 😿',
   ai: 'Ai! 😾',
   falta: 'Mais uma falta? 😾',
+  carinho: 'Prrr ♥',
 }
 
 /** Com os bordões ligados, o balão fala o bordão que toca. */
@@ -98,6 +100,8 @@ const CENAS = {
   },
   ai: { animacao: 'hurt', fps: 10, vezes: '3', miado: 'pedindo' },
   triste: { animacao: 'liedown', fps: 15, vezes: '1', miado: 'triste' },
+  // Carinho pelo botão do bichinho: pulinho feliz
+  carinho: { animacao: 'jump', fps: 9, vezes: '2', miado: 'fofo' },
   // Mais uma falta anotada: fica vermelho e reclama
   falta: {
     animacao: 'hurt',
@@ -106,6 +110,33 @@ const CENAS = {
     miado: 'pedindo',
     bordao: 'eu-hein',
   },
+}
+
+/** Classe do gatinho conforme a fase do bichinho virtual. */
+function classeDaFase(situacao) {
+  if (!situacao) return ''
+
+  return [
+    situacao.fase === 'filhote' && 'gato-filhote',
+    situacao.forma && `gato-${situacao.forma}`,
+    situacao.doente && 'gato-doente',
+  ]
+    .filter(Boolean)
+    .join(' ')
+}
+
+/** Texto no alto da telinha: fase, idade e se está doente. */
+function textoDoStatus({ fase, forma, doente, idade }) {
+  if (fase === 'ovo') return 'Chocando...'
+  if (fase === 'estrelinha') return 'Estrelinha'
+
+  const nomeDaFase = {
+    filhote: 'Filhote',
+    bonitinho: 'Bonitinho',
+    largado: 'Largado',
+  }[forma ?? fase]
+
+  return `${doente ? 'Doente' : nomeDaFase} · dia ${idade}`
 }
 
 /** Quantos cliques rápidos deixam o gatinho machucado (fica vermelho). */
@@ -248,9 +279,12 @@ function MascoteGato({
   comemora,
   noMenu,
   chuva,
-  felicidade,
+  bichinho,
 }) {
-  const humor = felicidade?.nivel ?? 'feliz'
+  const felicidade = bichinho?.felicidade ?? null
+  const situacao = bichinho?.situacao ?? null
+  // Doente, fica quietinho como quando está tristinho
+  const humor = situacao?.doente ? 'triste' : (felicidade?.nivel ?? 'feliz')
   const [cena, setCena] = useState(null)
   const [rotina, setRotina] = useState(() => iniciarRotina('parado'))
   const [semRotina] = useState(prefereMenosMovimento)
@@ -326,6 +360,29 @@ function MascoteGato({
   const entristecer = useCallback(() => encenar('triste'), [encenar])
   const reclamar = useCallback(() => encenar('falta'), [encenar])
 
+  // Botões do bichinho: comida e brincadeira viram rotinas (saindo da
+  // casinha antes, se estiver lá dentro); carinho é uma reação
+  const cuidarDele = useCallback(
+    (evento) => {
+      const acao = evento.detail
+
+      if (acao === 'carinho') {
+        encenar('carinho')
+        return
+      }
+
+      setCena(null)
+      setRotina(
+        dentroDeCasa
+          ? { ...iniciarRotina('acordar'), depois: acao }
+          : iniciarRotina(acao),
+      )
+      if (sons) miar('fofo', { volume: 0.6 })
+    },
+    [encenar, dentroDeCasa, sons],
+  )
+
+  useEvento(noMenu, EVENTO_CUIDADO, cuidarDele)
   useEvento(comemora, EVENTO_CONCLUIU, comemorar)
   useEvento(comemora, EVENTO_TRISTE, entristecer)
   useEvento(comemora, EVENTO_FALTA, reclamar)
@@ -389,7 +446,9 @@ function MascoteGato({
   const botao = (
     <button
       type="button"
-      className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}`}
+      className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}${
+        classeDaFase(situacao) ? ` ${classeDaFase(situacao)}` : ''
+      }`}
       aria-label={`${nome}, o mascote. Clique para ele miar`}
       title="Miau?"
       style={{
@@ -405,9 +464,51 @@ function MascoteGato({
 
   if (!noMenu) return <div className="mascote-palco">{botao}</div>
 
+  const fase = situacao?.fase
+  let bicho = botao
+
+  if (fase === 'ovo') {
+    bicho = (
+      <button
+        type="button"
+        className="mascote mascote-gato mascote-ovo"
+        aria-label="Ovo do gatinho. Clique para chocar"
+        title="Chocando... clique para ajudar"
+        style={posicao('meio', mapa)}
+        onClick={bichinho.chocarOvo}
+      >
+        <span className="mascote-ovo-casca" />
+      </button>
+    )
+  } else if (fase === 'estrelinha') {
+    bicho = (
+      <span
+        className="mascote mascote-gato mascote-estrelinha"
+        style={posicao('meio', mapa)}
+      >
+        <Sprite gato={gato} animacao="idle_blink" fps={5} />
+      </span>
+    )
+  }
+
   return (
-    <Tamagotchi>
+    <Tamagotchi
+      fase={fase}
+      comFome={situacao?.comFome}
+      aoCuidar={bichinho?.cuidar}
+    >
       <div className="tamagotchi-tela">
+        {situacao && fase !== 'estrelinha' && (
+          <p className="tamagotchi-status">{textoDoStatus(situacao)}</p>
+        )}
+        {fase === 'estrelinha' && (
+          <div className="tamagotchi-estrelinha" role="status">
+            <p>{nome} virou estrelinha ✨</p>
+            <button type="button" onClick={bichinho.recomecar}>
+              Chocar outro ovo
+            </button>
+          </div>
+        )}
         <div className="mascote-casa" ref={casaRef}>
           <Quintal
             chuva={chuva}
@@ -421,8 +522,8 @@ function MascoteGato({
           className={`mascote-palco mascote-palco-menu${mapa ? ' medido' : ''}`}
           ref={palcoRef}
         >
-          {botao}
-          {mapa && passo.atras && !emCena && (
+          {bicho}
+          {mapa && !fase?.match(/ovo|estrelinha/) && passo.atras && !emCena && (
             <Casinha
               frente
               style={{
@@ -431,7 +532,7 @@ function MascoteGato({
               }}
             />
           )}
-          {mapa && passo.dorme && !emCena && (
+          {mapa && !fase?.match(/ovo|estrelinha/) && passo.dorme && !emCena && (
             <span
               className="casinha-zzz"
               aria-hidden="true"

@@ -21,11 +21,13 @@ const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`
  * atividade a mais pesa mais), deixar de fazer e acumular faltas deixa ele
  * chateado; entregar tudo em dia deixa ele radiante (e o jardim florido).
  *
+ * `cuidado` (opcional): o cuidado do dia no bichinho, { pontos, motivos }.
+ *
  * Responde { pontos (0 a 100), nivel, motivos } — nivel: 'radiante' (80+),
  * 'feliz' (55+), 'chateado' (30+) ou 'triste'.
  */
 export function felicidadeDoGatinho(
-  { tarefas = [], materias = [] },
+  { tarefas = [], materias = [], cuidado = null },
   agora = new Date(),
 ) {
   let pontos = BASE
@@ -68,6 +70,12 @@ export function felicidadeDoGatinho(
     pontos += Math.round((BONUS_EM_DIA * entregues.length) / vencidas.length)
     if (entregues.length === vencidas.length)
       motivos.push('tudo entregue em dia')
+  }
+
+  // Cuidado do bichinho virtual: comida e brincadeira (ver bichinho.js)
+  if (cuidado) {
+    pontos += cuidado.pontos
+    motivos.push(...cuidado.motivos)
   }
 
   pontos = Math.max(0, Math.min(100, pontos))

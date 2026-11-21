@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import { APP } from '../../config/app'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
-import { felicidadeDoGatinho } from '../gatinhos/felicidade'
+import { useBichinho } from '../gatinhos/useBichinho'
 import ConfiguracoesPage from '../../features/configuracoes/ConfiguracoesPage'
 import { useTelaPequena } from '../useTelaPequena'
 import FraseDoGatinho from './FraseDoGatinho'
@@ -34,15 +34,14 @@ export default function LayoutBase() {
     useDados()
   // Dia de chuva (atividade atrasada): o gatinho dorme na casinha
   const chuva = temAtrasadas(tarefas)
-  // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim florido
-  const felicidade = useMemo(
-    () => felicidadeDoGatinho({ tarefas, materias }),
-    [tarefas, materias],
-  )
   const [configAberta, setConfigAberta] = useState(false)
   // No celular o menu vira a barra de baixo: o gatinho vai para cima do
   // título da tela. Só um gatinho existe por vez (miados não se repetem).
   const celular = useTelaPequena()
+  // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
+  // florido. No computador ele vive num bichinho virtual (ver useBichinho).
+  const bichinho = useBichinho({ tarefas, materias, ativo: !celular })
+  const { felicidade } = bichinho
   const cantoRef = useRef(null)
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 
@@ -64,7 +63,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && <Mascote noMenu chuva={chuva} felicidade={felicidade} />}
+          {!celular && <Mascote noMenu chuva={chuva} bichinho={bichinho} />}
           <FraseDoGatinho className="layout-lema" humor={felicidade.nivel} />
         </div>
 
