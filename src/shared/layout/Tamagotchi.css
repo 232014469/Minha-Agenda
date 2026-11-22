@@ -176,8 +176,8 @@
   fill: #4a2c1e;
 }
 
-/* Unicórnio do Reino doce (no lugar do peixinho) */
-.chaveiro-unicornio {
+/* Arco-íris do Reino doce (no lugar do peixinho) */
+.chaveiro-arco-iris {
   display: none;
 }
 
@@ -185,59 +185,37 @@
   display: none;
 }
 
-:root[data-tema='doce'] .chaveiro-unicornio {
+:root[data-tema='doce'] .chaveiro-arco-iris {
   display: inline;
 }
 
-.unicornio-crina,
-.unicornio-mecha,
-.unicornio-orelha,
-.unicornio-chifre,
-.unicornio-rosto,
-.unicornio-topete {
+/* Contorno por fora e por dentro: um arco grosso escuro atrás das faixas */
+.arco-contorno {
+  fill: none;
   stroke: #5a3a33;
-  stroke-linejoin: round;
-  stroke-width: 0.9;
+  stroke-width: 8.4;
 }
 
-.unicornio-crina {
-  fill: #e99fbc;
+.arco-faixa {
+  fill: none;
+  stroke-width: 1.5;
 }
 
-.unicornio-mecha {
-  fill: #f6c3d6;
+/* Nuvem: desenhada duas vezes, primeiro com um contorno grosso e depois só
+   o branco por cima, para o contorno ficar só na borda de fora */
+.arco-nuvem-borda {
+  fill: #5a3a33;
+  stroke: #5a3a33;
+  stroke-width: 2;
 }
 
-.unicornio-topete {
-  fill: #fbd9e6;
-}
-
-.unicornio-orelha,
-.unicornio-rosto {
+.arco-nuvem {
   fill: #fffafc;
 }
 
-.unicornio-chifre {
-  fill: #e8cf86;
-}
-
-.unicornio-espiral {
-  fill: none;
-  stroke: #b8954a;
-  stroke-linecap: round;
-  stroke-width: 0.7;
-}
-
-.unicornio-olho {
-  fill: none;
-  stroke: #5a3a33;
-  stroke-linecap: round;
-  stroke-width: 0.75;
-}
-
-.unicornio-bochecha {
-  fill: #ffb3cf;
-  opacity: 0.7;
+.arco-bochecha {
+  fill: #ff9cc2;
+  opacity: 0.8;
 }
 
 .chaveiro-penduricalho {
