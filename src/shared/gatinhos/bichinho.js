@@ -3,8 +3,9 @@
  * numa caixinha (foi abandonado e você adota), é filhote na primeira semana
  * e vira adulto. O adulto fica
  * bonitinho quando foi bem cuidado (felicidade boa na média) e largado
- * quando não. Dias seguidos tristinho deixam ele doente e, se continuar,
- * ele vira estrelinha; aí chega outra caixinha.
+ * quando não. Dias seguidos tristinho (ou sem abrir o site, em período de
+ * aula) deixam ele doente e, se continuar, ele vira estrelinha; aí chega
+ * outra caixinha.
  *
  * O cuidado do dia vem dos botões: comida (com fome depois de um dia sem
  * comer) e brincadeira.
@@ -23,7 +24,10 @@ const DIA = 24 * HORA
 export const CAIXA_MS = MINUTO
 /** Dias como filhote antes de virar adulto. */
 export const DIAS_DE_FILHOTE = 7
-/** Dias seguidos tristinho até ficar doente e até virar estrelinha. */
+/**
+ * Dias seguidos tristinho até ficar doente e até virar estrelinha. Dias de
+ * aula sem abrir o site contam como tristinhos; nas férias, não.
+ */
 export const DIAS_PARA_ADOECER = 2
 export const DIAS_PARA_ESTRELINHA = 4
 /** Abaixo disso o dia conta como tristinho (o mesmo nível da felicidade). */
@@ -67,6 +71,16 @@ export function salvarBichinho(bichinho) {
   }
 }
 
+/** Bichinho desligado nas Configurações: os dias param de contar. */
+export const pausar = (bichinho) => ({ ...bichinho, pausado: true })
+
+/** Religado: a contagem recomeça a partir de agora. */
+export const retomar = (bichinho, agora = Date.now()) => ({
+  ...bichinho,
+  pausado: false,
+  retomadoEm: agora,
+})
+
 export const alimentar = (bichinho, agora = Date.now()) => ({
   ...bichinho,
   comeuEm: agora,
@@ -84,22 +98,84 @@ export const abrirCaixa = (bichinho, agora = Date.now()) => ({
   comeuEm: agora,
 })
 
-/** Dias tristinhos seguidos, do mais recente para trás. */
-function diasTristes(dias, agora) {
-  const chaves = Object.keys(dias).sort().reverse()
-  const ontem = chaveDoDia(agora - DIA)
+/** Dias depois do último prazo do semestre até começarem as férias. */
+const FOLGA_DEPOIS_DO_SEMESTRE = 7
 
-  // Só conta se o último dia anotado é hoje ou ontem
-  if (!chaves.length || chaves[0] < ontem) return 0
+/**
+ * Os períodos de aula, um por semestre: começa quando a primeira matéria
+ * dele é cadastrada e acaba uma semana depois do último prazo das tarefas
+ * dele. Fora deles são férias. Matérias antigas (sem data de cadastro)
+ * contam como cadastradas desde sempre; semestre sem tarefas ainda não tem
+ * fim.
+ */
+export function periodosLetivos({ materias = [], tarefas = [] }) {
+  const porSemestre = new Map()
 
-  let seguidos = 0
+  for (const materia of materias) {
+    const lista = porSemestre.get(materia.periodo) ?? []
 
-  for (const chave of chaves) {
-    if (dias[chave] >= PONTOS_TRISTE) break
-    seguidos += 1
+    porSemestre.set(materia.periodo, [...lista, materia])
   }
 
-  return seguidos
+  return [...porSemestre.values()].map((lista) => {
+    const ids = new Set(lista.map((materia) => materia.id))
+    const cadastros = lista.map((materia) =>
+      Number.isFinite(materia.criadaEm) ? materia.criadaEm : -Infinity,
+    )
+    const prazos = tarefas
+      .filter((tarefa) => ids.has(tarefa.materiaId))
+      .map((tarefa) => new Date(tarefa.prazo).getTime())
+      .filter(Number.isFinite)
+
+    return {
+      inicio: Math.min(...cadastros),
+      fim: prazos.length
+        ? Math.max(...prazos) + FOLGA_DEPOIS_DO_SEMESTRE * DIA
+        : Infinity,
+    }
+  })
+}
+
+/** Se um instante cai em período de aula (ver periodosLetivos). */
+export const ehLetivo = (periodos, quando) =>
+  periodos.some(({ inicio, fim }) => quando >= inicio && quando <= fim)
+
+/**
+ * Dias tristinhos seguidos: `atual` (terminando agora) e `maior` (a maior
+ * sequência no histórico guardado). Dia anotado conta pelo valor; dia sem
+ * abrir o site conta como tristinho em período de aula (ele ficou largado)
+ * e recomeça a contagem nas férias. Hoje, enquanto não é anotado, e o dia em
+ * que ele chegou (ou em que o bichinho foi religado) não contam.
+ */
+function contarTristes(bichinho, agora, letivo) {
+  const { dias, nasceuEm, retomadoEm } = bichinho
+  const hoje = chaveDoDia(agora)
+  const comeco = Math.max(
+    nasceuEm,
+    retomadoEm ?? 0,
+    agora - DIAS_GUARDADOS * DIA,
+  )
+  const primeiro = chaveDoDia(comeco)
+  let atual = 0
+  let maior = 0
+
+  for (let quando = comeco; chaveDoDia(quando) <= hoje; quando += DIA) {
+    const chave = chaveDoDia(quando)
+
+    if (chave in dias) {
+      atual = dias[chave] < PONTOS_TRISTE ? atual + 1 : 0
+    } else if (chave === hoje || chave === primeiro) {
+      continue
+    } else if (letivo?.(quando)) {
+      atual += 1
+    } else {
+      atual = 0
+    }
+
+    maior = Math.max(maior, atual)
+  }
+
+  return { atual, maior }
 }
 
 /**
@@ -107,7 +183,7 @@ function diasTristes(dias, agora) {
  * 'estrelinha', forma (adulto): 'bonitinho' | 'largado', doente, comFome,
  * idade (em dias, a partir de 1) }.
  */
-export function situacaoDoBichinho(bichinho, agora = Date.now()) {
+export function situacaoDoBichinho(bichinho, agora = Date.now(), letivo) {
   const vida = agora - bichinho.nasceuEm
   const idade = Math.max(1, Math.floor(vida / DIA) + 1)
   const comFome = !bichinho.comeuEm || agora - bichinho.comeuEm > DIA
@@ -119,8 +195,8 @@ export function situacaoDoBichinho(bichinho, agora = Date.now()) {
     return { fase: 'caixa', forma: null, doente: false, comFome: false, idade }
   }
 
-  const tristes = diasTristes(bichinho.dias, agora)
-  const doente = tristes >= DIAS_PARA_ADOECER
+  const doente =
+    contarTristes(bichinho, agora, letivo).atual >= DIAS_PARA_ADOECER
   const fase = idade > DIAS_DE_FILHOTE ? 'adulto' : 'filhote'
   const valores = Object.values(bichinho.dias)
   const media = valores.length
@@ -137,10 +213,11 @@ export function situacaoDoBichinho(bichinho, agora = Date.now()) {
 }
 
 /**
- * Anota a felicidade de hoje. Depois de dias demais tristinho, ele vira
- * estrelinha (fica guardado, para não voltar sozinho).
+ * Anota a felicidade de hoje. Depois de dias demais tristinho (contando os
+ * dias de aula sem abrir o site), ele vira estrelinha (fica guardado, para
+ * não voltar sozinho). `letivo(instante)`: se é período de aula.
  */
-export function anotarDia(bichinho, pontos, agora = Date.now()) {
+export function anotarDia(bichinho, pontos, agora = Date.now(), letivo) {
   const hoje = chaveDoDia(agora)
   const guardados = Object.keys(bichinho.dias)
     .sort()
@@ -153,7 +230,9 @@ export function anotarDia(bichinho, pontos, agora = Date.now()) {
 
   const novo = { ...bichinho, dias }
 
-  if (diasTristes(dias, agora) >= DIAS_PARA_ESTRELINHA) {
+  // Dias sem abrir no meio das aulas também contam: se houve uma sequência
+  // tristinha longa demais, ele já virou estrelinha enquanto ninguém via
+  if (contarTristes(novo, agora, letivo).maior >= DIAS_PARA_ESTRELINHA) {
     novo.virouEstrelinhaEm = agora
   }
 

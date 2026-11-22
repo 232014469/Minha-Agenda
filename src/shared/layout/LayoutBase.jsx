@@ -51,7 +51,12 @@ export default function LayoutBase() {
   // (dá para desligar nas Configurações).
   const { tamagotchi } = usePreferencias()
   const comBichinho = !celular && tamagotchi
-  const bichinho = useBichinho({ tarefas, materias, ativo: comBichinho })
+  const bichinho = useBichinho({
+    tarefas,
+    materias,
+    ativo: tamagotchi,
+    comBotoes: !celular,
+  })
   const cantoRef = useRef(null)
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 

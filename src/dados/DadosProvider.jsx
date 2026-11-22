@@ -105,6 +105,8 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
             cor: CORES.includes(cor)
               ? cor
               : CORES[atuais.materias.length % CORES.length],
+            // Começo do período de aula do semestre (ver periodosLetivos)
+            criadaEm: agora(),
             alteradoEm: agora(),
           },
         ],

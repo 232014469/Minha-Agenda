@@ -4,7 +4,10 @@ import {
   anotarDia,
   brincar,
   cuidadoDoDia,
+  ehLetivo,
   novoBichinho,
+  periodosLetivos,
+  retomar,
   situacaoDoBichinho,
 } from './bichinho'
 
@@ -69,5 +72,57 @@ describe('bichinho virtual', () => {
       pontos: 6,
       motivos: ['brincou hoje'],
     })
+  })
+
+  it('dias de aula sem abrir o site contam como tristinhos', () => {
+    const emAula = () => true
+    const largado = anotarDia(
+      anotarDia(novoBichinho(NASCEU), 80, depois(1), emAula),
+      80,
+      depois(6),
+      emAula,
+    )
+
+    // Dias 2 a 5 sem abrir, em período de aula: virou estrelinha
+    expect(situacaoDoBichinho(largado, depois(6)).fase).toBe('estrelinha')
+  })
+
+  it('nas férias, ficar sem abrir o site não conta', () => {
+    const ferias = () => false
+    const descansando = anotarDia(
+      anotarDia(novoBichinho(NASCEU), 80, depois(1), ferias),
+      80,
+      depois(6),
+      ferias,
+    )
+
+    expect(situacaoDoBichinho(descansando, depois(6), ferias).fase).toBe(
+      'filhote',
+    )
+  })
+
+  it('religado nas Configurações, a contagem recomeça dali', () => {
+    const emAula = () => true
+    const pausado = anotarDia(novoBichinho(NASCEU), 80, depois(1), emAula)
+    const religado = anotarDia(
+      retomar(pausado, depois(6)),
+      80,
+      depois(6),
+      emAula,
+    )
+
+    expect(situacaoDoBichinho(religado, depois(6), emAula).fase).toBe('filhote')
+  })
+
+  it('período de aula: da 1ª matéria até uma semana depois do último prazo', () => {
+    const periodos = periodosLetivos({
+      materias: [{ id: 1, periodo: '2026.2', criadaEm: depois(0) }],
+      tarefas: [{ materiaId: 1, prazo: new Date(depois(30)).toISOString() }],
+    })
+
+    expect(ehLetivo(periodos, depois(10))).toBe(true)
+    expect(ehLetivo(periodos, depois(36))).toBe(true)
+    expect(ehLetivo(periodos, depois(38))).toBe(false)
+    expect(ehLetivo(periodos, depois(-2))).toBe(false)
   })
 })
