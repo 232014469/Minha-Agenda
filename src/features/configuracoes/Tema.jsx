@@ -11,10 +11,10 @@ import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
 /**
  * Escolha da cor e da aparência (claro ou escuro) do app, neste aparelho, e
- * se o céu do topo é animado.
+ * se o céu do topo é animado e os cartões são de vidro líquido.
  */
 export default function Tema() {
-  const { ceu } = usePreferencias()
+  const { ceu, vidro } = usePreferencias()
   const [atual, setAtual] = useState(lerTema)
   const [modo, setModo] = useState(lerModo)
 
@@ -79,6 +79,16 @@ export default function Tema() {
         />
         Céu animado (sol, nuvens, chuva e lua; desligado, à noite ficam só as
         estrelas)
+      </label>
+      <label className="config-chave-liga">
+        <input
+          type="checkbox"
+          checked={vidro}
+          onChange={(evento) =>
+            mudarPreferencia('vidro', evento.target.checked)
+          }
+        />
+        Vidro líquido (cartões e janelas meio transparentes, como no iPhone)
       </label>
     </section>
   )

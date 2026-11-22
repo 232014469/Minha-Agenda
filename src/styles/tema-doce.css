@@ -352,20 +352,20 @@
 
 /* Faltas: rosa-chiclete (o rosa forte do tema fica pesado no cartão) */
 :root[data-tema='doce'] .inicio-cartoes > :nth-child(1) {
-  background: #f5b4d0;
+  --cartao-cor: #f5b4d0;
 }
 
 :root[data-tema='doce'][data-modo='escuro'] .inicio-cartoes > :nth-child(1) {
-  background: #8c4069;
+  --cartao-cor: #8c4069;
 }
 
 /* No bosque da chuva, o rosa some na névoa azul */
 :root[data-tema='doce'][data-tempo='chuva'] .inicio-cartoes > :nth-child(1) {
-  background: #a9b2d4;
+  --cartao-cor: #a9b2d4;
 }
 
 :root[data-tema='doce'][data-tempo='chuva'][data-modo='escuro']
   .inicio-cartoes
   > :nth-child(1) {
-  background: #3b4680;
+  --cartao-cor: #3b4680;
 }

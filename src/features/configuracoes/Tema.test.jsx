@@ -83,4 +83,14 @@ describe('Tema', () => {
     fireEvent.click(ceu)
     expect(lerPreferencias().ceu).toBe(false)
   })
+
+  it('liga e desliga o vidro líquido', () => {
+    render(<Tema />)
+
+    const vidro = screen.getByRole('checkbox', { name: /Vidro líquido/ })
+
+    expect(vidro).toBeChecked()
+    fireEvent.click(vidro)
+    expect(lerPreferencias().vidro).toBe(false)
+  })
 })

@@ -59,7 +59,17 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho)
   // (dá para desligar nas Configurações).
-  const { cantinho, ceu } = usePreferencias()
+  const { cantinho, ceu, vidro } = usePreferencias()
+
+  // Vidro líquido: o CSS (styles/vidro-liquido.css) olha para data-vidro
+  useEffect(() => {
+    if (vidro) document.documentElement.dataset.vidro = ''
+    else delete document.documentElement.dataset.vidro
+
+    return () => {
+      delete document.documentElement.dataset.vidro
+    }
+  }, [vidro])
   const gatinho = cantinho === 'gatinho'
   // Sem gatinho na tela, o bichinho também para (os dias não contam)
   const comBichinho = !celular && gatinho

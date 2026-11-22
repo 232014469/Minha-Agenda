@@ -63,6 +63,7 @@
    lilás. */
 .inicio-cartoes > .inicio-caixa {
   align-content: start;
+  background: var(--cartao-cor);
   border-color: transparent;
   color: var(--cor-texto);
 }
@@ -75,24 +76,25 @@
 .inicio-cartoes > :nth-child(1) {
   grid-area: faltas;
   /* Faltas: na cor do tema (um pouco mais suave no escuro) */
-  background: color-mix(in srgb, var(--tema) 85%, var(--cor-papel));
+  --cartao-cor: color-mix(in srgb, var(--tema) 85%, var(--cor-papel));
 }
 
 /* No escuro, mais fechado, para o aviso vermelho de faltas continuar legível */
 :root[data-modo='escuro'] .inicio-cartoes > :nth-child(1) {
-  background: color-mix(in srgb, var(--tema) 50%, var(--cor-papel));
+  --cartao-cor: color-mix(in srgb, var(--tema) 50%, var(--cor-papel));
 }
 
 .inicio-cartoes > :nth-child(2) {
+  --cartao-cor: var(--cor-amarelo);
+
   grid-area: prova;
-  background: var(--cor-amarelo);
 }
 
 .inicio-cartoes > :nth-child(3) {
   grid-area: extra;
   grid-template-rows: auto 1fr;
   align-content: stretch;
-  background: var(--cor-lilas);
+  --cartao-cor: var(--cor-lilas);
 }
 
 .inicio-cartoes h2,

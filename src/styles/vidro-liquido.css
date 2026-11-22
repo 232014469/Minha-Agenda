@@ -1,0 +1,117 @@
+/*
+ * Vidro líquido (opção "Vidro líquido" nas Configurações, ligada por padrão):
+ * cartões, caixas, painéis e janelas ficam meio transparentes e embaçados,
+ * com um brilho na borda de cima, como o vidro do iPhone. Por trás aparecem
+ * o céu, as manchas e as cores do fundo. Só vale com `data-vidro` na raiz.
+ */
+:root[data-vidro] {
+  --vidro-borda: rgb(255 255 255 / 0.55);
+  --vidro-brilho: rgb(255 255 255 / 0.8);
+  --vidro-reflexo: rgb(255 255 255 / 0.18);
+  --vidro-desfoque: blur(18px) saturate(1.7);
+}
+
+:root[data-vidro][data-modo='escuro'] {
+  --vidro-borda: rgb(255 255 255 / 0.14);
+  --vidro-brilho: rgb(255 255 255 / 0.22);
+  --vidro-reflexo: rgb(255 255 255 / 0.05);
+}
+
+/* Caixas e cartões neutros: papel virou vidro */
+:root[data-vidro] .secao-caixa,
+:root[data-vidro] .inicio-caixa,
+:root[data-vidro] .materia-caixa,
+:root[data-vidro] .agenda-calendario,
+:root[data-vidro] .agenda-caixa {
+  border-color: var(--vidro-borda);
+  background:
+    linear-gradient(165deg, var(--vidro-reflexo), transparent 45%),
+    rgb(var(--vidro) / 0.42);
+  box-shadow:
+    inset 0 1px 0 var(--vidro-brilho),
+    inset 0 -1px 0 var(--vidro-reflexo),
+    0 8px 24px rgb(var(--sombra) / 0.1);
+  -webkit-backdrop-filter: var(--vidro-desfoque);
+  backdrop-filter: var(--vidro-desfoque);
+}
+
+/* Cartões coloridos do Dashboard: a cor de cada um, translúcida */
+:root[data-vidro] .inicio-cartoes > .inicio-caixa {
+  background:
+    linear-gradient(165deg, var(--vidro-reflexo), transparent 45%),
+    color-mix(in srgb, var(--cartao-cor) 62%, transparent);
+}
+
+/* Cartões das matérias: a cor da matéria, translúcida */
+:root[data-vidro] .inicio-materia {
+  border-right-color: var(--vidro-borda);
+  border-bottom-color: var(--vidro-borda);
+  border-left-color: var(--vidro-borda);
+  background: color-mix(in srgb, var(--painel-fundo) 62%, transparent);
+  box-shadow: inset 0 1px 0 var(--vidro-reflexo);
+  -webkit-backdrop-filter: var(--vidro-desfoque);
+  backdrop-filter: var(--vidro-desfoque);
+}
+
+/* Painel das Configurações e janelas que abrem por cima */
+:root[data-vidro] .config-painel,
+:root[data-vidro] .agenda-dia-janela,
+:root[data-vidro] .inicio-mes-janela {
+  border: 1px solid var(--vidro-borda);
+  box-shadow:
+    inset 0 1px 0 var(--vidro-brilho),
+    0 18px 48px rgb(var(--sombra) / 0.28);
+  -webkit-backdrop-filter: blur(26px) saturate(1.8);
+  backdrop-filter: blur(26px) saturate(1.8);
+}
+
+:root[data-vidro] .config-painel,
+:root[data-vidro] .agenda-dia-janela {
+  background: rgb(var(--vidro) / 0.62);
+}
+
+:root[data-vidro] .inicio-mes-janela {
+  background: color-mix(in srgb, var(--cor-lilas) 72%, transparent);
+}
+
+/* Celular: a barra flutuante de baixo, mais clara e mais líquida */
+@media (max-width: 760px) {
+  :root[data-vidro] .layout-menu {
+    border-color: var(--vidro-borda);
+    background:
+      linear-gradient(180deg, var(--vidro-reflexo), transparent 60%),
+      rgb(var(--vidro) / 0.45);
+    box-shadow:
+      inset 0 1px 0 var(--vidro-brilho),
+      inset 0 -1px 0 var(--vidro-reflexo),
+      0 10px 30px rgb(var(--sombra) / 0.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    backdrop-filter: blur(20px) saturate(1.8);
+  }
+
+  :root[data-vidro] .layout-links-marcador {
+    background: rgb(255 255 255 / 0.35);
+    box-shadow:
+      inset 0 1px 0 var(--vidro-brilho),
+      0 2px 8px rgb(var(--sombra) / 0.12);
+  }
+
+  :root[data-vidro][data-modo='escuro'] .layout-links-marcador {
+    background: rgb(255 255 255 / 0.12);
+  }
+}
+
+/* Navegadores sem desfoque: o vidro fica mais opaco, para ler bem */
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  :root[data-vidro] .secao-caixa,
+  :root[data-vidro] .inicio-caixa,
+  :root[data-vidro] .materia-caixa,
+  :root[data-vidro] .agenda-calendario,
+  :root[data-vidro] .agenda-caixa,
+  :root[data-vidro] .config-painel,
+  :root[data-vidro] .agenda-dia-janela {
+    background: rgb(var(--vidro) / 0.9);
+  }
+}

@@ -19,6 +19,7 @@ describe('preferências do aparelho', () => {
       bordoes: true,
       cantinho: 'gatinho',
       ceu: true,
+      vidro: true,
     })
   })
 

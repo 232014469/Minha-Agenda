@@ -33,6 +33,7 @@ describe('Mascote e sons', () => {
       bordoes: false,
       cantinho: 'gatinho',
       ceu: true,
+      vidro: true,
     })
   })
 
