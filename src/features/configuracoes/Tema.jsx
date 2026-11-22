@@ -7,9 +7,14 @@ import {
   lerModo,
   lerTema,
 } from '../../config/tema'
+import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
-/** Escolha da cor e da aparência (claro ou escuro) do app, neste aparelho. */
+/**
+ * Escolha da cor e da aparência (claro ou escuro) do app, neste aparelho, e
+ * se o céu do topo é animado.
+ */
 export default function Tema() {
+  const { ceu } = usePreferencias()
   const [atual, setAtual] = useState(lerTema)
   const [modo, setModo] = useState(lerModo)
 
@@ -66,6 +71,15 @@ export default function Tema() {
           </label>
         ))}
       </fieldset>
+      <label className="config-chave-liga">
+        <input
+          type="checkbox"
+          checked={ceu}
+          onChange={(evento) => mudarPreferencia('ceu', evento.target.checked)}
+        />
+        Céu animado (sol, nuvens, chuva e lua; desligado, à noite ficam só as
+        estrelas)
+      </label>
     </section>
   )
 }

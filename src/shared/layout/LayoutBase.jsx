@@ -59,7 +59,7 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho)
   // (dá para desligar nas Configurações).
-  const { cantinho } = usePreferencias()
+  const { cantinho, ceu } = usePreferencias()
   const gatinho = cantinho === 'gatinho'
   // Sem gatinho na tela, o bichinho também para (os dias não contam)
   const comBichinho = !celular && gatinho
@@ -170,8 +170,9 @@ export default function LayoutBase() {
       </nav>
 
       <div className="layout-coluna">
-        <CeuEstrelado />
-        <CeuDoDia />
+        <CeuEstrelado comLua={ceu} />
+        {/* Sem céu animado: nada de sol, nuvens, chuva nem lua */}
+        {ceu && <CeuDoDia />}
         <div className="layout-semestre" ref={cantoRef}>
           <label htmlFor="layout-semestre">Semestre</label>
           <select

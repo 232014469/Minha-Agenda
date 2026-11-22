@@ -9,6 +9,10 @@ import {
   lerModo,
   lerTema,
 } from '../../config/tema'
+import {
+  lerPreferencias,
+  recarregarPreferencias,
+} from '../../shared/preferencias'
 import Tema from './Tema'
 
 afterEach(() => {
@@ -16,6 +20,7 @@ afterEach(() => {
   localStorage.clear()
   delete document.documentElement.dataset.tema
   delete document.documentElement.dataset.modo
+  recarregarPreferencias()
 })
 
 describe('Tema', () => {
@@ -67,5 +72,15 @@ describe('Tema', () => {
     expect(ehNoite(new Date(2026, 10, 19, 3, 0))).toBe(true)
     expect(ehNoite(new Date(2026, 10, 19, 6, 0))).toBe(false)
     expect(ehNoite(new Date(2026, 10, 19, 17, 59))).toBe(false)
+  })
+
+  it('liga e desliga o céu animado', () => {
+    render(<Tema />)
+
+    const ceu = screen.getByRole('checkbox', { name: /Céu animado/ })
+
+    expect(ceu).toBeChecked()
+    fireEvent.click(ceu)
+    expect(lerPreferencias().ceu).toBe(false)
   })
 })

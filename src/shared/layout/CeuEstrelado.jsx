@@ -39,9 +39,10 @@ const ESTRELAS = criarEstrelas()
 /**
  * Céu do modo escuro: estrelas que piscam, uma lua crescente e, de vez em
  * quando, uma estrela cadente. Fica atrás do conteúdo e só aparece no modo
- * escuro (o CSS esconde no claro).
+ * escuro (o CSS esconde no claro). Sem `comLua` (céu animado desligado nas
+ * Configurações), ficam só as estrelas.
  */
-export default function CeuEstrelado() {
+export default function CeuEstrelado({ comLua = true }) {
   return (
     <div className="ceu" aria-hidden="true">
       {ESTRELAS.map((estrela) => (
@@ -51,8 +52,12 @@ export default function CeuEstrelado() {
           style={estrela.estilo}
         />
       ))}
-      <span className="ceu-cadente" />
-      <span className="ceu-lua" />
+      {comLua && (
+        <>
+          <span className="ceu-cadente" />
+          <span className="ceu-lua" />
+        </>
+      )}
     </div>
   )
 }

@@ -6,7 +6,8 @@ import { ehGato } from './gatinhos/gatos'
  * Preferências deste aparelho (não vão na sincronização): o mascote do menu,
  * se os sons tocam, se os bordões substituem alguns miados e o que fica no
  * alto do menu (`cantinho`): o gatinho, o relógio de estudo, o cartão "Hoje"
- * ou um quadro de lembrete. Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
+ * ou um quadro de lembrete; e se o céu é animado (`ceu`: sol, nuvens, chuva
+ * e lua; desligado, sobram só as estrelas da noite). Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
  * são esquecidas ao ler.
  */
 export const CANTINHOS = ['gatinho', 'relogio', 'hoje', 'lembrete']
@@ -16,6 +17,7 @@ const PADRAO = {
   sons: true,
   bordoes: true,
   cantinho: 'gatinho',
+  ceu: true,
 }
 const CHAVE = `${APP.chaveDosDados}.preferencias`
 const ouvintes = new Set()
