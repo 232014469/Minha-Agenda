@@ -62,82 +62,38 @@ function Chaveiro() {
           <circle className="chaveiro-olho" cx="10.6" cy="48" r="1" />
           <circle className="chaveiro-olho" cx="13.4" cy="48" r="1" />
         </g>
-        {/* No Reino doce: cabecinha de unicórnio, presa pelo chifre */}
+        {/* No Reino doce: unicórnio de perfil, de crina rosa comprida,
+            preso pelo chifre */}
         <g className="chaveiro-unicornio">
-          <circle
-            className="unicornio-crina"
-            cx="5.2"
-            cy="40.5"
-            r="2.7"
-            fill="#ff8fb1"
-          />
-          <circle
-            className="unicornio-crina"
-            cx="4.2"
-            cy="45"
-            r="2.5"
-            fill="#ffd84d"
-          />
-          <circle
-            className="unicornio-crina"
-            cx="4.9"
-            cy="49.4"
-            r="2.3"
-            fill="#6cc4f5"
-          />
-          <circle
-            className="unicornio-crina"
-            cx="18.8"
-            cy="40.5"
-            r="2.7"
-            fill="#b48cff"
-          />
-          <circle
-            className="unicornio-crina"
-            cx="19.8"
-            cy="45"
-            r="2.5"
-            fill="#7fd892"
-          />
-          <circle
-            className="unicornio-crina"
-            cx="19.1"
-            cy="49.4"
-            r="2.3"
-            fill="#ff8fb1"
-          />
-          <path className="unicornio-orelha" d="M6.6 41.5 7.2 36.4l3.6 3.4Z" />
           <path
-            className="unicornio-orelha"
-            d="M17.4 41.5 16.8 36.4l-3.6 3.4Z"
+            className="unicornio-crina"
+            d="M11.6 37.4C15.5 35.8 20.2 37.6 21.4 42c1.2 4-.2 7 1.8 10.4.8 1.4 1.2 3.2.2 4.6-2.8-1-4.4-3.6-4.8-6.6-.4-4-.2-7.8-3-10.2-1.2-1-2.6-1.8-4-2.8Z"
           />
-          <path className="unicornio-chifre" d="M12 29.6 14.3 38.6H9.7Z" />
+          <path
+            className="unicornio-mecha"
+            d="M14.6 38.2c3.4.2 5.2 3.4 5.2 6.8 0 3.6.6 6.6 2.6 9.4-2.8-1.6-4.2-4.8-4.4-8-.2-3.4-.6-6.2-3.4-8.2Z"
+          />
+          <path
+            className="unicornio-rosto"
+            d="M10 38.5c-3 1-4.5 3.5-5.4 6-1.2 1.1-1.4 3.1-.2 4.3 1.2 1.2 3.2 1.4 5.2.8 1.2-.3 1.8.4 1.6 1.9l-.6 5h8.9c-1.5-4.5-1-10.5-2.5-15-1.2-2.7-4.2-3.9-7-3Z"
+          />
+          <path className="unicornio-orelha" d="m13.4 39.4 1.3-4.2 1.6 4.4Z" />
+          <path className="unicornio-chifre" d="m13.2 29.8 1.1 7.4-3.2.4Z" />
           <path
             className="unicornio-espiral"
-            d="M10.7 35.6l2.4-1.3M10.2 37.5l3.5-1.6"
+            d="m12.2 34.2 1.8-.6m-2.4 2.4 2.6-.8m-1.4-3.4 1-.4"
           />
-          <ellipse
-            className="unicornio-rosto"
-            cx="12"
-            cy="46"
-            rx="7.2"
-            ry="6.8"
-          />
-          <ellipse
-            className="unicornio-focinho"
-            cx="12"
-            cy="50.4"
-            rx="4.6"
-            ry="2.8"
+          <path
+            className="unicornio-topete"
+            d="M9.6 38.4C7.8 39.2 6.6 41 5.8 42.8c2.8-1.4 5-1.6 7.2-1 .4-1.2-.6-2.6-1.6-3.2-.6-.3-1.2-.3-1.8-.2Z"
           />
           <path
             className="unicornio-olho"
-            d="M8.2 45.2q1.2 1.2 2.4 0M13.4 45.2q1.2 1.2 2.4 0"
+            d="M8 44.2q1.4 1.1 2.8 0m-2.2.6-.3.8m1.1-.6v.9m.8-1.1.4.8"
           />
-          <circle className="unicornio-bochecha" cx="7.6" cy="48" r="1.1" />
-          <circle className="unicornio-bochecha" cx="16.4" cy="48" r="1.1" />
-          <circle className="chaveiro-olho" cx="10.6" cy="50.4" r="0.55" />
-          <circle className="chaveiro-olho" cx="13.4" cy="50.4" r="0.55" />
+          <circle className="unicornio-bochecha" cx="9.4" cy="47.3" r="1" />
+          <path className="unicornio-olho" d="M5.8 49.1q1.4.6 2.8.1" />
+          <circle className="chaveiro-olho" cx="4.7" cy="47" r="0.45" />
         </g>
       </g>
     </svg>
