@@ -6,6 +6,7 @@ export const TEMAS = [
   { id: 'azul', nome: 'Azul' },
   { id: 'rosa', nome: 'Rosa' },
   { id: 'amarelo', nome: 'Amarelo' },
+  { id: 'doce', nome: 'Reino doce' },
 ]
 
 const CHAVE = `${APP.chaveDosDados}.tema`
@@ -26,6 +27,7 @@ export function aplicarTema(id) {
   const tema = TEMAS.some((item) => item.id === id) ? id : 'verde'
 
   document.documentElement.dataset.tema = tema
+  pintarBarra()
 
   try {
     localStorage.setItem(CHAVE, tema)
@@ -45,8 +47,18 @@ export const MODOS = [
 
 const CHAVE_MODO = `${APP.chaveDosDados}.modo`
 
-/** Cor da barra do navegador no celular, igual ao menu de cada modo. */
-const COR_DA_BARRA = { claro: '#faeedb', escuro: '#2a385f' }
+/** Cor da barra do navegador no celular: a do menu (do tema e do modo). */
+function pintarBarra() {
+  const cor = getComputedStyle(document.documentElement)
+    .getPropertyValue('--cor-menu')
+    .trim()
+
+  if (cor) {
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', cor)
+  }
+}
 
 /** No automático, a noite vai das 18h às 6h (hora do aparelho). */
 const ANOITECE = 18
@@ -66,9 +78,7 @@ function pintarModo() {
   const modo = escuro ? 'escuro' : 'claro'
 
   document.documentElement.dataset.modo = modo
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', COR_DA_BARRA[modo])
+  pintarBarra()
 }
 
 /** A aparência escolhida neste aparelho (claro se nunca escolheu). */

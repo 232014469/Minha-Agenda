@@ -1,0 +1,173 @@
+/*
+ * Tema "Reino doce": bem rosa, com arco-íris e confeitos. Além da cor do
+ * tema, troca o papel, o menu e os textos para tons de rosa e morango, põe
+ * confeitos no fundo, manchas e sublinhado de arco-íris, listras de bala no
+ * destaque do menu e um arco-íris no céu (que some quando chove). No modo
+ * escuro vira uma noite de algodão-doce, roxa e rosa.
+ */
+[data-tema='doce'] {
+  --tema: #ee6aa7;
+  --tema-escuro: #c63f7f;
+  --tema-suave: #ffc6df;
+  --tema-texto: #fff;
+  --arco-iris: linear-gradient(
+    90deg,
+    #ff8fb1,
+    #ffb86b,
+    #ffe27a,
+    #9be8a8,
+    #8fd3ff,
+    #c9a7ff
+  );
+}
+
+:root[data-tema='doce']:not([data-modo='escuro']) {
+  --cor-fundo: #fff0f6;
+  --cor-papel: #fff7fb;
+  --cor-menu: #ffe0ee;
+  --cor-texto: #5c2443;
+  --cor-texto-suave: #8f5a78;
+  --cor-borda: #f7cfe1;
+  --cor-borda-forte: #eba6c6;
+  --cor-superficie: #fff;
+  --cor-hover: #ffe5f1;
+  --cor-trilho: #f8d5e5;
+  --cor-apagada: #fcebf3;
+  --cor-vazio-fundo: #fff4f9;
+  --cor-vazio-borda: #eba6c6;
+  --sombra: 150 50 100;
+}
+
+:root[data-tema='doce'][data-modo='escuro'] {
+  --cor-fundo: #2e1d3d;
+  --cor-papel: #3a2550;
+  --cor-menu: #3f2756;
+  --cor-texto: #fde9f5;
+  --cor-texto-suave: #dcb7d0;
+  --cor-borda: #5a3b72;
+  --cor-borda-forte: #7a5596;
+  --cor-superficie: #452b5e;
+  --cor-hover: #4e3268;
+  --cor-trilho: #573a73;
+  --cor-apagada: #3a2550;
+  --cor-vazio-fundo: #3a2550;
+  --cor-vazio-borda: #7a5596;
+  --vidro: 58 37 80;
+}
+
+/* Confeitos coloridos espalhados pelo fundo da página */
+:root[data-tema='doce'] .layout-coluna {
+  background-color: var(--cor-fundo);
+  background-image:
+    radial-gradient(
+      circle at 18px 26px,
+      rgb(255 143 177 / 0.45) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 74px 84px,
+      rgb(143 211 255 / 0.5) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 118px 22px,
+      rgb(255 210 90 / 0.55) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 40px 118px,
+      rgb(120 210 140 / 0.45) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 104px 128px,
+      rgb(201 167 255 / 0.5) 2px,
+      transparent 2.6px
+    ),
+    radial-gradient(
+      circle at 60px 50px,
+      rgb(255 184 107 / 0.45) 1.6px,
+      transparent 2.2px
+    );
+  background-size: 140px 140px;
+}
+
+/* Manchas de arco-íris (a grande) e rosa (a do canto) */
+:root[data-tema='doce'] .layout-coluna::before {
+  background: linear-gradient(
+    115deg,
+    #ff8fb1,
+    #ffb86b 25%,
+    #ffe27a 42%,
+    #9be8a8 60%,
+    #8fd3ff 78%,
+    #c9a7ff
+  );
+}
+
+/* Sublinhado ondulado dos títulos em arco-íris */
+:root[data-tema='doce'] .titulo-pagina::after {
+  background: var(--arco-iris);
+  opacity: 0.9;
+}
+
+/* Destaques que correm (menu e vistas da Agenda): listras de bala */
+:root[data-tema='doce'] .layout-links-marcador,
+:root[data-tema='doce'] .agenda-vistas-marcador {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--tema) 0 9px,
+    #f88fbf 9px 18px
+  );
+}
+
+/* Céu do dia cor de algodão-doce, com um arco-íris atrás do sol */
+:root[data-tema='doce']:not([data-modo='escuro']) .ceu-dia {
+  background:
+    radial-gradient(
+      circle 260px at calc(100% - 366px) 46px,
+      rgb(255 236 150 / 0.3),
+      transparent 70%
+    ),
+    linear-gradient(rgb(255 196 224 / 0.55), rgb(255 196 224 / 0) 85%);
+}
+
+:root[data-tema='doce']:not([data-modo='escuro']) .ceu-dia::before {
+  position: absolute;
+  top: 30px;
+  right: 150px;
+  width: 380px;
+  height: 190px;
+  background: radial-gradient(
+    circle 190px at 50% 100%,
+    transparent 58%,
+    rgb(201 167 255 / 0.45) 58% 65%,
+    rgb(143 211 255 / 0.45) 65% 72%,
+    rgb(155 232 168 / 0.45) 72% 79%,
+    rgb(255 226 122 / 0.5) 79% 86%,
+    rgb(255 184 107 / 0.45) 86% 93%,
+    rgb(255 143 177 / 0.5) 93% 100%,
+    transparent 100%
+  );
+  content: '';
+  opacity: 1;
+  transition: opacity 2s ease;
+}
+
+/* Choveu: o arco-íris some (e volta quando o sol abre) */
+:root[data-tema='doce'] .ceu-dia-chuva::before {
+  opacity: 0;
+}
+
+/* Amostra do tema nas Configurações: um arco-íris */
+.config-tema-doce .config-tema-amostra {
+  background: conic-gradient(
+    #ff8fb1,
+    #ffb86b,
+    #ffe27a,
+    #9be8a8,
+    #8fd3ff,
+    #c9a7ff,
+    #ff8fb1
+  );
+}
