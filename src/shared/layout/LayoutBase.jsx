@@ -20,6 +20,7 @@ import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import QuadroDaSemana from './QuadroDaSemana'
+import RastroDeBrilho from './RastroDeBrilho'
 import Tutorial from './Tutorial'
 import './LayoutBase.css'
 
@@ -203,6 +204,7 @@ export default function LayoutBase() {
           <Outlet />
         </main>
         <AlertaPodeNao />
+        <RastroDeBrilho />
         {/* Primeiro acesso (nada cadastrado ainda): o tour pelo site */}
         <Tutorial
           primeiroAcesso={

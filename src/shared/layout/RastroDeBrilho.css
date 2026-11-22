@@ -1,0 +1,33 @@
+/* Brilhinhos que caem da ponta do mouse no tema Reino doce
+   (ver RastroDeBrilho.jsx): uma estrelinha de quatro pontas */
+.brilhinho {
+  position: fixed;
+  z-index: 2000;
+  clip-path: polygon(
+    50% 0,
+    62% 38%,
+    100% 50%,
+    62% 62%,
+    50% 100%,
+    38% 62%,
+    0 50%,
+    38% 38%
+  );
+  filter: drop-shadow(0 0 2px rgb(255 255 255 / 0.9));
+  pointer-events: none;
+  translate: -50% -50%;
+  animation: brilhinho-cai 1.1s ease-in forwards;
+}
+
+@keyframes brilhinho-cai {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(var(--brilho-lado), var(--brilho-queda))
+      rotate(var(--brilho-giro)) scale(0.3);
+  }
+}

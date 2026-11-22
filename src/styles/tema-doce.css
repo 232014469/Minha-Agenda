@@ -121,7 +121,12 @@
   );
 }
 
-/* Céu do dia cor de algodão-doce, com um arco-íris atrás do sol */
+/* No Reino doce não tem sol: só o arco-íris no céu cor-de-rosa */
+:root[data-tema='doce'] .ceu-dia-sol {
+  display: none;
+}
+
+/* Céu do dia cor de algodão-doce, com um arco-íris */
 :root[data-tema='doce']:not([data-modo='escuro']) .ceu-dia:not(.ceu-dia-chuva) {
   background:
     radial-gradient(
