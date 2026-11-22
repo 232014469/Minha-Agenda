@@ -312,10 +312,10 @@
   cursor: not-allowed;
 }
 
-/* O que fica no alto do menu: três opções em cartõezinhos */
+/* O que fica no alto do menu: quatro opções em cartõezinhos */
 .config-cantinho {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin: 0 0 14px;
   padding: 0;
@@ -362,10 +362,4 @@
 .config-cantinho-opcao:has(input:focus-visible) {
   outline: 3px solid var(--cor-lilas-escuro);
   outline-offset: 2px;
-}
-
-@media (max-width: 760px) {
-  .config-cantinho {
-    grid-template-columns: 1fr;
-  }
 }

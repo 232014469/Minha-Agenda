@@ -5,11 +5,11 @@ import { ehGato } from './gatinhos/gatos'
 /**
  * Preferências deste aparelho (não vão na sincronização): o mascote do menu,
  * se os sons tocam, se os bordões substituem alguns miados e o que fica no
- * alto do menu (`cantinho`): o gatinho, o relógio de estudo ou o cartão
- * "Hoje". Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
+ * alto do menu (`cantinho`): o gatinho, o relógio de estudo, o cartão "Hoje"
+ * ou um quadro de lembrete. Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
  * são esquecidas ao ler.
  */
-export const CANTINHOS = ['gatinho', 'relogio', 'hoje']
+export const CANTINHOS = ['gatinho', 'relogio', 'hoje', 'lembrete']
 
 const PADRAO = {
   mascote: 'gato01',

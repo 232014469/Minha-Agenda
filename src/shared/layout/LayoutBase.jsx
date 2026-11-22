@@ -20,6 +20,7 @@ import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
 import CartaoHoje from './CartaoHoje'
+import Lembrete from './Lembrete'
 import RelogioDeEstudo from './RelogioDeEstudo'
 import QuadroDaSemana from './QuadroDaSemana'
 import RastroDeBrilho from './RastroDeBrilho'
@@ -132,7 +133,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {/* No alto do menu: o gatinho, o relógio de estudo ou o "Hoje" */}
+          {/* No alto do menu: gatinho, relógio de estudo, "Hoje" ou lembrete */}
           {!celular && gatinho && (
             <Mascote
               noMenu
@@ -143,6 +144,7 @@ export default function LayoutBase() {
           )}
           {!celular && cantinho === 'relogio' && <RelogioDeEstudo />}
           {!celular && cantinho === 'hoje' && <CartaoHoje />}
+          {!celular && cantinho === 'lembrete' && <Lembrete />}
         </div>
 
         <ul className="layout-links" ref={linksRef}>
@@ -210,6 +212,7 @@ export default function LayoutBase() {
           )}
           {celular && cantinho === 'relogio' && <RelogioDeEstudo compacto />}
           {celular && cantinho === 'hoje' && <CartaoHoje compacto />}
+          {celular && cantinho === 'lembrete' && <Lembrete compacto />}
           <Outlet />
         </main>
         <AlertaPodeNao />

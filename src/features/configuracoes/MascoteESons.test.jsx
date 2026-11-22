@@ -45,6 +45,9 @@ describe('Mascote e sons', () => {
     fireEvent.click(screen.getByRole('radio', { name: /^Hoje/ }))
     expect(lerPreferencias().cantinho).toBe('hoje')
 
+    fireEvent.click(screen.getByRole('radio', { name: /^Lembrete/ }))
+    expect(lerPreferencias().cantinho).toBe('lembrete')
+
     fireEvent.click(screen.getByRole('radio', { name: /^Relógio de estudo/ }))
     expect(lerPreferencias().cantinho).toBe('relogio')
     expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeDisabled()

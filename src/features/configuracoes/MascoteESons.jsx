@@ -9,10 +9,12 @@ const OPCOES_DO_CANTINHO = [
     dica: '25 min de foco, 5 de pausa',
   },
   { id: 'hoje', nome: 'Hoje', dica: 'a data e a próxima entrega' },
+  { id: 'lembrete', nome: 'Lembrete', dica: 'um bilhetinho para escrever' },
 ]
 
 /**
- * O que fica no alto do menu (gatinho, relógio de estudo ou "Hoje"), qual
+ * O que fica no alto do menu (gatinho, relógio de estudo, "Hoje" ou
+ * lembrete), qual
  * gatinho e se os sons tocam. Sem o gatinho, a escolha dele e os miados
  * ficam desligados.
  */
