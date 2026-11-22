@@ -1,0 +1,254 @@
+/*
+ * Bosque escuro da chuva no Reino doce (Floresta.jsx). Nos outros temas não
+ * aparece. As duas camadas ocupam só a área da página (o menu fica de fora):
+ * `.floresta` atrás das páginas e `.floresta-frente` por cima, sem cliques.
+ */
+.floresta,
+.floresta-frente {
+  display: none;
+}
+
+:root[data-tema='doce'] .floresta,
+:root[data-tema='doce'] .floresta-frente {
+  position: fixed;
+  inset: 0 0 0 250px;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+  animation: floresta-aparece 2.4s ease both;
+}
+
+:root[data-tema='doce'] .floresta {
+  z-index: 0;
+  background: linear-gradient(
+    #0a1238,
+    #16297a 30%,
+    #2b4fb8 52%,
+    #5c7fd8 63%,
+    #8592b4 72%,
+    #3a4160 86%,
+    #1c2036
+  );
+}
+
+/* Por cima: bordas escurecidas, como se a página estivesse no meio do mato */
+:root[data-tema='doce'] .floresta-frente {
+  z-index: 3;
+  background: radial-gradient(
+    ellipse 80% 75% at 50% 42%,
+    transparent 60%,
+    rgb(6 10 32 / 0.5) 100%
+  );
+}
+
+@media (max-width: 760px) {
+  :root[data-tema='doce'] .floresta,
+  :root[data-tema='doce'] .floresta-frente {
+    inset: 0 0 68px;
+  }
+}
+
+/* Estrelinhas brancas piscando no alto do céu */
+.floresta-estrelas {
+  position: absolute;
+  inset: 0 0 45%;
+  background-image:
+    radial-gradient(circle at 20px 30px, #fff 1.2px, transparent 2px),
+    radial-gradient(circle at 96px 80px, #fff 1px, transparent 1.8px),
+    radial-gradient(circle at 150px 22px, #dfe6ff 1.4px, transparent 2.2px),
+    radial-gradient(circle at 60px 140px, #fff 0.9px, transparent 1.6px),
+    radial-gradient(circle at 170px 120px, #fff 1.1px, transparent 1.9px);
+  background-size: 190px 170px;
+  -webkit-mask: linear-gradient(#000 40%, transparent);
+  mask: linear-gradient(#000 40%, transparent);
+  animation: floresta-estrelas 5s ease-in-out infinite alternate;
+}
+
+/* Lua cheia com um halo, no canto de cima à direita */
+.floresta-lua {
+  position: absolute;
+  top: 26px;
+  right: 36%;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fff, #e7ecff 60%, #cfd8f6);
+  box-shadow:
+    0 0 30px 10px rgb(220 230 255 / 0.55),
+    0 0 110px 50px rgb(150 175 245 / 0.28);
+}
+
+.floresta-fileiras {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Árvores retorcidas nas bordas, em silhueta preta */
+.floresta-arvore {
+  position: absolute;
+  bottom: 0;
+  height: min(100%, 980px);
+  max-width: 52%;
+  overflow: visible;
+}
+
+.floresta-arvore path {
+  stroke: #05060d;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.floresta-arvore .floresta-raiz {
+  fill: #05060d;
+  stroke: none;
+}
+
+.floresta-arvore-esquerda {
+  left: 0;
+}
+
+.floresta-arvore-direita {
+  right: 0;
+  transform: scaleX(-1) scaleY(0.88);
+  transform-origin: 50% 100%;
+}
+
+/* Névoa: faixas onduladas que deslizam devagar (o desenho tem o dobro da
+   largura e se repete no meio, por isso andar 50% não deixa emenda) */
+.floresta-nevoa-fundo,
+.floresta-nevoa {
+  position: absolute;
+  inset: auto 0 0;
+  overflow: hidden;
+}
+
+.floresta-nevoa-fundo {
+  height: 38%;
+}
+
+.floresta-nevoa {
+  height: 190px;
+  background: linear-gradient(transparent, rgb(30 36 64 / 0.18));
+}
+
+/* A névoa que passa por cima das páginas é mais rala, para não atrapalhar
+   a leitura */
+.floresta-nevoa .floresta-faixa {
+  fill-opacity: 0.55;
+}
+
+:root[data-modo='escuro'] .floresta-nevoa .floresta-faixa {
+  fill: #8f9bc0;
+  fill-opacity: 0.4;
+}
+
+.floresta-faixa {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 200%;
+  height: 100%;
+  fill: #dfe4f2;
+  animation: floresta-nevoa linear infinite;
+}
+
+.floresta-faixa:nth-child(2) {
+  animation-direction: reverse;
+}
+
+/* Olhos: dois ovais amarelos brilhando, piscando de vez em quando e sumindo
+   no escuro por um tempo (cada par no seu ritmo) */
+.floresta-olhos {
+  position: absolute;
+  display: flex;
+  gap: calc(6px * var(--olho-tamanho, 1));
+  opacity: 0;
+  translate: -50% 0;
+  animation: floresta-olhos 9s ease-in-out infinite;
+}
+
+.floresta-olhos i {
+  width: calc(9px * var(--olho-tamanho, 1));
+  height: calc(6px * var(--olho-tamanho, 1));
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  background:
+    radial-gradient(ellipse 22% 60% at 50% 55%, #1a1200 0 90%, transparent),
+    radial-gradient(circle at 50% 50%, #fff7b0, #ffd21f 60%, #e0a400);
+  box-shadow: 0 0 7px 2px rgb(255 210 40 / 0.5);
+  animation: floresta-piscam 4.5s ease-in-out infinite;
+  animation-delay: inherit;
+}
+
+.floresta-olhos i:last-child {
+  rotate: 8deg;
+}
+
+.floresta-olhos i:first-child {
+  rotate: -8deg;
+}
+
+@keyframes floresta-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes floresta-estrelas {
+  to {
+    opacity: 0.55;
+  }
+}
+
+@keyframes floresta-nevoa {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes floresta-olhos {
+  0%,
+  12% {
+    opacity: 0;
+  }
+
+  20%,
+  70% {
+    opacity: 1;
+  }
+
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes floresta-piscam {
+  0%,
+  44%,
+  50%,
+  86%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  47%,
+  89% {
+    transform: scaleY(0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-tema='doce'] .floresta,
+  :root[data-tema='doce'] .floresta-frente,
+  .floresta-estrelas,
+  .floresta-faixa,
+  .floresta-olhos,
+  .floresta-olhos i {
+    animation: none;
+  }
+
+  .floresta-olhos {
+    opacity: 1;
+  }
+}

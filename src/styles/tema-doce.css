@@ -179,24 +179,70 @@
 }
 
 /*
- * Chuva no Reino doce: vira um bosque escuro. O rosa fica apagado, os
- * confeitos somem, folhas escuras cobrem o alto, as bordas da página ficam
- * na sombra e olhos piscam no escuro. Quando para de chover, tudo volta.
+ * Chuva no Reino doce: vira um bosque escuro de noite (Floresta.jsx). O rosa
+ * dá lugar a um azul de névoa, os confeitos e as manchas somem e o céu fica
+ * por conta da floresta. Quando para de chover, tudo volta.
  */
+:root[data-tema='doce'][data-tempo='chuva'] {
+  --tema: #5d6aa3;
+  --tema-escuro: #3c4780;
+  --tema-suave: #b9c1e0;
+}
+
 :root[data-tema='doce'][data-tempo='chuva']:not([data-modo='escuro']) {
-  --cor-fundo: #e3d2de;
-  --cor-papel: #f1e6ee;
-  --cor-menu: #d8c2d1;
-  --cor-hover: #e6d4e0;
-  --cor-borda: #cdb4c5;
-  --cor-borda-forte: #b597ab;
-  --tema: #b5638c;
-  --tema-escuro: #8d406a;
-  --tema-suave: #dcb6c9;
+  --cor-fundo: #d5dae8;
+  --cor-papel: #e6e9f2;
+  --cor-menu: #c3c9dc;
+  --cor-texto: #1d2240;
+  --cor-texto-suave: #4b5273;
+  --cor-borda: #b6bdd2;
+  --cor-borda-forte: #949cb8;
+  --cor-superficie: #eef0f6;
+  --cor-hover: #d7dceb;
+  --cor-trilho: #c9cfe0;
+  --cor-apagada: #dde1ec;
+  --cor-vazio-fundo: #e3e6f0;
+  --cor-vazio-borda: #949cb8;
+  --sombra: 10 14 40;
+}
+
+:root[data-tema='doce'][data-tempo='chuva'][data-modo='escuro'] {
+  --tema: #7d8bd0;
+  --tema-escuro: #5865a8;
+  --tema-suave: #3a4580;
+  --cor-fundo: #0d1230;
+  --cor-papel: #1a2146;
+  --cor-menu: #161c3d;
+  --cor-texto: #e6e9f7;
+  --cor-texto-suave: #a9b1d4;
+  --cor-borda: #2c3563;
+  --cor-borda-forte: #414b80;
+  --cor-superficie: #222a52;
+  --cor-hover: #252e5a;
+  --cor-trilho: #2c3563;
+  --cor-apagada: #1a2146;
+  --cor-vazio-fundo: #1a2146;
+  --cor-vazio-borda: #414b80;
+  --vidro: 26 33 70;
 }
 
 :root[data-tema='doce'][data-tempo='chuva'] .layout-coluna {
   background-image: none;
+}
+
+:root[data-tema='doce'][data-tempo='chuva'] .layout-coluna::before,
+:root[data-tema='doce'][data-tempo='chuva'] .layout-coluna::after {
+  display: none;
+}
+
+/* Destaque do menu sem as listras de bala */
+:root[data-tema='doce'][data-tempo='chuva'] .layout-links-marcador,
+:root[data-tema='doce'][data-tempo='chuva'] .agenda-vistas-marcador {
+  background: var(--tema);
+}
+
+:root[data-tema='doce'][data-tempo='chuva'] .titulo-pagina::after {
+  opacity: 0.45;
 }
 
 /* No alto escuro do bosque, título, subtítulo, semestre e engrenagem ficam
@@ -206,143 +252,28 @@
 :root[data-tema='doce'][data-tempo='chuva'] .layout-topo,
 :root[data-tema='doce'][data-tempo='chuva'] .layout-semestre,
 :root[data-tema='doce'][data-tempo='chuva'] .layout-config,
-:root[data-tema='doce'][data-tempo='chuva'] .layout-semestre select {
-  color: #fbe9f3;
-  text-shadow: 0 1px 3px rgb(20 6 26 / 0.6);
+:root[data-tema='doce'][data-tempo='chuva'] .layout-semestre select,
+:root[data-tema='doce'][data-tempo='chuva'] .postit-blocos h2 {
+  color: #eef1ff;
+  text-shadow: 0 1px 4px rgb(4 8 30 / 0.8);
   transition: color 1.2s ease;
 }
 
-:root[data-tema='doce'][data-tempo='chuva'] .layout-coluna::before {
-  background: #4a2c4f;
-}
-
-:root[data-tema='doce'] .ceu-dia-chuva {
-  background: linear-gradient(
-    rgb(28 12 36 / 0.82),
-    rgb(40 18 48 / 0.55) 45%,
-    rgb(40 18 48 / 0) 100%
-  );
-}
-
-/* Folhas e galhos escuros pendurados no alto */
-.ceu-bosque,
-.ceu-bosque-sombra {
+/* O céu fica por conta da floresta: sem nuvens, relâmpago nem o céu
+   estrelado do modo escuro, só a chuva */
+:root[data-tema='doce'][data-tempo='chuva'] .ceu {
   display: none;
 }
 
-:root[data-tema='doce'] .ceu-dia-chuva .ceu-bosque {
-  position: absolute;
-  inset: 0 0 auto;
-  display: block;
-  height: 130px;
-  animation: bosque-aparece 2.4s ease both;
+:root[data-tema='doce'] .ceu-dia-chuva {
+  background: none;
 }
 
-.ceu-bosque-folhas {
-  position: absolute;
-  inset: 0;
-  background: #1c0d24;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20320%20130'%3E%3Cpath%20d='M0%200H320V38c-12%2010-22%206-30%2016-6%208-16%208-22%202-8%2014-24%2012-30%204-10%2010-26%208-30-2-8%2012-24%2010-28%200-10%2014-30%2010-34-2-6%206-18%206-24-2-10%2012-28%206-30-6-8%208-22%204-24-4-10%2010-26%206-28-6-8%206-20%200-20-10Z'/%3E%3Cpath%20d='M64%2050q2%2034-6%2064'%20stroke='%23000'%20stroke-width='3'%20fill='none'/%3E%3Cpath%20d='M206%2048q-4%2026%204%2052'%20stroke='%23000'%20stroke-width='2.5'%20fill='none'/%3E%3Ccircle%20cx='58'%20cy='114'%20r='4'/%3E%3Ccircle%20cx='210'%20cy='100'%20r='3.5'/%3E%3C/svg%3E")
-    repeat-x top left / 320px 130px;
-  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20320%20130'%3E%3Cpath%20d='M0%200H320V38c-12%2010-22%206-30%2016-6%208-16%208-22%202-8%2014-24%2012-30%204-10%2010-26%208-30-2-8%2012-24%2010-28%200-10%2014-30%2010-34-2-6%206-18%206-24-2-10%2012-28%206-30-6-8%208-22%204-24-4-10%2010-26%206-28-6-8%206-20%200-20-10Z'/%3E%3Cpath%20d='M64%2050q2%2034-6%2064'%20stroke='%23000'%20stroke-width='3'%20fill='none'/%3E%3Cpath%20d='M206%2048q-4%2026%204%2052'%20stroke='%23000'%20stroke-width='2.5'%20fill='none'/%3E%3Ccircle%20cx='58'%20cy='114'%20r='4'/%3E%3Ccircle%20cx='210'%20cy='100'%20r='3.5'/%3E%3C/svg%3E")
-    repeat-x top left / 320px 130px;
-  opacity: 0.92;
+:root[data-tema='doce'] .ceu-dia-chuva .ceu-dia-trilho,
+:root[data-tema='doce'] .ceu-dia-chuva .ceu-dia-clarao {
+  display: none;
 }
 
-/* Bordas da página na sombra (por cima do conteúdo, sem pegar cliques) */
-:root[data-tema='doce'][data-tempo='chuva'] .ceu-bosque-sombra {
-  position: fixed;
-  inset: 0 0 0 250px;
-  z-index: 3;
-  display: block;
-  background: radial-gradient(
-    ellipse 75% 70% at 50% 45%,
-    transparent 55%,
-    rgb(24 10 30 / 0.5) 100%
-  );
-  pointer-events: none;
-  animation: bosque-aparece 2.4s ease both;
-}
-
-@media (max-width: 760px) {
-  :root[data-tema='doce'][data-tempo='chuva'] .ceu-bosque-sombra {
-    inset: 0 0 68px;
-  }
-}
-
-/* Olhos: dois ovais brilhando, piscando de vez em quando e sumindo no
-   escuro por um tempo (cada par no seu ritmo) */
-.ceu-olhos {
-  position: absolute;
-  display: flex;
-  gap: calc(7px * var(--olho-tamanho, 1));
-  opacity: 0;
-  translate: -50% 0;
-  animation: olhos-aparecem 9s ease-in-out infinite;
-}
-
-.ceu-olhos i {
-  width: calc(7px * var(--olho-tamanho, 1));
-  height: calc(10px * var(--olho-tamanho, 1));
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 45%,
-    #fffbe0 0 30%,
-    #ffe14d 55%,
-    #f0b21a
-  );
-  box-shadow: 0 0 8px 2px rgb(255 214 60 / 0.55);
-  animation: olhos-piscam 4.5s ease-in-out infinite;
-  animation-delay: inherit;
-}
-
-@keyframes olhos-aparecem {
-  0%,
-  12% {
-    opacity: 0;
-  }
-
-  20%,
-  70% {
-    opacity: 1;
-  }
-
-  80%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes olhos-piscam {
-  0%,
-  44%,
-  50%,
-  86%,
-  100% {
-    transform: scaleY(1);
-  }
-
-  47%,
-  89% {
-    transform: scaleY(0.1);
-  }
-}
-
-@keyframes bosque-aparece {
-  from {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ceu-olhos,
-  .ceu-olhos i,
-  .ceu-bosque,
-  .ceu-bosque-sombra {
-    animation: none;
-  }
-
-  .ceu-olhos {
-    opacity: 1;
-  }
+:root[data-tema='doce'] .ceu-dia-chuva .ceu-dia-gota {
+  background: rgb(200 215 255 / 0.45);
 }

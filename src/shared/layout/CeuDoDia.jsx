@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDados } from '../../dados/useDados'
 import { temAtrasadas } from './alerta'
+import Floresta from './Floresta'
 import './CeuDoDia.css'
 
 /** Sorteio com semente: gotas e nuvens ficam sempre no mesmo lugar. */
@@ -73,47 +74,13 @@ const GOTAS = Array.from({ length: 48 }, (_, indice) => ({
 }))
 
 /**
- * Olhos no escuro do bosque (tema Reino doce, na chuva): pares que piscam e
- * somem em tempos diferentes. Os do `alto` ficam entre as folhas do céu; os
- * outros espiam das bordas escuras da página.
- */
-const OLHOS = [
-  { id: 1, alto: true, left: '12%', top: 34, tamanho: 1, atraso: 0 },
-  { id: 2, alto: true, left: '41%', top: 52, tamanho: 0.8, atraso: 2.6 },
-  { id: 3, alto: true, left: '67%', top: 28, tamanho: 1.1, atraso: 5.1 },
-  { id: 4, alto: true, left: '88%', top: 60, tamanho: 0.9, atraso: 1.4 },
-  { id: 5, left: '1.5%', top: '42%', tamanho: 1.2, atraso: 3.8 },
-  { id: 6, left: '96%', top: '58%', tamanho: 1, atraso: 6.3 },
-  { id: 7, left: '3%', top: '78%', tamanho: 0.85, atraso: 8.2 },
-  { id: 8, left: '93%', top: '24%', tamanho: 0.9, atraso: 4.5 },
-].map(({ id, alto, left, top, tamanho, atraso }) => ({
-  id,
-  alto,
-  estilo: {
-    left,
-    top: typeof top === 'number' ? `${top}px` : top,
-    '--olho-tamanho': tamanho,
-    animationDelay: `${atraso}s`,
-  },
-}))
-
-function Olhos({ olho }) {
-  return (
-    <span className="ceu-olhos" style={olho.estilo}>
-      <i />
-      <i />
-    </span>
-  )
-}
-
-/**
  * Céu do modo claro: sol brilhando com raios girando devagar e nuvens
  * atravessando o alto da tela.
  * Enquanto houver atividade atrasada, o céu fecha: nuvens cinzas, chuva e
  * raios. Quando nenhuma estiver mais atrasada, o sol volta. Fica atrás do
  * conteúdo. No modo escuro só aparece a chuva, por cima do céu estrelado.
- * No tema Reino doce, a chuva vira um bosque escuro: folhas no alto, bordas
- * na sombra e olhos piscando (ver tema-doce.css).
+ * No tema Reino doce, a chuva vira um bosque escuro de noite, com névoa e
+ * olhos espiando (ver Floresta).
  */
 export default function CeuDoDia() {
   const { tarefas } = useDados()
@@ -140,6 +107,7 @@ export default function CeuDoDia() {
 
   return (
     <>
+      {chuva && <Floresta />}
       <div
         className={`ceu-dia${chuva ? ' ceu-dia-chuva' : ''}`}
         aria-hidden="true"
@@ -167,19 +135,7 @@ export default function CeuDoDia() {
           ))}
         </span>
         <span className="ceu-dia-clarao" />
-        <span className="ceu-bosque">
-          <span className="ceu-bosque-folhas" />
-          {OLHOS.filter((olho) => olho.alto).map((olho) => (
-            <Olhos key={olho.id} olho={olho} />
-          ))}
-        </span>
       </div>
-      {/* Fora do céu: por cima do conteúdo, só nas bordas (sem cliques) */}
-      <span className="ceu-bosque-sombra" aria-hidden="true">
-        {OLHOS.filter((olho) => !olho.alto).map((olho) => (
-          <Olhos key={olho.id} olho={olho} />
-        ))}
-      </span>
     </>
   )
 }
