@@ -31,19 +31,25 @@ describe('Mascote e sons', () => {
       mascote: 'gato05',
       sons: false,
       bordoes: false,
-      gatinho: true,
+      cantinho: 'gatinho',
     })
   })
 
-  it('sem gatinho na tela, as opções dele ficam desligadas', () => {
+  it('escolhe o que fica no alto do menu; sem o gatinho, as opções dele desligam', () => {
     render(<MascoteESons />)
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /Gatinho na tela/ }))
+    expect(
+      screen.getByRole('radio', { name: /^Gatinho bichinho/ }),
+    ).toBeChecked()
 
-    expect(lerPreferencias().gatinho).toBe(false)
+    fireEvent.click(screen.getByRole('radio', { name: /^Hoje/ }))
+    expect(lerPreferencias().cantinho).toBe('hoje')
+
+    fireEvent.click(screen.getByRole('radio', { name: /^Relógio de estudo/ }))
+    expect(lerPreferencias().cantinho).toBe('relogio')
     expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeDisabled()
     expect(screen.getByRole('checkbox', { name: /Miados/ })).toBeDisabled()
-    // As opções de gatinhos pela tela e de bichinho virtual saíram
-    expect(screen.getAllByRole('checkbox')).toHaveLength(3)
+    // Só sobraram as chaves de miados e bordões
+    expect(screen.getAllByRole('checkbox')).toHaveLength(2)
   })
 })

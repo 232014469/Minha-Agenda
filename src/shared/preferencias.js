@@ -4,15 +4,18 @@ import { ehGato } from './gatinhos/gatos'
 
 /**
  * Preferências deste aparelho (não vão na sincronização): o mascote do menu,
- * se os sons tocam, se os bordões substituem alguns miados e se há gatinho
- * na tela (desligado, ele some de todo lugar e o relógio de estudo fica no
- * lugar dele). Opções que saíram do app são esquecidas ao ler.
+ * se os sons tocam, se os bordões substituem alguns miados e o que fica no
+ * alto do menu (`cantinho`): o gatinho, o relógio de estudo ou o cartão
+ * "Hoje". Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
+ * são esquecidas ao ler.
  */
+export const CANTINHOS = ['gatinho', 'relogio', 'hoje']
+
 const PADRAO = {
   mascote: 'gato01',
   sons: true,
   bordoes: true,
-  gatinho: true,
+  cantinho: 'gatinho',
 }
 const CHAVE = `${APP.chaveDosDados}.preferencias`
 const ouvintes = new Set()
@@ -25,6 +28,12 @@ function ler() {
     for (const nome of Object.keys(PADRAO)) {
       if (nome in guardadas) salvas[nome] = guardadas[nome]
     }
+
+    // Quem tinha desligado o "Gatinho na tela" fica com o relógio de estudo
+    if (guardadas.gatinho === false && !('cantinho' in guardadas)) {
+      salvas.cantinho = 'relogio'
+    }
+    if (!CANTINHOS.includes(salvas.cantinho)) salvas.cantinho = PADRAO.cantinho
 
     // O lobinho saiu: quem tinha escolhido ele fica com o gatinho padrão.
     if (!ehGato(salvas.mascote)) salvas.mascote = PADRAO.mascote

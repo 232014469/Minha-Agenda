@@ -311,3 +311,61 @@
 .config-mascotes:disabled .config-mascote {
   cursor: not-allowed;
 }
+
+/* O que fica no alto do menu: três opções em cartõezinhos */
+.config-cantinho {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+
+.config-cantinho legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-weight: 700;
+}
+
+.config-cantinho-opcao {
+  position: relative;
+  display: block;
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  background: var(--cor-superficie);
+  cursor: pointer;
+}
+
+.config-cantinho-opcao input {
+  position: absolute;
+  opacity: 0;
+}
+
+.config-cantinho-opcao span {
+  display: grid;
+  gap: 2px;
+}
+
+.config-cantinho-opcao small {
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+}
+
+.config-cantinho-opcao:has(input:checked) {
+  border-color: var(--tema);
+  background: color-mix(in srgb, var(--tema) 16%, var(--cor-superficie));
+  box-shadow: 0 0 0 2px var(--tema);
+}
+
+.config-cantinho-opcao:has(input:focus-visible) {
+  outline: 3px solid var(--cor-lilas-escuro);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .config-cantinho {
+    grid-template-columns: 1fr;
+  }
+}

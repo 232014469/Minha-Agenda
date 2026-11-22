@@ -62,7 +62,8 @@ function posicaoDoCartao(caixa) {
  * tutorial", no canto, ou o Esc encerram a qualquer momento.
  */
 export default function Tutorial({ primeiroAcesso }) {
-  const { mascote, gatinho } = usePreferencias()
+  const { mascote, cantinho } = usePreferencias()
+  const gatinho = cantinho === 'gatinho'
   const navegar = useNavigate()
   const [indice, setIndice] = useState(() =>
     primeiroAcesso && !jaViu() ? 0 : null,

@@ -1,12 +1,24 @@
 import { GATOS, urlDoSprite } from '../../shared/gatinhos/gatos'
 import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
+const OPCOES_DO_CANTINHO = [
+  { id: 'gatinho', nome: 'Gatinho', dica: 'bichinho virtual para cuidar' },
+  {
+    id: 'relogio',
+    nome: 'Relógio de estudo',
+    dica: '25 min de foco, 5 de pausa',
+  },
+  { id: 'hoje', nome: 'Hoje', dica: 'a data e a próxima entrega' },
+]
+
 /**
- * Se há gatinho na tela, quem fica no menu e se os sons tocam. Sem gatinho,
- * a escolha dele e os miados ficam desligados.
+ * O que fica no alto do menu (gatinho, relógio de estudo ou "Hoje"), qual
+ * gatinho e se os sons tocam. Sem o gatinho, a escolha dele e os miados
+ * ficam desligados.
  */
 export default function MascoteESons() {
-  const { mascote, sons, bordoes, gatinho } = usePreferencias()
+  const { mascote, sons, bordoes, cantinho } = usePreferencias()
+  const gatinho = cantinho === 'gatinho'
 
   return (
     <section
@@ -14,17 +26,23 @@ export default function MascoteESons() {
       aria-labelledby="config-mascote-titulo"
     >
       <h2 id="config-mascote-titulo">Mascote e sons</h2>
-      <label className="config-chave-liga">
-        <input
-          type="checkbox"
-          checked={gatinho}
-          onChange={(evento) =>
-            mudarPreferencia('gatinho', evento.target.checked)
-          }
-        />
-        Gatinho na tela (desligado, ele some e o relógio de estudo fica no lugar
-        dele)
-      </label>
+      <fieldset className="config-cantinho">
+        <legend>No alto do menu</legend>
+        {OPCOES_DO_CANTINHO.map((opcao) => (
+          <label key={opcao.id} className="config-cantinho-opcao">
+            <input
+              type="radio"
+              name="cantinho"
+              value={opcao.id}
+              checked={cantinho === opcao.id}
+              onChange={() => mudarPreferencia('cantinho', opcao.id)}
+            />
+            <span>
+              <strong>{opcao.nome}</strong> <small>{opcao.dica}</small>
+            </span>
+          </label>
+        ))}
+      </fieldset>
       <fieldset className="config-mascotes" disabled={!gatinho}>
         <legend className="so-leitor">Gatinho do menu</legend>
         {GATOS.map((opcao) => (

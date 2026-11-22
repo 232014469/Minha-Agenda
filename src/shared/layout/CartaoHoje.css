@@ -1,0 +1,129 @@
+/* Cartão "Hoje" (CartaoHoje.jsx): simples, sem moldura, como o relógio */
+.hoje {
+  display: grid;
+  gap: 12px;
+  margin: 6px 4px 22px;
+  text-align: center;
+}
+
+.hoje-data {
+  display: grid;
+  justify-items: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.hoje-semana,
+.hoje-rotulo {
+  font-family: var(--fonte-titulo);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.hoje-dia {
+  margin: 2px 0;
+  color: var(--tema-escuro);
+  font-family: var(--fonte-titulo);
+  font-size: 3.4rem;
+}
+
+.hoje-mes {
+  font-family: var(--fonte-titulo);
+  font-size: 0.95rem;
+}
+
+/* Próxima entrega: num quadrinho clarinho na cor do tema */
+.hoje-proxima {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--tema) 16%, transparent);
+}
+
+.hoje-tarefa {
+  font-family: var(--fonte-titulo);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.hoje-materia {
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+
+.hoje-falta {
+  margin-top: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--tema);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.hoje-atrasada {
+  background: var(--cor-erro-texto, #b3261e);
+}
+
+/* Celular: faixa em cima do título, com o dia à esquerda */
+.hoje-compacto {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+  padding: 8px 14px 8px 8px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  background: rgb(var(--vidro) / 0.7);
+}
+
+.hoje-compacto-data {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tema) 20%, transparent);
+  line-height: 1;
+}
+
+.hoje-compacto-data span {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hoje-compacto-data strong {
+  color: var(--tema-escuro);
+  font-family: var(--fonte-titulo);
+  font-size: 1.25rem;
+}
+
+.hoje-compacto-proxima {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.hoje-compacto-proxima strong {
+  overflow: hidden;
+  font-family: var(--fonte-titulo);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hoje-compacto .hoje-falta {
+  flex: none;
+  margin: 0;
+}

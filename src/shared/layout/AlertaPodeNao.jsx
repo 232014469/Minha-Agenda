@@ -83,7 +83,8 @@ function comecarVoo(atual, cartaoEl) {
  */
 export default function AlertaPodeNao({ hoje = new Date() }) {
   const { tarefas } = useDados()
-  const { mascote, sons, bordoes, gatinho } = usePreferencias()
+  const { mascote, sons, bordoes, cantinho } = usePreferencias()
+  const gatinho = cantinho === 'gatinho'
   const cartaoRef = useRef(null)
   const jaTocou = useRef(false)
   const [alerta, setAlerta] = useState(() => {

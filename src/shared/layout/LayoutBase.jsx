@@ -19,6 +19,7 @@ import { temAtrasadas } from './alerta'
 import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
+import CartaoHoje from './CartaoHoje'
 import RelogioDeEstudo from './RelogioDeEstudo'
 import QuadroDaSemana from './QuadroDaSemana'
 import RastroDeBrilho from './RastroDeBrilho'
@@ -57,7 +58,8 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho)
   // (dá para desligar nas Configurações).
-  const { gatinho } = usePreferencias()
+  const { cantinho } = usePreferencias()
+  const gatinho = cantinho === 'gatinho'
   // Sem gatinho na tela, o bichinho também para (os dias não contam)
   const comBichinho = !celular && gatinho
   const bichinho = useBichinho({
@@ -130,18 +132,17 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {/* Sem gatinho, o relógio de estudo fica no lugar dele */}
-          {!celular &&
-            (gatinho ? (
-              <Mascote
-                noMenu
-                chuva={chuva}
-                felicidade={bichinho.felicidade}
-                bichinho={comBichinho ? bichinho : null}
-              />
-            ) : (
-              <RelogioDeEstudo />
-            ))}
+          {/* No alto do menu: o gatinho, o relógio de estudo ou o "Hoje" */}
+          {!celular && gatinho && (
+            <Mascote
+              noMenu
+              chuva={chuva}
+              felicidade={bichinho.felicidade}
+              bichinho={comBichinho ? bichinho : null}
+            />
+          )}
+          {!celular && cantinho === 'relogio' && <RelogioDeEstudo />}
+          {!celular && cantinho === 'hoje' && <CartaoHoje />}
         </div>
 
         <ul className="layout-links" ref={linksRef}>
@@ -202,14 +203,13 @@ export default function LayoutBase() {
           </p>
         )}
         <main className="layout-conteudo">
-          {celular &&
-            (gatinho ? (
-              <div className="layout-mascote-celular">
-                <Mascote />
-              </div>
-            ) : (
-              <RelogioDeEstudo compacto />
-            ))}
+          {celular && gatinho && (
+            <div className="layout-mascote-celular">
+              <Mascote />
+            </div>
+          )}
+          {celular && cantinho === 'relogio' && <RelogioDeEstudo compacto />}
+          {celular && cantinho === 'hoje' && <CartaoHoje compacto />}
           <Outlet />
         </main>
         <AlertaPodeNao />
