@@ -165,6 +165,69 @@
   opacity: 0;
 }
 
+/* Meu progresso: o anel cresce em arco-íris no lugar do verde. As cores se
+   espalham pela parte preenchida, então o arco-íris aparece inteiro em
+   qualquer porcentagem. O anel fica entre 75,7% e 90% do raio (o do SVG). */
+:root[data-tema='doce'] .progresso-geral-anel {
+  display: none;
+}
+
+:root[data-tema='doce'] .progresso-geral-arco-iris {
+  --fatia: calc(var(--progresso) * 1%);
+
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ff8fb1 0,
+    #ffb86b calc(var(--fatia) * 0.2),
+    #ffd84d calc(var(--fatia) * 0.4),
+    #7fd892 calc(var(--fatia) * 0.6),
+    #6cc4f5 calc(var(--fatia) * 0.8),
+    #b48cff var(--fatia),
+    transparent 0
+  );
+  -webkit-mask: radial-gradient(
+    closest-side,
+    transparent 75.7%,
+    #000 76.2% 89.5%,
+    transparent 90%
+  );
+  mask: radial-gradient(
+    closest-side,
+    transparent 75.7%,
+    #000 76.2% 89.5%,
+    transparent 90%
+  );
+}
+
+/* Pontas arredondadas, como no anel verde: um pinguinho rosa no começo (no
+   alto) e um lilás no fim, girado até a porcentagem */
+:root[data-tema='doce'] .progresso-geral-arco-iris::before,
+:root[data-tema='doce'] .progresso-geral-arco-iris::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+}
+
+:root[data-tema='doce'] .progresso-geral-arco-iris::before {
+  background: radial-gradient(
+    circle 4.2px at 50% 8.6%,
+    #ff8fb1 96%,
+    transparent
+  );
+}
+
+:root[data-tema='doce'] .progresso-geral-arco-iris::after {
+  background: radial-gradient(
+    circle 4.2px at 50% 8.6%,
+    #b48cff 96%,
+    transparent
+  );
+  rotate: calc(var(--progresso) * 3.6deg);
+}
+
 /* Amostra do tema nas Configurações: um arco-íris */
 .config-tema-doce .config-tema-amostra {
   background: conic-gradient(

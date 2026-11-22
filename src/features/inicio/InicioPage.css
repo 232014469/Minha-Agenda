@@ -334,6 +334,10 @@
   transition: stroke-dasharray 0.4s ease;
 }
 
+.progresso-geral-arco-iris {
+  display: none;
+}
+
 .progresso-geral-centro {
   position: absolute;
   inset: 0;

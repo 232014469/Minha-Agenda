@@ -3,6 +3,8 @@ const CIRCUNFERENCIA = 2 * Math.PI * RAIO
 
 /**
  * Donut de progresso: o anel verde cresce conforme o percentual (0 a 100).
+ * No tema Reino doce o anel vira um arco-íris (`.progresso-geral-arco-iris`,
+ * ver tema-doce.css).
  * O texto no centro e o `role="img"` dizem o mesmo para quem não enxerga o
  * desenho.
  */
@@ -13,6 +15,7 @@ export default function ProgressoGeral({ percentual }) {
   return (
     <div
       className="progresso-geral"
+      style={{ '--progresso': valor }}
       role="img"
       aria-label={`${valor}% das atividades concluídas`}
     >
@@ -27,6 +30,7 @@ export default function ProgressoGeral({ percentual }) {
           transform="rotate(-90 70 70)"
         />
       </svg>
+      <span className="progresso-geral-arco-iris" aria-hidden="true" />
       <p className="progresso-geral-centro">
         <strong>{valor}%</strong>
         <span>concluído</span>
