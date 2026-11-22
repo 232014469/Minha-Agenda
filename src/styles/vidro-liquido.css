@@ -1,98 +1,127 @@
 /*
  * Vidro líquido (opção "Vidro líquido" nas Configurações, ligada por padrão):
- * cartões, caixas, painéis e janelas ficam meio transparentes e embaçados,
- * com um brilho na borda de cima, como o vidro do iPhone. Por trás aparecem
- * o céu, as manchas e as cores do fundo. Só vale com `data-vidro` na raiz.
+ * cartões, caixas, painéis e janelas viram um vidro claro, quase sem cor,
+ * com borda grossa e brilhante e um brilho por dentro, como no iPhone. Por
+ * trás aparecem o céu, as manchas e as cores do fundo, pouco embaçados. Só
+ * vale com `data-vidro` na raiz.
  */
 :root[data-vidro] {
-  --vidro-borda: rgb(255 255 255 / 0.55);
-  --vidro-brilho: rgb(255 255 255 / 0.8);
-  --vidro-reflexo: rgb(255 255 255 / 0.18);
-  --vidro-desfoque: blur(18px) saturate(1.7);
+  --vidro-borda: rgb(255 255 255 / 0.6);
+  --vidro-brilho: rgb(255 255 255 / 0.95);
+  --vidro-reflexo: rgb(255 255 255 / 0.35);
+  --vidro-claro: rgb(255 255 255 / 0.34);
+  --vidro-meio: rgb(255 255 255 / 0.12);
+  --vidro-pecinha: rgb(255 255 255 / 0.22);
+  --vidro-desfoque: blur(10px) saturate(1.6) brightness(1.04);
+  /* Borda clara em cima à esquerda, mais fraca embaixo à direita e um brilho
+     por dentro: o "líquido" do vidro */
+  --vidro-relevo:
+    inset 1.5px 1.5px 0 var(--vidro-brilho),
+    inset -1px -1px 0 var(--vidro-reflexo),
+    inset 0 0 20px rgb(255 255 255 / 0.28);
+  --vidro-fundo: linear-gradient(
+    135deg,
+    var(--vidro-claro),
+    var(--vidro-meio) 55%,
+    var(--vidro-claro)
+  );
 }
 
 :root[data-vidro][data-modo='escuro'] {
-  --vidro-borda: rgb(255 255 255 / 0.14);
-  --vidro-brilho: rgb(255 255 255 / 0.22);
-  --vidro-reflexo: rgb(255 255 255 / 0.05);
+  --vidro-borda: rgb(255 255 255 / 0.18);
+  --vidro-brilho: rgb(255 255 255 / 0.4);
+  --vidro-reflexo: rgb(255 255 255 / 0.12);
+  --vidro-claro: rgb(255 255 255 / 0.1);
+  --vidro-meio: rgb(255 255 255 / 0.03);
+  --vidro-pecinha: rgb(255 255 255 / 0.06);
+  --vidro-relevo:
+    inset 1.5px 1.5px 0 var(--vidro-brilho),
+    inset -1px -1px 0 var(--vidro-reflexo),
+    inset 0 0 20px rgb(255 255 255 / 0.06);
 }
 
-/* Caixas e cartões neutros: papel virou vidro */
+/* Caixas e cartões neutros: o papel vira vidro claro */
 :root[data-vidro] .secao-caixa,
 :root[data-vidro] .inicio-caixa,
 :root[data-vidro] .materia-caixa,
 :root[data-vidro] .agenda-calendario,
 :root[data-vidro] .agenda-caixa {
   border-color: var(--vidro-borda);
-  background:
-    linear-gradient(165deg, var(--vidro-reflexo), transparent 45%),
-    rgb(var(--vidro) / 0.42);
+  background: var(--vidro-fundo);
   box-shadow:
-    inset 0 1px 0 var(--vidro-brilho),
-    inset 0 -1px 0 var(--vidro-reflexo),
+    var(--vidro-relevo),
     0 8px 24px rgb(var(--sombra) / 0.1);
   -webkit-backdrop-filter: var(--vidro-desfoque);
   backdrop-filter: var(--vidro-desfoque);
 }
 
-/* Cartões coloridos do Dashboard: a cor de cada um, translúcida */
+/* Cartões coloridos do Dashboard: só um toque da cor de cada um */
 :root[data-vidro] .inicio-cartoes > .inicio-caixa {
   background:
-    linear-gradient(165deg, var(--vidro-reflexo), transparent 45%),
-    color-mix(in srgb, var(--cartao-cor) 62%, transparent);
+    var(--vidro-fundo), color-mix(in srgb, var(--cartao-cor) 32%, transparent);
 }
 
-/* Cartões das matérias: a cor da matéria, translúcida */
+/* Cartões das matérias: um toque da cor da matéria */
 :root[data-vidro] .inicio-materia {
   border-right-color: var(--vidro-borda);
   border-bottom-color: var(--vidro-borda);
   border-left-color: var(--vidro-borda);
-  background: color-mix(in srgb, var(--painel-fundo) 62%, transparent);
-  box-shadow: inset 0 1px 0 var(--vidro-reflexo);
+  background:
+    var(--vidro-fundo), color-mix(in srgb, var(--painel-fundo) 40%, transparent);
+  box-shadow: var(--vidro-relevo);
   -webkit-backdrop-filter: var(--vidro-desfoque);
   backdrop-filter: var(--vidro-desfoque);
 }
 
-/* Painel das Configurações e janelas que abrem por cima */
+/* Pecinhas dentro dos cartões (números do progresso, frase, botões de +1):
+   vidro também, mais leve */
+:root[data-vidro] .inicio-progresso-numeros > div,
+:root[data-vidro] .inicio-frase,
+:root[data-vidro] .inicio-cartoes button {
+  background: var(--vidro-pecinha);
+  box-shadow:
+    inset 1px 1px 0 var(--vidro-brilho),
+    inset -1px -1px 0 var(--vidro-reflexo);
+}
+
+/* Painel das Configurações e janelas que abrem por cima: mais embaçados,
+   para o texto ficar legível */
 :root[data-vidro] .config-painel,
 :root[data-vidro] .agenda-dia-janela,
 :root[data-vidro] .inicio-mes-janela {
   border: 1px solid var(--vidro-borda);
   box-shadow:
-    inset 0 1px 0 var(--vidro-brilho),
+    var(--vidro-relevo),
     0 18px 48px rgb(var(--sombra) / 0.28);
-  -webkit-backdrop-filter: blur(26px) saturate(1.8);
-  backdrop-filter: blur(26px) saturate(1.8);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  backdrop-filter: blur(22px) saturate(1.7);
 }
 
 :root[data-vidro] .config-painel,
 :root[data-vidro] .agenda-dia-janela {
-  background: rgb(var(--vidro) / 0.62);
+  background: rgb(var(--vidro) / 0.55);
 }
 
 :root[data-vidro] .inicio-mes-janela {
-  background: color-mix(in srgb, var(--cor-lilas) 72%, transparent);
+  background: color-mix(in srgb, var(--cor-lilas) 60%, transparent);
 }
 
-/* Celular: a barra flutuante de baixo, mais clara e mais líquida */
+/* Celular: a barra flutuante de baixo, de vidro claro */
 @media (max-width: 760px) {
   :root[data-vidro] .layout-menu {
     border-color: var(--vidro-borda);
-    background:
-      linear-gradient(180deg, var(--vidro-reflexo), transparent 60%),
-      rgb(var(--vidro) / 0.45);
+    background: var(--vidro-fundo);
     box-shadow:
-      inset 0 1px 0 var(--vidro-brilho),
-      inset 0 -1px 0 var(--vidro-reflexo),
+      var(--vidro-relevo),
       0 10px 30px rgb(var(--sombra) / 0.2);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
-    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(12px) saturate(1.7) brightness(1.05);
+    backdrop-filter: blur(12px) saturate(1.7) brightness(1.05);
   }
 
   :root[data-vidro] .layout-links-marcador {
-    background: rgb(255 255 255 / 0.35);
+    background: rgb(255 255 255 / 0.4);
     box-shadow:
-      inset 0 1px 0 var(--vidro-brilho),
+      var(--vidro-relevo),
       0 2px 8px rgb(var(--sombra) / 0.12);
   }
 
