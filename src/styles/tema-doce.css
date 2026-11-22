@@ -122,7 +122,7 @@
 }
 
 /* Céu do dia cor de algodão-doce, com um arco-íris atrás do sol */
-:root[data-tema='doce']:not([data-modo='escuro']) .ceu-dia {
+:root[data-tema='doce']:not([data-modo='escuro']) .ceu-dia:not(.ceu-dia-chuva) {
   background:
     radial-gradient(
       circle 260px at calc(100% - 366px) 46px,
@@ -155,7 +155,8 @@
 }
 
 /* Choveu: o arco-íris some (e volta quando o sol abre) */
-:root[data-tema='doce'] .ceu-dia-chuva::before {
+:root[data-tema='doce']:not([data-modo='escuro'])
+  .ceu-dia.ceu-dia-chuva::before {
   opacity: 0;
 }
 
@@ -170,4 +171,173 @@
     #c9a7ff,
     #ff8fb1
   );
+}
+
+/*
+ * Chuva no Reino doce: vira um bosque escuro. O rosa fica apagado, os
+ * confeitos somem, folhas escuras cobrem o alto, as bordas da página ficam
+ * na sombra e olhos piscam no escuro. Quando para de chover, tudo volta.
+ */
+:root[data-tema='doce'][data-tempo='chuva']:not([data-modo='escuro']) {
+  --cor-fundo: #e3d2de;
+  --cor-papel: #f1e6ee;
+  --cor-menu: #d8c2d1;
+  --cor-hover: #e6d4e0;
+  --cor-borda: #cdb4c5;
+  --cor-borda-forte: #b597ab;
+  --tema: #b5638c;
+  --tema-escuro: #8d406a;
+  --tema-suave: #dcb6c9;
+}
+
+:root[data-tema='doce'][data-tempo='chuva'] .layout-coluna {
+  background-image: none;
+}
+
+/* No alto escuro do bosque, título, subtítulo, semestre e engrenagem ficam
+   claros para continuar legíveis */
+:root[data-tema='doce'][data-tempo='chuva'] .titulo-pagina,
+:root[data-tema='doce'][data-tempo='chuva'] .subtitulo-pagina,
+:root[data-tema='doce'][data-tempo='chuva'] .layout-topo,
+:root[data-tema='doce'][data-tempo='chuva'] .layout-semestre,
+:root[data-tema='doce'][data-tempo='chuva'] .layout-config,
+:root[data-tema='doce'][data-tempo='chuva'] .layout-semestre select {
+  color: #fbe9f3;
+  text-shadow: 0 1px 3px rgb(20 6 26 / 0.6);
+  transition: color 1.2s ease;
+}
+
+:root[data-tema='doce'][data-tempo='chuva'] .layout-coluna::before {
+  background: #4a2c4f;
+}
+
+:root[data-tema='doce'] .ceu-dia-chuva {
+  background: linear-gradient(
+    rgb(28 12 36 / 0.82),
+    rgb(40 18 48 / 0.55) 45%,
+    rgb(40 18 48 / 0) 100%
+  );
+}
+
+/* Folhas e galhos escuros pendurados no alto */
+.ceu-bosque,
+.ceu-bosque-sombra {
+  display: none;
+}
+
+:root[data-tema='doce'] .ceu-dia-chuva .ceu-bosque {
+  position: absolute;
+  inset: 0 0 auto;
+  display: block;
+  height: 130px;
+  animation: bosque-aparece 2.4s ease both;
+}
+
+.ceu-bosque-folhas {
+  position: absolute;
+  inset: 0;
+  background: #1c0d24;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20320%20130'%3E%3Cpath%20d='M0%200H320V38c-12%2010-22%206-30%2016-6%208-16%208-22%202-8%2014-24%2012-30%204-10%2010-26%208-30-2-8%2012-24%2010-28%200-10%2014-30%2010-34-2-6%206-18%206-24-2-10%2012-28%206-30-6-8%208-22%204-24-4-10%2010-26%206-28-6-8%206-20%200-20-10Z'/%3E%3Cpath%20d='M64%2050q2%2034-6%2064'%20stroke='%23000'%20stroke-width='3'%20fill='none'/%3E%3Cpath%20d='M206%2048q-4%2026%204%2052'%20stroke='%23000'%20stroke-width='2.5'%20fill='none'/%3E%3Ccircle%20cx='58'%20cy='114'%20r='4'/%3E%3Ccircle%20cx='210'%20cy='100'%20r='3.5'/%3E%3C/svg%3E")
+    repeat-x top left / 320px 130px;
+  mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20320%20130'%3E%3Cpath%20d='M0%200H320V38c-12%2010-22%206-30%2016-6%208-16%208-22%202-8%2014-24%2012-30%204-10%2010-26%208-30-2-8%2012-24%2010-28%200-10%2014-30%2010-34-2-6%206-18%206-24-2-10%2012-28%206-30-6-8%208-22%204-24-4-10%2010-26%206-28-6-8%206-20%200-20-10Z'/%3E%3Cpath%20d='M64%2050q2%2034-6%2064'%20stroke='%23000'%20stroke-width='3'%20fill='none'/%3E%3Cpath%20d='M206%2048q-4%2026%204%2052'%20stroke='%23000'%20stroke-width='2.5'%20fill='none'/%3E%3Ccircle%20cx='58'%20cy='114'%20r='4'/%3E%3Ccircle%20cx='210'%20cy='100'%20r='3.5'/%3E%3C/svg%3E")
+    repeat-x top left / 320px 130px;
+  opacity: 0.92;
+}
+
+/* Bordas da página na sombra (por cima do conteúdo, sem pegar cliques) */
+:root[data-tema='doce'][data-tempo='chuva'] .ceu-bosque-sombra {
+  position: fixed;
+  inset: 0 0 0 250px;
+  z-index: 3;
+  display: block;
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 45%,
+    transparent 55%,
+    rgb(24 10 30 / 0.5) 100%
+  );
+  pointer-events: none;
+  animation: bosque-aparece 2.4s ease both;
+}
+
+@media (max-width: 760px) {
+  :root[data-tema='doce'][data-tempo='chuva'] .ceu-bosque-sombra {
+    inset: 0 0 68px;
+  }
+}
+
+/* Olhos: dois ovais brilhando, piscando de vez em quando e sumindo no
+   escuro por um tempo (cada par no seu ritmo) */
+.ceu-olhos {
+  position: absolute;
+  display: flex;
+  gap: calc(7px * var(--olho-tamanho, 1));
+  opacity: 0;
+  translate: -50% 0;
+  animation: olhos-aparecem 9s ease-in-out infinite;
+}
+
+.ceu-olhos i {
+  width: calc(7px * var(--olho-tamanho, 1));
+  height: calc(10px * var(--olho-tamanho, 1));
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    #fffbe0 0 30%,
+    #ffe14d 55%,
+    #f0b21a
+  );
+  box-shadow: 0 0 8px 2px rgb(255 214 60 / 0.55);
+  animation: olhos-piscam 4.5s ease-in-out infinite;
+  animation-delay: inherit;
+}
+
+@keyframes olhos-aparecem {
+  0%,
+  12% {
+    opacity: 0;
+  }
+
+  20%,
+  70% {
+    opacity: 1;
+  }
+
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes olhos-piscam {
+  0%,
+  44%,
+  50%,
+  86%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  47%,
+  89% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes bosque-aparece {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ceu-olhos,
+  .ceu-olhos i,
+  .ceu-bosque,
+  .ceu-bosque-sombra {
+    animation: none;
+  }
+
+  .ceu-olhos {
+    opacity: 1;
+  }
 }
