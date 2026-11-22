@@ -53,41 +53,55 @@
   margin-top: 4px;
 }
 
-/* Três botões saindo da lateral direita */
+/* Três botões redondos com ícone, embaixo da tela */
 .tamagotchi-botoes {
-  position: absolute;
-  top: 34px;
-  right: -6px;
-  z-index: 0;
-  display: grid;
-  gap: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 8px;
 }
 
 .tamagotchi-botoes button {
-  width: 12px;
-  height: 22px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  border: 0;
-  border-radius: 0 6px 6px 0;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--tema) 70%, #000),
-    var(--tema)
+  border: 2px solid color-mix(in srgb, var(--tema) 55%, #000);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--tema) 25%, #fff),
+    color-mix(in srgb, var(--tema) 70%, #fff)
   );
-  box-shadow: 1px 2px 3px rgb(60 40 30 / 0.25);
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--tema) 55%, #000),
+    0 4px 6px rgb(60 40 30 / 0.2);
+  color: color-mix(in srgb, var(--tema) 35%, #000);
   cursor: pointer;
   transition:
-    transform 0.12s ease,
-    filter 0.12s ease;
+    transform 0.1s ease,
+    box-shadow 0.1s ease,
+    filter 0.15s ease;
+}
+
+.tamagotchi-botoes svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 .tamagotchi-botoes button:hover:not(:disabled) {
-  filter: brightness(1.12);
+  filter: brightness(1.06);
+  transform: translateY(-1px);
 }
 
-/* Apertar empurra o botão para dentro */
+/* Apertar afunda o botão */
 .tamagotchi-botoes button:active:not(:disabled) {
-  transform: translateX(-4px);
+  box-shadow:
+    0 0 0 color-mix(in srgb, var(--tema) 55%, #000),
+    0 1px 2px rgb(60 40 30 / 0.2);
+  transform: translateY(3px);
 }
 
 .tamagotchi-botoes button:focus-visible {
@@ -97,10 +111,10 @@
 
 .tamagotchi-botoes button:disabled {
   cursor: default;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
-/* Com fome: o botão da comida pisca pedindo */
+/* Com fome: o botão da comida pulsa pedindo */
 .tamagotchi-botao-pede {
   animation: tamagotchi-pede 1.2s ease-in-out infinite;
 }
@@ -108,6 +122,7 @@
 @keyframes tamagotchi-pede {
   50% {
     background: #ffd45e;
+    outline: 3px solid rgb(255 212 94 / 0.6);
   }
 }
 
@@ -202,8 +217,4 @@
   .tamagotchi-botao-pede {
     animation: none;
   }
-}
-
-.tamagotchi-botoes button:nth-child(2) {
-  transform: translateY(6px);
 }

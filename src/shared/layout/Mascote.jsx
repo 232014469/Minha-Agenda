@@ -72,9 +72,19 @@ const TEXTO_DO_BORDAO = {
   falta: 'Eu, hein! 😾',
 }
 
+/** O que ele fala ao receber comida ou brincadeira pelos botões. */
+const TEXTO_DO_CUIDADO = {
+  comer: 'Nham! 🐟',
+  brincar: 'Oba! 🦋',
+}
+
+/** Quanto tempo o recado do cuidado fica no balão. */
+const RECADO_MS = 1800
+
 /** Balão de fala e o aviso para leitores de tela quando comemora. */
-function Balao({ acao, padrao, bordoes }) {
-  const texto = (bordoes && TEXTO_DO_BORDAO[acao]) || TEXTO_DO_BALAO[acao]
+function Balao({ acao, padrao, bordoes, recado }) {
+  const texto =
+    recado ?? ((bordoes && TEXTO_DO_BORDAO[acao]) || TEXTO_DO_BALAO[acao])
 
   return (
     <>
@@ -363,6 +373,17 @@ function MascoteGato({
   const entristecer = useCallback(() => encenar('triste'), [encenar])
   const reclamar = useCallback(() => encenar('falta'), [encenar])
 
+  // O recado ("Nham!", "Oba!") some sozinho depois de um tempinho
+  const [recado, setRecado] = useState(null)
+
+  useEffect(() => {
+    if (!recado) return undefined
+
+    const espera = setTimeout(() => setRecado(null), RECADO_MS)
+
+    return () => clearTimeout(espera)
+  }, [recado])
+
   // Botões do bichinho: comida e brincadeira viram rotinas (saindo da
   // casinha antes, se estiver lá dentro); carinho é uma reação
   const cuidarDele = useCallback(
@@ -380,6 +401,7 @@ function MascoteGato({
           ? { ...iniciarRotina('acordar'), depois: acao }
           : iniciarRotina(acao),
       )
+      setRecado(TEXTO_DO_CUIDADO[acao] ?? null)
       if (sons) miar('fofo', { volume: 0.6 })
     },
     [encenar, dentroDeCasa, sons],
@@ -463,22 +485,34 @@ function MascoteGato({
     )
   }
 
+  // Perto da borda direita, o balão abre para a esquerda (não é cortado)
+  const lugar = posicao(onde, mapa)
+  const balaoParaEsquerda =
+    mapa && Number.parseFloat(lugar.left) > mapa.largura * 0.55
+
   const botao = (
     <button
       type="button"
       className={`mascote mascote-gato${emCena ? ' mascote-reagindo' : ''}${
+        recado && !emCena ? ' mascote-falando' : ''
+      }${balaoParaEsquerda ? ' balao-esquerda' : ''}${
         classeDaFase(situacao) ? ` ${classeDaFase(situacao)}` : ''
       }`}
       aria-label={`${nome}, o mascote. Clique para ele miar`}
       title="Miau?"
       style={{
-        ...posicao(onde, mapa),
+        ...lugar,
         transition: transicao,
       }}
       onClick={clicar}
     >
       {desenho}
-      <Balao acao={cena?.acao} padrao="Miau!" bordoes={sons && bordoes} />
+      <Balao
+        acao={cena?.acao}
+        padrao="Miau!"
+        bordoes={sons && bordoes}
+        recado={emCena ? null : recado}
+      />
     </button>
   )
 

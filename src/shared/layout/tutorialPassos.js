@@ -20,7 +20,7 @@ export const PASSOS = [
     alvo: '.tamagotchi, .mascote-cantinho',
     titulo: 'Este é o seu gatinho',
     texto:
-      'Ele fica feliz quando você entrega tudo em dia e chateado com atrasos e faltas. Os botões do lado dão comida, brincadeira e carinho.',
+      'Ele fica feliz quando você entrega tudo em dia e chateado com atrasos e faltas. Os botões embaixo da tela dão comida, brincadeira e carinho.',
   },
   {
     alvo: '.layout-links a[href$="adicionar-materia"]',

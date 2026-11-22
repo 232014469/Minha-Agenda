@@ -38,6 +38,14 @@
 }
 
 /* Reagindo: o balão aparece */
+/* Perto da borda direita, o balão sai para o outro lado */
+.balao-esquerda .mascote-balao {
+  right: 46px;
+  left: auto;
+  border-radius: 10px 10px 2px;
+}
+
+.mascote-falando .mascote-balao,
 .mascote-reagindo .mascote-balao {
   opacity: 1;
   transform: none;
