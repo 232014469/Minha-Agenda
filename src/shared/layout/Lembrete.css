@@ -7,13 +7,7 @@
   margin: 14px 10px 24px;
   padding: 18px 14px 10px;
   border-radius: 4px 4px 14px 4px;
-  background:
-    repeating-linear-gradient(
-        transparent 0 23px,
-        color-mix(in srgb, var(--tema) 30%, transparent) 23px 24px
-      )
-      0 46px / 100% calc(100% - 56px) no-repeat,
-    color-mix(in srgb, var(--tema) 22%, var(--cor-papel));
+  background: color-mix(in srgb, var(--tema) 22%, var(--cor-papel));
   box-shadow:
     0 6px 14px rgb(var(--sombra) / 0.16),
     0 1px 2px rgb(var(--sombra) / 0.12);
@@ -41,17 +35,29 @@
   opacity: 0.75;
 }
 
-/* O texto escreve "nas linhas" do papel */
+/* As linhas do papel são o fundo do próprio campo, uma por linha de texto
+   (28px), logo abaixo das letras: o texto fica em cima delas. Cabem 6. */
 .lembrete textarea {
+  --linha: 28px;
+
+  display: block;
   width: 100%;
-  min-height: 120px;
+  height: calc(var(--linha) * 6);
   padding: 0;
+  overflow: hidden;
   border: 0;
-  background: transparent;
+  background: linear-gradient(
+      transparent calc(var(--linha) - 3px),
+      color-mix(in srgb, var(--tema) 45%, transparent) calc(var(--linha) - 3px)
+        calc(var(--linha) - 2px),
+      transparent calc(var(--linha) - 2px)
+    )
+    0 0 / 100% var(--linha);
+  background-attachment: local;
   color: var(--cor-texto);
   font-family: var(--fonte-titulo);
   font-size: 0.9rem;
-  line-height: 24px;
+  line-height: var(--linha);
   resize: none;
 }
 

@@ -3,7 +3,8 @@ import { APP } from '../../config/app'
 import './Lembrete.css'
 
 const CHAVE = `${APP.chaveDosDados}.lembrete`
-const LIMITE_DO_LEMBRETE = 200
+// Cabe inteiro nas 6 linhas do papel, sem rolagem
+const LIMITE_DO_LEMBRETE = 90
 
 function lerLembrete() {
   try {
@@ -61,7 +62,7 @@ export default function Lembrete({ compacto = false }) {
         value={texto}
         onChange={mudar}
         maxLength={LIMITE_DO_LEMBRETE}
-        rows={5}
+        rows={6}
         placeholder="Escreva aqui o que não pode esquecer…"
       />
       <span className="lembrete-contador" aria-hidden="true">

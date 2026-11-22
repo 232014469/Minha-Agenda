@@ -24,13 +24,13 @@ describe('Lembrete', () => {
     )
   })
 
-  it('corta o texto em 200 letras', () => {
+  it('corta o texto em 90 letras, para caber no papel', () => {
     render(<Lembrete />)
 
     fireEvent.change(screen.getByLabelText('Lembrete'), {
       target: { value: 'a'.repeat(250) },
     })
 
-    expect(screen.getByLabelText('Lembrete').value).toHaveLength(200)
+    expect(screen.getByLabelText('Lembrete').value).toHaveLength(90)
   })
 })
