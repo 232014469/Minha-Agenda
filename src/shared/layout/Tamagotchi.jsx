@@ -4,7 +4,8 @@ import './Tamagotchi.css'
  * Bichinho virtual compacto em volta do cantinho do gatinho: um quadrado de
  * cantos bem arredondados, com aro na cor do tema, a tela no meio, três
  * botões com ícone embaixo dela (comida, brincadeira e carinho, por
- * `aoCuidar`) e uma cordinha de chaveiro. A tela é o `children`.
+ * `aoCuidar`) e um chaveiro de peixinho balançando no canto. A tela é o
+ * `children`.
  */
 
 /** Ícones dos botões, desenhados num quadrado de 16. */
@@ -35,13 +36,42 @@ const BOTOES = [
   { acao: 'carinho', rotulo: 'Fazer carinho' },
 ]
 
+/** Chaveiro no canto de baixo: argola, correntinha e um peixinho. */
+function Chaveiro() {
+  return (
+    <svg
+      className="tamagotchi-chaveiro"
+      viewBox="0 0 36 60"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {/* Argola */}
+      <circle className="chaveiro-argola" cx="12" cy="10" r="7.5" />
+      <path className="chaveiro-brilho" d="M7 6.5a6 6 0 0 1 5-2.5" />
+      {/* Correntinha */}
+      <g className="chaveiro-penduricalho">
+        <ellipse className="chaveiro-elo" cx="12" cy="20.5" rx="2" ry="3" />
+        <ellipse className="chaveiro-elo" cx="12" cy="26" rx="2" ry="3" />
+        {/* Peixinho de cabeça para baixo, preso pelo rabo */}
+        <path
+          className="chaveiro-peixe"
+          d="M12 29.5 7.5 33.5l2.4 2.2C6.8 39 6.6 45.5 9.4 50.5c1 1.8 2.2 3 2.6 3.3.4-.3 1.6-1.5 2.6-3.3 2.8-5 2.6-11.5-.5-14.8l2.4-2.2Z"
+        />
+        <path className="chaveiro-escama" d="M9.8 42.5c1.4.9 3 .9 4.4 0" />
+        <circle className="chaveiro-olho" cx="10.6" cy="48" r="1" />
+        <circle className="chaveiro-olho" cx="13.4" cy="48" r="1" />
+      </g>
+    </svg>
+  )
+}
+
 export default function Tamagotchi({ children, fase, comFome, aoCuidar }) {
   // Na caixinha e virando estrelinha não tem como cuidar
   const parado = !aoCuidar || fase === 'caixa' || fase === 'estrelinha'
 
   return (
     <div className="tamagotchi">
-      <span className="tamagotchi-cordinha" aria-hidden="true" />
+      <Chaveiro />
       <div className="tamagotchi-aro">
         {children}
         <div
