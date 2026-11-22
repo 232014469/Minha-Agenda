@@ -175,6 +175,60 @@
   fill: #4a2c1e;
 }
 
+/* Unicórnio do Reino doce (no lugar do peixinho) */
+.chaveiro-unicornio {
+  display: none;
+}
+
+:root[data-tema='doce'] .chaveiro-de-peixe {
+  display: none;
+}
+
+:root[data-tema='doce'] .chaveiro-unicornio {
+  display: inline;
+}
+
+.unicornio-crina,
+.unicornio-orelha,
+.unicornio-chifre,
+.unicornio-rosto {
+  stroke: #4a2c1e;
+  stroke-linejoin: round;
+  stroke-width: 1.1;
+}
+
+.unicornio-orelha,
+.unicornio-rosto {
+  fill: #fff8fc;
+}
+
+.unicornio-chifre {
+  fill: #ffd76a;
+}
+
+.unicornio-espiral {
+  fill: none;
+  stroke: #c9962a;
+  stroke-linecap: round;
+  stroke-width: 0.9;
+}
+
+.unicornio-focinho {
+  fill: #ffd3e4;
+}
+
+.unicornio-olho {
+  fill: none;
+  stroke: #4a2c1e;
+  stroke-linecap: round;
+  stroke-width: 1;
+}
+
+.unicornio-bochecha {
+  fill: #ff9cc2;
+  opacity: 0.8;
+}
+
 .chaveiro-penduricalho {
   transform-box: view-box;
   transform-origin: 12px 17px;
