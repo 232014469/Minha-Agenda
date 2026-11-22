@@ -1,0 +1,368 @@
+/*
+ * Transformação do Reino doce (Feitico.jsx). Cobre a tela toda por cima de
+ * tudo, sem pegar cliques, e dura 2,7 s; a troca acontece por baixo no auge
+ * (0,95 s), quando o efeito está mais forte.
+ */
+.feitico {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- Maldição ---------- */
+
+/* Fumaça: nuvens enormes e borradas vindo dos cantos, que fecham a tela e
+   depois se desfazem */
+.feitico-fumaca {
+  position: absolute;
+  width: 150vmax;
+  height: 150vmax;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(var(--fumaca-cor) / 0.95) 0 35%,
+    rgb(var(--fumaca-cor) / 0.6) 55%,
+    transparent 70%
+  );
+  filter: blur(18px);
+  translate: -50% -50%;
+  scale: 0;
+  animation: feitico-fumaca 2.7s cubic-bezier(0.3, 0.6, 0.4, 1) both;
+}
+
+@keyframes feitico-fumaca {
+  0% {
+    opacity: 0;
+    scale: 0;
+    rotate: 0deg;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  42% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 1.25;
+    rotate: 40deg;
+  }
+}
+
+/* Espinhos crescendo dos cantos e do chão */
+.feitico-espinhos {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: feitico-some 2.7s ease both;
+}
+
+.feitico-espinhos path {
+  fill: none;
+  stroke: #0c0614;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 6px rgb(110 255 140 / 0.55));
+  animation: feitico-cresce 1s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+
+@keyframes feitico-cresce {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes feitico-some {
+  0%,
+  60% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Clarão verde no auge, quando o reino vira bosque */
+.feitico-clarao-verde {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgb(150 255 120 / 0.55),
+    rgb(60 200 90 / 0.25) 40%,
+    transparent 75%
+  );
+  opacity: 0;
+  animation: feitico-clarao 2.7s ease both;
+}
+
+@keyframes feitico-clarao {
+  0%,
+  28% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  60%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Faíscas verdes subindo do chão */
+.feitico-faisca {
+  position: absolute;
+  bottom: -10px;
+  width: var(--faisca-tamanho);
+  height: var(--faisca-tamanho);
+  border-radius: 50%;
+  background: #b6ff9a;
+  box-shadow:
+    0 0 6px 2px rgb(120 255 120 / 0.8),
+    0 0 16px 4px rgb(60 200 90 / 0.5);
+  opacity: 0;
+  animation: feitico-faisca ease-out both;
+}
+
+@keyframes feitico-faisca {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--faisca-lado), var(--faisca-sobe)) scale(1);
+  }
+}
+
+/* ---------- Encanto ---------- */
+
+/* Véu de luz rosada que cobre o bosque no auge e se abre para o reino */
+.feitico-veu {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    #fff,
+    rgb(255 214 234) 45%,
+    rgb(255 196 224) 85%
+  );
+  opacity: 0;
+  animation: feitico-veu 2.7s ease both;
+}
+
+@keyframes feitico-veu {
+  0%,
+  15% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 0.97;
+  }
+
+  55% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Núcleo de luz no centro do redemoinho, que cresce até o auge */
+.feitico-nucleo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60vmin;
+  height: 60vmin;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #fff 0 8%,
+    rgb(255 205 230 / 0.85) 25%,
+    rgb(200 180 255 / 0.4) 50%,
+    transparent 70%
+  );
+  translate: -50% -50%;
+  animation: feitico-nucleo 2.7s ease both;
+}
+
+@keyframes feitico-nucleo {
+  0% {
+    opacity: 0;
+    scale: 0;
+  }
+
+  30% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  45% {
+    opacity: 1;
+    scale: 3;
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    scale: 4;
+  }
+}
+
+/* Redemoinho: cada brilho gira em volta do centro abrindo a espiral */
+.feitico-redemoinho {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.feitico-giro {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  animation: feitico-giro 1.5s cubic-bezier(0.2, 0.5, 0.3, 1) both;
+}
+
+.feitico-giro i {
+  position: absolute;
+  width: var(--brilho-tamanho);
+  height: var(--brilho-tamanho);
+  clip-path: polygon(
+    50% 0,
+    62% 38%,
+    100% 50%,
+    62% 62%,
+    50% 100%,
+    38% 62%,
+    0 50%,
+    38% 38%
+  );
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px rgb(255 170 215));
+  translate: -50% -50%;
+  animation: feitico-cintila 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes feitico-giro {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--giro-inicio)) translateX(2vmin) scale(0.6);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(var(--giro-fim)) translateX(var(--giro-raio)) scale(1);
+  }
+}
+
+@keyframes feitico-cintila {
+  to {
+    scale: 0.55;
+    rotate: 45deg;
+  }
+}
+
+/* Onda de luz: um anel brilhante que sai do centro e passa pela tela */
+.feitico-onda {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px rgb(255 255 255 / 0.95),
+    0 0 18px 10px rgb(255 170 215 / 0.75),
+    inset 0 0 12px 4px rgb(255 230 245 / 0.8);
+  opacity: 0;
+  translate: -50% -50%;
+  animation: feitico-onda 1.4s cubic-bezier(0.2, 0.6, 0.3, 1) 0.6s both;
+}
+
+.feitico-onda-segunda {
+  animation-delay: 0.85s;
+}
+
+@keyframes feitico-onda {
+  0% {
+    opacity: 1;
+    scale: 0;
+  }
+
+  80% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0;
+    scale: 60;
+  }
+}
+
+/* Purpurina caindo devagar depois da onda */
+.feitico-purpurina {
+  position: absolute;
+  width: var(--brilho-tamanho);
+  height: var(--brilho-tamanho);
+  clip-path: polygon(
+    50% 0,
+    62% 38%,
+    100% 50%,
+    62% 62%,
+    50% 100%,
+    38% 62%,
+    0 50%,
+    38% 38%
+  );
+  filter: drop-shadow(0 0 3px #fff);
+  opacity: 0;
+  animation: feitico-purpurina 1.6s ease-in both;
+}
+
+@keyframes feitico-purpurina {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0) scale(0.4);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(30deg) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--purpurina-lado), var(--purpurina-cai))
+      rotate(220deg) scale(0.6);
+  }
+}

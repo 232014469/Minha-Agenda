@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useDados } from '../../dados/useDados'
 import { temAtrasadas } from './alerta'
+import Feitico from './Feitico'
+import {
+  AUGE_DO_FEITICO,
+  DURACAO_DO_FEITICO,
+  podeEncantar,
+} from './tempoDoFeitico'
 import Floresta from './Floresta'
 import './CeuDoDia.css'
 
@@ -80,7 +86,9 @@ const GOTAS = Array.from({ length: 48 }, (_, indice) => ({
  * raios. Quando nenhuma estiver mais atrasada, o sol volta. Fica atrás do
  * conteúdo. No modo escuro só aparece a chuva, por cima do céu estrelado.
  * No tema Reino doce, a chuva vira um bosque escuro de noite, com névoa e
- * olhos espiando (ver Floresta).
+ * olhos espiando (ver Floresta), e a troca vem com uma transformação: um
+ * feitiço sombrio quando começa a chover e um encanto de brilhos quando para
+ * (ver Feitico).
  */
 export default function CeuDoDia() {
   const { tarefas } = useDados()
@@ -93,7 +101,31 @@ export default function CeuDoDia() {
     return () => clearInterval(relogio)
   }, [])
 
-  const chuva = temAtrasadas(tarefas)
+  const choveu = temAtrasadas(tarefas)
+  // O céu mostrado pode ficar um pouco atrás do tempo de verdade: no Reino
+  // doce, a troca entre reino e bosque espera o auge do feitiço
+  const [chuva, setChuva] = useState(choveu)
+  const [feitico, setFeitico] = useState(null)
+
+  if (choveu !== chuva && !feitico) {
+    if (podeEncantar()) {
+      setFeitico({ tipo: choveu ? 'maldicao' : 'encanto', para: choveu })
+    } else {
+      setChuva(choveu)
+    }
+  }
+
+  useEffect(() => {
+    if (!feitico) return undefined
+
+    const troca = setTimeout(() => setChuva(feitico.para), AUGE_DO_FEITICO)
+    const fim = setTimeout(() => setFeitico(null), DURACAO_DO_FEITICO)
+
+    return () => {
+      clearTimeout(troca)
+      clearTimeout(fim)
+    }
+  }, [feitico])
 
   // O tempo vai para a raiz da página: o tema Reino doce escurece tudo na
   // chuva (ver tema-doce.css)
@@ -107,6 +139,7 @@ export default function CeuDoDia() {
 
   return (
     <>
+      {feitico && <Feitico tipo={feitico.tipo} />}
       {chuva && <Floresta />}
       <div
         className={`ceu-dia${chuva ? ' ceu-dia-chuva' : ''}`}
