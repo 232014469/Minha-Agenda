@@ -1,80 +1,18 @@
-/* Relógio de estudo (RelogioDeEstudo.jsx): no menu, um aparelhinho no mesmo
-   estilo do bichinho virtual; no celular, uma faixa em cima do título. */
+/* Relógio de estudo (RelogioDeEstudo.jsx): no menu, só o tempo, a barra e
+   os botões; no celular, uma faixa em cima do título. */
 .relogio {
-  width: fit-content;
-  margin: 4px auto 24px;
-}
-
-.relogio-aro {
-  padding: 9px 9px 10px;
-  border-radius: 34px;
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--tema) 35%, #fff) 0%,
-    color-mix(in srgb, var(--tema) 70%, #fff) 45%,
-    var(--tema) 100%
-  );
-  box-shadow:
-    inset 0 2px 0 rgb(255 255 255 / 0.6),
-    inset 0 -3px 0 color-mix(in srgb, var(--tema) 75%, #000),
-    0 8px 16px rgb(60 40 30 / 0.2);
-}
-
-.relogio-tela {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 168px;
-  height: 150px;
-  border-radius: 26px;
-  background: linear-gradient(180deg, #fdfaf2, #f1f5ea);
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--tema) 55%, #000),
-    inset 0 3px 6px rgb(0 0 0 / 0.14);
-  color: #3a2a20;
-}
-
-:root[data-modo='escuro'] .relogio-tela {
-  background: linear-gradient(180deg, #1f2850, #2b3560);
-  color: #eef0fa;
-}
-
-/* Anel que vai esvaziando: na cor do tema no foco, verde-água na pausa */
-.relogio-anel {
-  position: absolute;
-  width: 132px;
-  height: 132px;
-  rotate: -90deg;
-}
-
-.relogio-trilho,
-.relogio-progresso {
-  fill: none;
-  stroke-width: 7;
-}
-
-.relogio-trilho {
-  stroke: color-mix(in srgb, var(--tema) 18%, transparent);
-}
-
-.relogio-progresso {
   --relogio-cor: var(--tema);
 
-  stroke: var(--relogio-cor);
-  stroke-linecap: round;
-  transition: stroke-dashoffset 1s linear;
-}
-
-.relogio-em-pausa .relogio-progresso,
-.relogio-em-pausa .relogio-mini-anel {
-  --relogio-cor: #5fb8a5;
-}
-
-.relogio-centro {
-  position: relative;
   display: grid;
   justify-items: center;
-  gap: 2px;
+  gap: 4px;
+  margin: 6px 4px 22px;
+}
+
+/* Na pausa, verde-água no lugar da cor do tema */
+.relogio.relogio-em-pausa,
+.relogio-compacto.relogio-em-pausa {
+  --relogio-cor: #5fb8a5;
 }
 
 .relogio-etapa {
@@ -88,9 +26,22 @@
 
 .relogio-tempo {
   font-family: var(--fonte-titulo);
-  font-size: 1.85rem;
+  font-size: 2.6rem;
   font-variant-numeric: tabular-nums;
-  line-height: 1.05;
+  line-height: 1;
+}
+
+/* Barra que vai esvaziando da direita para a esquerda */
+.relogio-barra {
+  width: 100%;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--relogio-cor), var(--relogio-cor)) no-repeat 0 0 /
+      calc((1 - var(--andou)) * 100%) 100%,
+    color-mix(in srgb, var(--tema) 20%, transparent);
+  transition: background-size 1s linear;
 }
 
 /* Bolinhas dos focos do ciclo (a 4ª leva à pausa longa) */
@@ -118,42 +69,36 @@
   opacity: 0.75;
 }
 
-/* Botões redondos como os do bichinho; o do meio é maior */
+/* Botões redondos e lisos; o do meio, cheio na cor do tema */
 .relogio-botoes {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-top: 9px;
+  margin-top: 8px;
 }
 
 .relogio-botoes button {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   padding: 0;
-  border: 2px solid color-mix(in srgb, var(--tema) 55%, #000);
+  border: 0;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 30%,
-    color-mix(in srgb, var(--tema) 25%, #fff),
-    color-mix(in srgb, var(--tema) 70%, #fff)
-  );
-  box-shadow:
-    0 3px 0 color-mix(in srgb, var(--tema) 55%, #000),
-    0 4px 6px rgb(60 40 30 / 0.2);
-  color: color-mix(in srgb, var(--tema) 35%, #000);
+  background: color-mix(in srgb, var(--tema) 18%, transparent);
+  color: var(--cor-texto);
   cursor: pointer;
   transition:
     transform 0.1s ease,
-    box-shadow 0.1s ease,
-    filter 0.15s ease;
+    background 0.15s ease;
 }
 
 .relogio-botoes .relogio-principal {
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
+  background: var(--relogio-cor, var(--tema));
+  color: #fff;
 }
 
 .relogio-botoes svg {
@@ -168,15 +113,16 @@
 }
 
 .relogio-botoes button:hover {
+  background: color-mix(in srgb, var(--tema) 30%, transparent);
+}
+
+.relogio-botoes .relogio-principal:hover {
+  background: var(--relogio-cor, var(--tema));
   filter: brightness(1.06);
-  transform: translateY(-1px);
 }
 
 .relogio-botoes button:active {
-  box-shadow:
-    0 0 0 color-mix(in srgb, var(--tema) 55%, #000),
-    0 1px 2px rgb(60 40 30 / 0.2);
-  transform: translateY(3px);
+  transform: scale(0.92);
 }
 
 .relogio-botoes button:focus-visible {
@@ -186,6 +132,8 @@
 
 /* Celular: faixa em cima do título */
 .relogio-compacto {
+  --relogio-cor: var(--tema);
+
   display: flex;
   align-items: center;
   gap: 10px;
@@ -197,8 +145,6 @@
 }
 
 .relogio-mini-anel {
-  --relogio-cor: var(--tema);
-
   flex: none;
   width: 36px;
   height: 36px;
@@ -238,7 +184,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .relogio-progresso {
+  .relogio-barra {
     transition: none;
   }
 }

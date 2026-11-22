@@ -16,9 +16,6 @@ import {
 import { tocarSino } from '../relogio/sino'
 import './RelogioDeEstudo.css'
 
-const RAIO = 44
-const VOLTA = 2 * Math.PI * RAIO
-
 const ICONES = {
   iniciar: (
     <path d="M5 3.2v9.6c0 .6.7 1 1.2.6l7-4.8a.8.8 0 0 0 0-1.2l-7-4.8C5.7 2.2 5 2.6 5 3.2Z" />
@@ -50,8 +47,8 @@ function Icone({ nome }) {
 
 /**
  * Relógio de estudo (pomodoro), no lugar do gatinho quando ele está
- * desligado nas Configurações. No menu é um aparelhinho como o bichinho
- * virtual (anel que esvazia, tempo, etapa e os focos do dia); no celular,
+ * desligado nas Configurações. No menu é simples: etapa, tempo, uma barra que
+ * esvazia, os focos do dia e os botões; no celular,
  * `compacto`, vira uma faixa em cima do título. Ao acabar uma etapa toca um
  * sininho (se os sons estão ligados) e passa para a próxima, parada.
  */
@@ -190,33 +187,17 @@ export default function RelogioDeEstudo({ compacto = false }) {
 
   return (
     <section className={`relogio${pausaClasse}`} aria-label="Relógio de estudo">
-      <div className="relogio-aro">
-        <div className="relogio-tela">
-          <svg
-            className="relogio-anel"
-            viewBox="0 0 100 100"
-            aria-hidden="true"
-          >
-            <circle className="relogio-trilho" cx="50" cy="50" r={RAIO} />
-            <circle
-              className="relogio-progresso"
-              cx="50"
-              cy="50"
-              r={RAIO}
-              strokeDasharray={VOLTA}
-              strokeDashoffset={VOLTA * andou}
-            />
-          </svg>
-          <div className="relogio-centro">
-            <span className="relogio-etapa">{etapa.nome}</span>
-            <strong className="relogio-tempo" role="timer">
-              {tempo}
-            </strong>
-            {focos}
-          </div>
-        </div>
-        {botoes}
-      </div>
+      <span className="relogio-etapa">{etapa.nome}</span>
+      <strong className="relogio-tempo" role="timer">
+        {tempo}
+      </strong>
+      <span
+        className="relogio-barra"
+        style={{ '--andou': andou }}
+        aria-hidden="true"
+      />
+      {focos}
+      {botoes}
     </section>
   )
 }
