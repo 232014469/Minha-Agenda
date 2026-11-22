@@ -176,12 +176,16 @@ function Nevoa({ className }) {
  * Chuva no tema Reino doce: um bosque escuro de noite. Atrás das páginas,
  * céu azul com estrelas e lua, fileiras de árvores e duas árvores retorcidas
  * nas bordas; por cima do pé da página passa uma névoa com olhos amarelos
- * espiando. Só aparece no Reino doce (ver Floresta.css).
+ * espiando. Só aparece no Reino doce (ver Floresta.css). Com `saindo`, some
+ * devagar (quando o encanto devolve o reino rosa).
  */
-export default function Floresta() {
+export default function Floresta({ saindo = false }) {
   return (
     <>
-      <div className="floresta" aria-hidden="true">
+      <div
+        className={`floresta${saindo ? ' floresta-saindo' : ''}`}
+        aria-hidden="true"
+      >
         <span className="floresta-estrelas" />
         <span className="floresta-lua" />
         <svg
@@ -213,7 +217,10 @@ export default function Floresta() {
         ))}
       </div>
       {/* Por cima das páginas, sem pegar cliques: bordas na sombra e névoa no pé */}
-      <div className="floresta-frente" aria-hidden="true">
+      <div
+        className={`floresta-frente${saindo ? ' floresta-saindo' : ''}`}
+        aria-hidden="true"
+      >
         <Nevoa className="floresta-nevoa" />
         {OLHOS.filter((olho) => !olho.fundo).map((olho) => (
           <Olhos key={olho.id} olho={olho} />

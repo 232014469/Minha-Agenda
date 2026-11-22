@@ -188,6 +188,17 @@
   rotate: -8deg;
 }
 
+:root[data-tema='doce'] .floresta.floresta-saindo,
+:root[data-tema='doce'] .floresta-frente.floresta-saindo {
+  animation: floresta-some 1.6s ease forwards;
+}
+
+@keyframes floresta-some {
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes floresta-aparece {
   from {
     opacity: 0;

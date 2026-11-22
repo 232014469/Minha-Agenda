@@ -140,7 +140,8 @@ export default function CeuDoDia() {
   return (
     <>
       {feitico && <Feitico tipo={feitico.tipo} />}
-      {chuva && <Floresta />}
+      {/* No encanto, a floresta fica mais um pouco, sumindo devagar */}
+      {(chuva || feitico?.tipo === 'encanto') && <Floresta saindo={!chuva} />}
       <div
         className={`ceu-dia${chuva ? ' ceu-dia-chuva' : ''}`}
         aria-hidden="true"

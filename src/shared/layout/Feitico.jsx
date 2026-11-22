@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import './Feitico.css'
 
@@ -101,7 +102,7 @@ const ESPINHOS = [
   ]),
 ]
 
-const FAISCAS_VERDES = Array.from({ length: 26 }, (_, indice) => ({
+const FAISCAS_VERDES = Array.from({ length: 12 }, (_, indice) => ({
   id: indice,
   estilo: {
     left: `${num(sortear() * 100)}%`,
@@ -154,20 +155,20 @@ function Maldicao() {
 const CORES = ['#ffffff', '#ffd6ea', '#bfe6ff', '#fff1a8', '#e6d4ff', '#ffc2dc']
 
 /** Brilhos que giram em espiral do centro para fora (o redemoinho). */
-const REDEMOINHO = Array.from({ length: 48 }, (_, indice) => ({
+const REDEMOINHO = Array.from({ length: 28 }, (_, indice) => ({
   id: indice,
   estilo: {
-    '--giro-inicio': `${num((indice / 48) * 1080)}deg`,
-    '--giro-fim': `${num((indice / 48) * 1080 + 320 + sortear() * 140)}deg`,
-    '--giro-raio': `${num(10 + (indice / 48) * 50 + sortear() * 6)}vmin`,
-    '--brilho-tamanho': `${num(14 + sortear() * 16)}px`,
-    animationDelay: `${num((indice / 48) * 0.45)}s`,
+    '--giro-inicio': `${num((indice / 28) * 1080)}deg`,
+    '--giro-fim': `${num((indice / 28) * 1080 + 320 + sortear() * 140)}deg`,
+    '--giro-raio': `${num(10 + (indice / 28) * 50 + sortear() * 6)}vmin`,
+    '--brilho-tamanho': `${num(9 + sortear() * 9)}px`,
+    animationDelay: `${num((indice / 28) * 0.45)}s`,
   },
   cor: CORES[indice % CORES.length],
 }))
 
 /** Purpurina que cai depois da onda de luz. */
-const PURPURINA = Array.from({ length: 40 }, (_, indice) => ({
+const PURPURINA = Array.from({ length: 22 }, (_, indice) => ({
   id: indice,
   estilo: {
     left: `${num(sortear() * 100)}%`,
@@ -176,7 +177,7 @@ const PURPURINA = Array.from({ length: 40 }, (_, indice) => ({
     '--purpurina-cai': `${num(25 + sortear() * 40)}vh`,
     '--purpurina-lado': `${num((sortear() - 0.5) * 60)}px`,
     background: CORES[(indice + 2) % CORES.length],
-    animationDelay: `${num(0.9 + sortear() * 0.7)}s`,
+    animationDelay: `${num(1.1 + sortear() * 0.9)}s`,
   },
 }))
 
@@ -213,6 +214,16 @@ function Encanto() {
  * efeito (ver tempoDoFeitico.js). Não pega cliques.
  */
 export default function Feitico({ tipo }) {
+  // Enquanto o feitiço dura, as cores da página mudam devagar em vez de
+  // trocar de uma vez (ver Feitico.css)
+  useEffect(() => {
+    document.documentElement.dataset.feitico = tipo
+
+    return () => {
+      delete document.documentElement.dataset.feitico
+    }
+  }, [tipo])
+
   return createPortal(
     tipo === 'maldicao' ? <Maldicao /> : <Encanto />,
     document.body,

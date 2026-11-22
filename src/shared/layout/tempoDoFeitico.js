@@ -2,8 +2,8 @@
  * Tempos da transformação do Reino doce (Feitico.jsx): a troca entre reino e
  * bosque acontece por baixo no auge do efeito, e o efeito some no fim.
  */
-export const AUGE_DO_FEITICO = 950
-export const DURACAO_DO_FEITICO = 2700
+export const AUGE_DO_FEITICO = 1200
+export const DURACAO_DO_FEITICO = 3200
 
 /** Só encanta no Reino doce, com animações ligadas (e fora dos testes). */
 export function podeEncantar() {

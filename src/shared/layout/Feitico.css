@@ -1,7 +1,7 @@
 /*
  * Transformação do Reino doce (Feitico.jsx). Cobre a tela toda por cima de
- * tudo, sem pegar cliques, e dura 2,7 s; a troca acontece por baixo no auge
- * (0,95 s), quando o efeito está mais forte.
+ * tudo, sem pegar cliques, e dura 3,2 s. É suave e translúcido; a troca
+ * acontece por baixo no auge (1,2 s).
  */
 .feitico {
   position: fixed;
@@ -9,6 +9,18 @@
   z-index: 3000;
   overflow: hidden;
   pointer-events: none;
+}
+
+/* Durante o feitiço, fundo, bordas e textos trocam de cor devagar */
+:root[data-feitico] *,
+:root[data-feitico] *::before,
+:root[data-feitico] *::after {
+  transition:
+    background-color 1.4s ease,
+    border-color 1.4s ease,
+    color 1.4s ease,
+    fill 1.4s ease,
+    stroke 1.4s ease !important;
 }
 
 /* ---------- Maldição ---------- */
@@ -22,14 +34,14 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgb(var(--fumaca-cor) / 0.95) 0 35%,
-    rgb(var(--fumaca-cor) / 0.6) 55%,
+    rgb(var(--fumaca-cor) / 0.55) 0 30%,
+    rgb(var(--fumaca-cor) / 0.3) 50%,
     transparent 70%
   );
-  filter: blur(18px);
+  filter: blur(30px);
   translate: -50% -50%;
   scale: 0;
-  animation: feitico-fumaca 2.7s cubic-bezier(0.3, 0.6, 0.4, 1) both;
+  animation: feitico-fumaca 3.2s ease-in-out both;
 }
 
 @keyframes feitico-fumaca {
@@ -45,13 +57,13 @@
 
   42% {
     opacity: 1;
-    scale: 1;
+    scale: 0.8;
   }
 
   100% {
     opacity: 0;
-    scale: 1.25;
-    rotate: 40deg;
+    scale: 1;
+    rotate: 20deg;
   }
 }
 
@@ -61,19 +73,20 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  animation: feitico-some 2.7s ease both;
+  opacity: 0.55;
+  animation: feitico-some 3.2s ease both;
 }
 
 .feitico-espinhos path {
   fill: none;
   stroke: #0c0614;
-  stroke-width: 9;
+  stroke-width: 4;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  filter: drop-shadow(0 0 6px rgb(110 255 140 / 0.55));
-  animation: feitico-cresce 1s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+  filter: drop-shadow(0 0 4px rgb(110 255 140 / 0.35));
+  animation: feitico-cresce 1.6s ease-out forwards;
 }
 
 @keyframes feitico-cresce {
@@ -84,8 +97,8 @@
 
 @keyframes feitico-some {
   0%,
-  60% {
-    opacity: 1;
+  55% {
+    opacity: 0.55;
   }
 
   100% {
@@ -99,12 +112,12 @@
   inset: 0;
   background: radial-gradient(
     circle at 50% 55%,
-    rgb(150 255 120 / 0.55),
-    rgb(60 200 90 / 0.25) 40%,
+    rgb(150 255 120 / 0.18),
+    rgb(60 200 90 / 0.08) 40%,
     transparent 75%
   );
   opacity: 0;
-  animation: feitico-clarao 2.7s ease both;
+  animation: feitico-clarao 3.2s ease both;
 }
 
 @keyframes feitico-clarao {
@@ -131,9 +144,7 @@
   height: var(--faisca-tamanho);
   border-radius: 50%;
   background: #b6ff9a;
-  box-shadow:
-    0 0 6px 2px rgb(120 255 120 / 0.8),
-    0 0 16px 4px rgb(60 200 90 / 0.5);
+  box-shadow: 0 0 6px 2px rgb(120 255 120 / 0.5);
   opacity: 0;
   animation: feitico-faisca ease-out both;
 }
@@ -144,8 +155,8 @@
     transform: translate(0, 0) scale(0.6);
   }
 
-  15% {
-    opacity: 1;
+  25% {
+    opacity: 0.7;
   }
 
   100% {
@@ -162,12 +173,12 @@
   inset: 0;
   background: radial-gradient(
     circle at 50% 50%,
-    #fff,
-    rgb(255 214 234) 45%,
-    rgb(255 196 224) 85%
+    rgb(255 255 255 / 0.8),
+    rgb(255 214 234 / 0.6) 45%,
+    rgb(255 196 224 / 0.45) 85%
   );
   opacity: 0;
-  animation: feitico-veu 2.7s ease both;
+  animation: feitico-veu 3.2s ease-in-out both;
 }
 
 @keyframes feitico-veu {
@@ -176,12 +187,12 @@
     opacity: 0;
   }
 
-  35% {
-    opacity: 0.97;
+  38% {
+    opacity: 0.75;
   }
 
-  55% {
-    opacity: 0.6;
+  60% {
+    opacity: 0.35;
   }
 
   100% {
@@ -199,13 +210,13 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    #fff 0 8%,
-    rgb(255 205 230 / 0.85) 25%,
-    rgb(200 180 255 / 0.4) 50%,
+    rgb(255 255 255 / 0.8) 0 6%,
+    rgb(255 205 230 / 0.45) 25%,
+    rgb(200 180 255 / 0.15) 50%,
     transparent 70%
   );
   translate: -50% -50%;
-  animation: feitico-nucleo 2.7s ease both;
+  animation: feitico-nucleo 3.2s ease-in-out both;
 }
 
 @keyframes feitico-nucleo {
@@ -220,14 +231,14 @@
   }
 
   45% {
-    opacity: 1;
-    scale: 3;
+    opacity: 0.8;
+    scale: 2;
   }
 
   70%,
   100% {
     opacity: 0;
-    scale: 4;
+    scale: 2.6;
   }
 }
 
@@ -243,7 +254,7 @@
   top: 0;
   left: 0;
   opacity: 0;
-  animation: feitico-giro 1.5s cubic-bezier(0.2, 0.5, 0.3, 1) both;
+  animation: feitico-giro 2.2s cubic-bezier(0.25, 0.4, 0.3, 1) both;
 }
 
 .feitico-giro i {
@@ -260,9 +271,9 @@
     0 50%,
     38% 38%
   );
-  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px rgb(255 170 215));
+  filter: drop-shadow(0 0 3px rgb(255 255 255 / 0.8));
   translate: -50% -50%;
-  animation: feitico-cintila 0.4s ease-in-out infinite alternate;
+  animation: feitico-cintila 0.7s ease-in-out infinite alternate;
 }
 
 @keyframes feitico-giro {
@@ -271,12 +282,12 @@
     transform: rotate(var(--giro-inicio)) translateX(2vmin) scale(0.6);
   }
 
-  12% {
-    opacity: 1;
+  15% {
+    opacity: 0.85;
   }
 
-  75% {
-    opacity: 1;
+  70% {
+    opacity: 0.7;
   }
 
   100% {
@@ -301,26 +312,25 @@
   height: 40px;
   border-radius: 50%;
   box-shadow:
-    0 0 0 4px rgb(255 255 255 / 0.95),
-    0 0 18px 10px rgb(255 170 215 / 0.75),
-    inset 0 0 12px 4px rgb(255 230 245 / 0.8);
+    0 0 0 2px rgb(255 255 255 / 0.7),
+    0 0 12px 6px rgb(255 170 215 / 0.35);
   opacity: 0;
   translate: -50% -50%;
-  animation: feitico-onda 1.4s cubic-bezier(0.2, 0.6, 0.3, 1) 0.6s both;
+  animation: feitico-onda 2s ease-out 0.8s both;
 }
 
 .feitico-onda-segunda {
-  animation-delay: 0.85s;
+  display: none;
 }
 
 @keyframes feitico-onda {
   0% {
-    opacity: 1;
+    opacity: 0.8;
     scale: 0;
   }
 
-  80% {
-    opacity: 0.8;
+  70% {
+    opacity: 0.4;
   }
 
   100% {
@@ -344,9 +354,9 @@
     0 50%,
     38% 38%
   );
-  filter: drop-shadow(0 0 3px #fff);
+  filter: drop-shadow(0 0 2px rgb(255 255 255 / 0.8));
   opacity: 0;
-  animation: feitico-purpurina 1.6s ease-in both;
+  animation: feitico-purpurina 2.2s ease-in-out both;
 }
 
 @keyframes feitico-purpurina {
@@ -355,8 +365,8 @@
     transform: translate(0, 0) rotate(0) scale(0.4);
   }
 
-  20% {
-    opacity: 1;
+  25% {
+    opacity: 0.75;
     transform: translate(0, 0) rotate(30deg) scale(1);
   }
 
