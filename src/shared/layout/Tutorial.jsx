@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router'
 import Sprite from '../gatinhos/Sprite'
 import { usePreferencias } from '../preferencias'
-import { CHAVE_TUTORIAL, EVENTO_TUTORIAL, PASSOS } from './tutorialPassos'
+import {
+  CHAVE_TUTORIAL,
+  EVENTO_TUTORIAL,
+  passosDoTutorial,
+} from './tutorialPassos'
 import './Tutorial.css'
 
 const ESPACO = 8
@@ -69,6 +73,8 @@ export default function Tutorial({ primeiroAcesso }) {
     primeiroAcesso && !jaViu() ? 0 : null,
   )
   const [caixa, setCaixa] = useState(null)
+  // Os passos dependem do que está no alto do menu (gatinho, relógio...)
+  const PASSOS = useMemo(() => passosDoTutorial(cantinho), [cantinho])
   const passo = indice === null ? null : PASSOS[indice]
 
   const encerrar = useCallback(() => {
@@ -81,22 +87,25 @@ export default function Tutorial({ primeiroAcesso }) {
   }, [])
 
   /** Anda para o próximo passo com alvo na tela (ou o anterior). */
-  const andar = useCallback((direcao) => {
-    setIndice((atual) => {
-      let proximo = atual + direcao
+  const andar = useCallback(
+    (direcao) => {
+      setIndice((atual) => {
+        let proximo = atual + direcao
 
-      while (
-        proximo > 0 &&
-        proximo < PASSOS.length - 1 &&
-        PASSOS[proximo].alvo &&
-        !alvoDoPasso(PASSOS[proximo])
-      ) {
-        proximo += direcao
-      }
+        while (
+          proximo > 0 &&
+          proximo < PASSOS.length - 1 &&
+          PASSOS[proximo].alvo &&
+          !alvoDoPasso(PASSOS[proximo])
+        ) {
+          proximo += direcao
+        }
 
-      return Math.max(0, Math.min(PASSOS.length - 1, proximo))
-    })
-  }, [])
+        return Math.max(0, Math.min(PASSOS.length - 1, proximo))
+      })
+    },
+    [PASSOS],
+  )
 
   // Pelas Configurações: mostra de novo desde o começo
   useEffect(() => {
