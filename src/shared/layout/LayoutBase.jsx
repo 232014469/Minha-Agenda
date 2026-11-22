@@ -1,5 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { NavLink, Outlet } from 'react-router'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router'
 import { APP } from '../../config/app'
 import { nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -58,6 +64,49 @@ export default function LayoutBase() {
     comBotoes: !celular,
   })
   const cantoRef = useRef(null)
+  const linksRef = useRef(null)
+  const { pathname } = useLocation()
+
+  // O destaque do menu corre até a tela escolhida (como as vistas da
+  // Agenda): posicionado direto no elemento, medindo o link ativo
+  useLayoutEffect(() => {
+    const lista = linksRef.current
+
+    if (!lista) return undefined
+
+    function posicionar() {
+      const marcador = lista.querySelector('.layout-links-marcador')
+      const ativo = lista.querySelector('a.active')
+
+      if (!marcador) return
+      if (!ativo) {
+        marcador.style.opacity = '0'
+        return
+      }
+
+      const base = lista.getBoundingClientRect()
+      const caixa = ativo.getBoundingClientRect()
+
+      marcador.style.opacity = '1'
+      marcador.style.transform = `translate(${caixa.left - base.left}px, ${
+        caixa.top - base.top
+      }px)`
+      marcador.style.width = `${caixa.width}px`
+      marcador.style.height = `${caixa.height}px`
+      // Só anima depois de já estar no lugar (não corre ao abrir o site)
+      requestAnimationFrame(() => lista.classList.add('pronto'))
+    }
+
+    posicionar()
+
+    if (typeof ResizeObserver === 'undefined') return undefined
+
+    const observador = new ResizeObserver(posicionar)
+
+    observador.observe(lista)
+
+    return () => observador.disconnect()
+  }, [pathname])
   const fecharConfig = useCallback(() => setConfigAberta(false), [])
 
   // Fecha o painel ao clicar fora dele (e fora da engrenagem).
@@ -88,7 +137,8 @@ export default function LayoutBase() {
           )}
         </div>
 
-        <ul className="layout-links">
+        <ul className="layout-links" ref={linksRef}>
+          <li className="layout-links-marcador" aria-hidden="true" />
           {itens.map((item) => (
             <li key={item.para}>
               <NavLink to={item.para}>
