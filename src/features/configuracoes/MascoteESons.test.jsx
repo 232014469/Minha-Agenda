@@ -15,7 +15,7 @@ afterEach(() => {
 })
 
 describe('Mascote e sons', () => {
-  it('escolhe o mascote e liga ou desliga sons, gatinhos e o bichinho', () => {
+  it('escolhe o mascote e liga ou desliga os sons', () => {
     render(<MascoteESons />)
 
     expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeChecked()
@@ -23,10 +23,6 @@ describe('Mascote e sons', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Gatinho preto' }))
     fireEvent.click(screen.getByRole('checkbox', { name: /Bordões/ }))
     fireEvent.click(screen.getByRole('checkbox', { name: /Miados/ }))
-    fireEvent.click(
-      screen.getByRole('checkbox', { name: /Gatinhos pela tela/ }),
-    )
-    fireEvent.click(screen.getByRole('checkbox', { name: /Bichinho virtual/ }))
 
     expect(screen.getByRole('radio', { name: 'Gatinho preto' })).toBeChecked()
     // Sem sons, os bordões ficam desligados também
@@ -35,8 +31,6 @@ describe('Mascote e sons', () => {
       mascote: 'gato05',
       sons: false,
       bordoes: false,
-      gatinhos: false,
-      tamagotchi: false,
       gatinho: true,
     })
   })
@@ -49,11 +43,7 @@ describe('Mascote e sons', () => {
     expect(lerPreferencias().gatinho).toBe(false)
     expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeDisabled()
     expect(screen.getByRole('checkbox', { name: /Miados/ })).toBeDisabled()
-    expect(
-      screen.getByRole('checkbox', { name: /Gatinhos pela tela/ }),
-    ).toBeDisabled()
-    expect(
-      screen.getByRole('checkbox', { name: /Bichinho virtual/ }),
-    ).toBeDisabled()
+    // As opções de gatinhos pela tela e de bichinho virtual saíram
+    expect(screen.getAllByRole('checkbox')).toHaveLength(3)
   })
 })

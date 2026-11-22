@@ -2,13 +2,11 @@ import { GATOS, urlDoSprite } from '../../shared/gatinhos/gatos'
 import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
 /**
- * Se há gatinho na tela, quem fica no menu, se os sons tocam, se os gatinhos
- * aparecem pela tela e se o gatinho do menu mora no bichinho virtual. Sem
- * gatinho, as opções dele ficam desligadas.
+ * Se há gatinho na tela, quem fica no menu e se os sons tocam. Sem gatinho,
+ * a escolha dele e os miados ficam desligados.
  */
 export default function MascoteESons() {
-  const { mascote, sons, bordoes, gatinhos, tamagotchi, gatinho } =
-    usePreferencias()
+  const { mascote, sons, bordoes, gatinho } = usePreferencias()
 
   return (
     <section
@@ -24,8 +22,8 @@ export default function MascoteESons() {
             mudarPreferencia('gatinho', evento.target.checked)
           }
         />
-        Gatinho na tela (desligado, ele some do menu, dos avisos e do bichinho
-        virtual)
+        Gatinho na tela (desligado, ele some e o relógio de estudo fica no lugar
+        dele)
       </label>
       <fieldset className="config-mascotes" disabled={!gatinho}>
         <legend className="so-leitor">Gatinho do menu</legend>
@@ -69,29 +67,6 @@ export default function MascoteESons() {
         />
         Bordões da Wanessa Wolf (ao concluir, ao anotar falta e no alerta de
         atividade atrasada)
-      </label>
-      <label className="config-chave-liga">
-        <input
-          type="checkbox"
-          checked={gatinhos}
-          disabled={!gatinho}
-          onChange={(evento) =>
-            mudarPreferencia('gatinhos', evento.target.checked)
-          }
-        />
-        Gatinhos pela tela (passeio, comemoração e cochilo)
-      </label>
-      <label className="config-chave-liga">
-        <input
-          type="checkbox"
-          checked={tamagotchi}
-          disabled={!gatinho}
-          onChange={(evento) =>
-            mudarPreferencia('tamagotchi', evento.target.checked)
-          }
-        />
-        Bichinho virtual no menu (moldura, botões de cuidar e o ciclo de vida do
-        gatinho)
       </label>
     </section>
   )

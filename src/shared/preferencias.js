@@ -4,16 +4,14 @@ import { ehGato } from './gatinhos/gatos'
 
 /**
  * Preferências deste aparelho (não vão na sincronização): o mascote do menu,
- * se os sons tocam, se os bordões substituem alguns miados, se os gatinhos
- * aparecem pela tela, se o gatinho do menu mora no bichinho virtual e se há
- * gatinho na tela (desligado, ele some de todo lugar).
+ * se os sons tocam, se os bordões substituem alguns miados e se há gatinho
+ * na tela (desligado, ele some de todo lugar e o relógio de estudo fica no
+ * lugar dele). Opções que saíram do app são esquecidas ao ler.
  */
 const PADRAO = {
   mascote: 'gato01',
   sons: true,
   bordoes: true,
-  gatinhos: true,
-  tamagotchi: true,
   gatinho: true,
 }
 const CHAVE = `${APP.chaveDosDados}.preferencias`
@@ -21,9 +19,11 @@ const ouvintes = new Set()
 
 function ler() {
   try {
-    const salvas = {
-      ...PADRAO,
-      ...JSON.parse(localStorage.getItem(CHAVE) ?? '{}'),
+    const guardadas = JSON.parse(localStorage.getItem(CHAVE) ?? '{}')
+    const salvas = { ...PADRAO }
+
+    for (const nome of Object.keys(PADRAO)) {
+      if (nome in guardadas) salvas[nome] = guardadas[nome]
     }
 
     // O lobinho saiu: quem tinha escolhido ele fica com o gatinho padrão.

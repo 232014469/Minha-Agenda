@@ -4,9 +4,9 @@ import { ehGato } from './gatos'
 
 /** Gatinho cochilando, para quando não há nada pendente. */
 export default function GatinhoDormindo() {
-  const { gatinhos, gatinho, mascote } = usePreferencias()
+  const { gatinho, mascote } = usePreferencias()
 
-  if (!gatinhos || !gatinho) return null
+  if (!gatinho) return null
 
   return (
     <div className="gatinho-dormindo" aria-hidden="true">

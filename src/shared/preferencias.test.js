@@ -12,13 +12,11 @@ afterEach(() => {
 })
 
 describe('preferências do aparelho', () => {
-  it('começa com o gatinho marrom, sons, gatinhos e bichinho ligados', () => {
+  it('começa com o gatinho marrom, sons e gatinho na tela ligados', () => {
     expect(lerPreferencias()).toEqual({
       mascote: 'gato01',
       sons: true,
       bordoes: true,
-      gatinhos: true,
-      tamagotchi: true,
       gatinho: true,
     })
   })
@@ -31,6 +29,18 @@ describe('preferências do aparelho', () => {
     recarregarPreferencias()
 
     expect(lerPreferencias()).toMatchObject({ mascote: 'gato01', sons: false })
+  })
+
+  it('esquece opções que saíram do app', () => {
+    localStorage.setItem(
+      'wolf-study.dados.preferencias',
+      JSON.stringify({ gatinhos: false, tamagotchi: false, sons: false }),
+    )
+    recarregarPreferencias()
+
+    expect(lerPreferencias()).not.toHaveProperty('gatinhos')
+    expect(lerPreferencias()).not.toHaveProperty('tamagotchi')
+    expect(lerPreferencias().sons).toBe(false)
   })
 
   it('guarda a escolha e relê do armazenamento', () => {

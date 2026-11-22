@@ -57,13 +57,13 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho)
   // (dá para desligar nas Configurações).
-  const { tamagotchi, gatinho } = usePreferencias()
+  const { gatinho } = usePreferencias()
   // Sem gatinho na tela, o bichinho também para (os dias não contam)
-  const comBichinho = !celular && tamagotchi && gatinho
+  const comBichinho = !celular && gatinho
   const bichinho = useBichinho({
     tarefas,
     materias,
-    ativo: tamagotchi && gatinho,
+    ativo: gatinho,
     comBotoes: !celular,
   })
   const cantoRef = useRef(null)

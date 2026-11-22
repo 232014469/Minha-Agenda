@@ -30,14 +30,14 @@ export default function Mascote({
   felicidade = null,
   bichinho = null,
 }) {
-  const { mascote, sons, bordoes, gatinhos } = usePreferencias()
+  const { mascote, sons, bordoes } = usePreferencias()
 
   return (
     <MascoteGato
       gato={mascote}
       sons={sons}
       bordoes={bordoes}
-      comemora={gatinhos}
+      comemora
       noMenu={noMenu}
       chuva={chuva}
       felicidade={felicidade}
