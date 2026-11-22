@@ -302,3 +302,12 @@
   border-radius: 999px;
   font-weight: 700;
 }
+
+/* Sem gatinho na tela, a escolha do mascote fica apagada */
+.config-mascotes:disabled {
+  opacity: 0.45;
+}
+
+.config-mascotes:disabled .config-mascote {
+  cursor: not-allowed;
+}

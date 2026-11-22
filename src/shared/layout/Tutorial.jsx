@@ -62,7 +62,7 @@ function posicaoDoCartao(caixa) {
  * tutorial", no canto, ou o Esc encerram a qualquer momento.
  */
 export default function Tutorial({ primeiroAcesso }) {
-  const { mascote } = usePreferencias()
+  const { mascote, gatinho } = usePreferencias()
   const navegar = useNavigate()
   const [indice, setIndice] = useState(() =>
     primeiroAcesso && !jaViu() ? 0 : null,
@@ -170,7 +170,7 @@ export default function Tutorial({ primeiroAcesso }) {
         aria-labelledby="tutorial-titulo"
         aria-describedby="tutorial-texto"
       >
-        {passo.gatinho && (
+        {passo.gatinho && gatinho && (
           <span className="tutorial-gatinho">
             <Sprite gato={mascote} animacao="idle_blink" fps={7} escala={2} />
           </span>

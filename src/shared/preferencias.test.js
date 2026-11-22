@@ -19,6 +19,7 @@ describe('preferências do aparelho', () => {
       bordoes: true,
       gatinhos: true,
       tamagotchi: true,
+      gatinho: true,
     })
   })
 

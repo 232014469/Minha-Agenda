@@ -56,12 +56,13 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho)
   // (dá para desligar nas Configurações).
-  const { tamagotchi } = usePreferencias()
-  const comBichinho = !celular && tamagotchi
+  const { tamagotchi, gatinho } = usePreferencias()
+  // Sem gatinho na tela, o bichinho também para (os dias não contam)
+  const comBichinho = !celular && tamagotchi && gatinho
   const bichinho = useBichinho({
     tarefas,
     materias,
-    ativo: tamagotchi,
+    ativo: tamagotchi && gatinho,
     comBotoes: !celular,
   })
   const cantoRef = useRef(null)
@@ -128,7 +129,7 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && (
+          {!celular && gatinho && (
             <Mascote
               noMenu
               chuva={chuva}
@@ -196,7 +197,7 @@ export default function LayoutBase() {
           </p>
         )}
         <main className="layout-conteudo">
-          {celular && (
+          {celular && gatinho && (
             <div className="layout-mascote-celular">
               <Mascote />
             </div>

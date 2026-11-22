@@ -83,7 +83,7 @@ function comecarVoo(atual, cartaoEl) {
  */
 export default function AlertaPodeNao({ hoje = new Date() }) {
   const { tarefas } = useDados()
-  const { mascote, sons, bordoes } = usePreferencias()
+  const { mascote, sons, bordoes, gatinho } = usePreferencias()
   const cartaoRef = useRef(null)
   const jaTocou = useRef(false)
   const [alerta, setAlerta] = useState(() => {
@@ -179,9 +179,11 @@ export default function AlertaPodeNao({ hoje = new Date() }) {
         }
       >
         <p className="alerta-frase">
-          <span className="alerta-gato" aria-hidden="true">
-            <Sprite gato={mascote} animacao="attack" fps={11} escala={4} />
-          </span>
+          {gatinho && (
+            <span className="alerta-gato" aria-hidden="true">
+              <Sprite gato={mascote} animacao="attack" fps={11} escala={4} />
+            </span>
+          )}
           Pode não!
         </p>
         <p className="alerta-resumo">{resumir(urgentes)}</p>

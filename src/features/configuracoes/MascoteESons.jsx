@@ -2,11 +2,13 @@ import { GATOS, urlDoSprite } from '../../shared/gatinhos/gatos'
 import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
 
 /**
- * Quem fica no menu, se os sons tocam, se os gatinhos aparecem pela tela e se
- * o gatinho do menu mora no bichinho virtual.
+ * Se há gatinho na tela, quem fica no menu, se os sons tocam, se os gatinhos
+ * aparecem pela tela e se o gatinho do menu mora no bichinho virtual. Sem
+ * gatinho, as opções dele ficam desligadas.
  */
 export default function MascoteESons() {
-  const { mascote, sons, bordoes, gatinhos, tamagotchi } = usePreferencias()
+  const { mascote, sons, bordoes, gatinhos, tamagotchi, gatinho } =
+    usePreferencias()
 
   return (
     <section
@@ -14,7 +16,18 @@ export default function MascoteESons() {
       aria-labelledby="config-mascote-titulo"
     >
       <h2 id="config-mascote-titulo">Mascote e sons</h2>
-      <fieldset className="config-mascotes">
+      <label className="config-chave-liga">
+        <input
+          type="checkbox"
+          checked={gatinho}
+          onChange={(evento) =>
+            mudarPreferencia('gatinho', evento.target.checked)
+          }
+        />
+        Gatinho na tela (desligado, ele some do menu, dos avisos e do bichinho
+        virtual)
+      </label>
+      <fieldset className="config-mascotes" disabled={!gatinho}>
         <legend className="so-leitor">Gatinho do menu</legend>
         {GATOS.map((opcao) => (
           <label key={opcao.id} className="config-mascote" title={opcao.nome}>
@@ -40,6 +53,7 @@ export default function MascoteESons() {
         <input
           type="checkbox"
           checked={sons}
+          disabled={!gatinho}
           onChange={(evento) => mudarPreferencia('sons', evento.target.checked)}
         />
         Miados ao clicar no gatinho
@@ -60,6 +74,7 @@ export default function MascoteESons() {
         <input
           type="checkbox"
           checked={gatinhos}
+          disabled={!gatinho}
           onChange={(evento) =>
             mudarPreferencia('gatinhos', evento.target.checked)
           }
@@ -70,6 +85,7 @@ export default function MascoteESons() {
         <input
           type="checkbox"
           checked={tamagotchi}
+          disabled={!gatinho}
           onChange={(evento) =>
             mudarPreferencia('tamagotchi', evento.target.checked)
           }

@@ -37,6 +37,23 @@ describe('Mascote e sons', () => {
       bordoes: false,
       gatinhos: false,
       tamagotchi: false,
+      gatinho: true,
     })
+  })
+
+  it('sem gatinho na tela, as opções dele ficam desligadas', () => {
+    render(<MascoteESons />)
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /Gatinho na tela/ }))
+
+    expect(lerPreferencias().gatinho).toBe(false)
+    expect(screen.getByRole('radio', { name: 'Gatinho marrom' })).toBeDisabled()
+    expect(screen.getByRole('checkbox', { name: /Miados/ })).toBeDisabled()
+    expect(
+      screen.getByRole('checkbox', { name: /Gatinhos pela tela/ }),
+    ).toBeDisabled()
+    expect(
+      screen.getByRole('checkbox', { name: /Bichinho virtual/ }),
+    ).toBeDisabled()
   })
 })
