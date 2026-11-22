@@ -59,7 +59,8 @@
   align-items: stretch;
 }
 
-/* As cores dos cartões antigos: lilás, amarelo e verde. */
+/* As cores dos cartões: faltas na cor do tema, prova amarela e entregas
+   lilás. */
 .inicio-cartoes > .inicio-caixa {
   align-content: start;
   border-color: transparent;
@@ -73,7 +74,13 @@
 
 .inicio-cartoes > :nth-child(1) {
   grid-area: faltas;
-  background: var(--cor-lilas);
+  /* Faltas: na cor do tema (um pouco mais suave no escuro) */
+  background: color-mix(in srgb, var(--tema) 85%, var(--cor-papel));
+}
+
+/* No escuro, mais fechado, para o aviso vermelho de faltas continuar legível */
+:root[data-modo='escuro'] .inicio-cartoes > :nth-child(1) {
+  background: color-mix(in srgb, var(--tema) 50%, var(--cor-papel));
 }
 
 .inicio-cartoes > :nth-child(2) {
@@ -85,8 +92,7 @@
   grid-area: extra;
   grid-template-rows: auto 1fr;
   align-content: stretch;
-  /* Entregas da semana: na cor do tema (um pouco mais suave no escuro) */
-  background: color-mix(in srgb, var(--tema) 85%, var(--cor-papel));
+  background: var(--cor-lilas);
 }
 
 .inicio-cartoes h2,
@@ -609,7 +615,7 @@
   overflow-y: auto;
   padding: 20px 22px;
   border-radius: 16px;
-  background: color-mix(in srgb, var(--tema) 85%, var(--cor-papel));
+  background: var(--cor-lilas);
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.25);
 }
 
