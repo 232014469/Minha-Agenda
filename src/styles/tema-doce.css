@@ -340,3 +340,12 @@
 :root[data-tema='doce'] .ceu-dia-chuva .ceu-dia-gota {
   background: rgb(200 215 255 / 0.45);
 }
+
+/* No celular, o destaque da barra flutuante é uma pílula clarinha, sem as
+   listras de bala (como nos outros temas) */
+@media (max-width: 760px) {
+  :root[data-tema='doce'] .layout-links-marcador,
+  :root[data-tema='doce'][data-tempo='chuva'] .layout-links-marcador {
+    background: color-mix(in srgb, var(--tema) 24%, transparent);
+  }
+}

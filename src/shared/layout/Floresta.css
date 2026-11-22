@@ -44,7 +44,7 @@
 @media (max-width: 760px) {
   :root[data-tema='doce'] .floresta,
   :root[data-tema='doce'] .floresta-frente {
-    inset: 0 0 68px;
+    inset: 0;
   }
 }
 
