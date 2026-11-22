@@ -19,6 +19,7 @@ import { temAtrasadas } from './alerta'
 import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
+import RelogioDeEstudo from './RelogioDeEstudo'
 import QuadroDaSemana from './QuadroDaSemana'
 import RastroDeBrilho from './RastroDeBrilho'
 import Tutorial from './Tutorial'
@@ -129,14 +130,18 @@ export default function LayoutBase() {
       <nav className="layout-menu" aria-label="Menu principal">
         <div className="layout-marca-bloco">
           <p className="layout-marca">{APP.nome}</p>
-          {!celular && gatinho && (
-            <Mascote
-              noMenu
-              chuva={chuva}
-              felicidade={bichinho.felicidade}
-              bichinho={comBichinho ? bichinho : null}
-            />
-          )}
+          {/* Sem gatinho, o relógio de estudo fica no lugar dele */}
+          {!celular &&
+            (gatinho ? (
+              <Mascote
+                noMenu
+                chuva={chuva}
+                felicidade={bichinho.felicidade}
+                bichinho={comBichinho ? bichinho : null}
+              />
+            ) : (
+              <RelogioDeEstudo />
+            ))}
         </div>
 
         <ul className="layout-links" ref={linksRef}>
@@ -197,11 +202,14 @@ export default function LayoutBase() {
           </p>
         )}
         <main className="layout-conteudo">
-          {celular && gatinho && (
-            <div className="layout-mascote-celular">
-              <Mascote />
-            </div>
-          )}
+          {celular &&
+            (gatinho ? (
+              <div className="layout-mascote-celular">
+                <Mascote />
+              </div>
+            ) : (
+              <RelogioDeEstudo compacto />
+            ))}
           <Outlet />
         </main>
         <AlertaPodeNao />
