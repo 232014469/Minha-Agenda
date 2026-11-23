@@ -1,5 +1,6 @@
 /* Atividades avaliativas (valem nota): estrelinha dourada antes do nome e
-   um contorno dourado no cartão, post-it ou linha onde aparecem */
+   um contorno na cor da matéria, mais escura, no cartão, post-it ou linha
+   onde aparecem (--chip na Agenda, --painel-forte no resto) */
 :root {
   --cor-avaliativa: #d99a12;
 }
@@ -24,6 +25,11 @@
 .semana-postit:has(.selo-avaliativa),
 .inicio-proxima:has(.selo-avaliativa),
 .entrega:has(.selo-avaliativa) {
-  outline: 2px solid var(--cor-avaliativa);
+  outline: 2px solid
+    color-mix(
+      in srgb,
+      var(--chip, var(--painel-forte, var(--cor-avaliativa))) 62%,
+      #000
+    );
   outline-offset: -2px;
 }

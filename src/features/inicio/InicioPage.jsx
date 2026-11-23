@@ -172,7 +172,7 @@ function Proximas({ proximas, atrasadas }) {
             return (
               <li key={item.id}>
                 <Link
-                  className={`inicio-proxima${
+                  className={`inicio-proxima materia-cor-${item.materiaCor}${
                     item.atrasada ? ' inicio-proxima-atrasada' : ''
                   }`}
                   to={`/materias/${item.materiaId}`}
