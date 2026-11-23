@@ -29,6 +29,7 @@ export const TIPOS = [
   'Entrega de trabalho',
   'Prova',
   'Lista de exercícios',
+  'Atividade',
   'Apresentação',
   'Seminário',
   'Projeto',

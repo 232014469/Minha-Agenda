@@ -88,6 +88,7 @@ describe('corDoTipo', () => {
     expect(corDoTipo('Exercício')).toBe('amarelo')
     expect(corDoTipo('Questionário')).toBe('azul')
     expect(corDoTipo('Laboratório')).toBe('verde')
+    expect(corDoTipo('Atividade')).toBe('amarelo')
     expect(corDoTipo('Relatório')).toBe('amarelo')
     expect(corDoTipo('Apresentação')).toBe('rosa')
     expect(corDoTipo('Seminário')).toBe('rosa')

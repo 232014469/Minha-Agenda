@@ -83,7 +83,7 @@ export function corDoTipo(tipo) {
 
   if (comeca('lista', 'prova', 'questionario')) return 'azul'
   if (comeca('projeto', 'laboratorio')) return 'verde'
-  if (comeca('exerc', 'relatorio')) return 'amarelo'
+  if (comeca('exerc', 'relatorio', 'atividade')) return 'amarelo'
   if (comeca('apresentacao', 'seminario')) return 'rosa'
 
   return 'lilas'
