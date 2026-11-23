@@ -88,7 +88,7 @@ export default function Tema() {
             mudarPreferencia('vidro', evento.target.checked)
           }
         />
-        Vidro líquido (cartões e janelas meio transparentes, como no iPhone)
+        Liquid glass
       </label>
     </section>
   )
