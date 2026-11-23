@@ -31,9 +31,13 @@ export function aplicarTema(id) {
   pintarBarra()
 
   try {
-    if (localStorage.getItem(CHAVE) !== tema) {
+    const anterior = localStorage.getItem(CHAVE)
+
+    if (anterior !== tema) {
       localStorage.setItem(CHAVE, tema)
-      marcarExtra('tema')
+      // A primeira gravação (o padrão, num aparelho novo) não é uma escolha:
+      // não vai por cima do tema escolhido em outro aparelho
+      if (anterior !== null) marcarExtra('tema')
     }
   } catch {
     // Sem armazenamento (modo privado): o tema vale só até fechar.
@@ -116,9 +120,11 @@ export function aplicarModo(id) {
   pintarModo()
 
   try {
-    if (localStorage.getItem(CHAVE_MODO) !== modoAtual) {
+    const anterior = localStorage.getItem(CHAVE_MODO)
+
+    if (anterior !== modoAtual) {
       localStorage.setItem(CHAVE_MODO, modoAtual)
-      marcarExtra('modo')
+      if (anterior !== null) marcarExtra('modo')
     }
   } catch {
     // Sem armazenamento (modo privado): vale só até fechar.

@@ -65,14 +65,20 @@ export function lerBichinho(agora = Date.now()) {
   return novoBichinho(agora)
 }
 
-/** Guarda o bichinho; se mudou de verdade, ele vai para os outros aparelhos. */
-export function salvarBichinho(bichinho) {
+/**
+ * Guarda o bichinho. Com `marcar` (quando a pessoa cuidou dele, abriu a
+ * caixinha ou adotou outro), a mudança vai para os outros aparelhos; o que
+ * muda sozinho (a nota do dia, um bichinho novo num aparelho novo) não passa
+ * por cima do bichinho de lá.
+ */
+export function salvarBichinho(bichinho, { marcar = false } = {}) {
   try {
     const texto = JSON.stringify(bichinho)
 
-    if (localStorage.getItem(CHAVE_BICHINHO) === texto) return
-    localStorage.setItem(CHAVE_BICHINHO, texto)
-    marcarExtra('bichinho')
+    if (localStorage.getItem(CHAVE_BICHINHO) !== texto) {
+      localStorage.setItem(CHAVE_BICHINHO, texto)
+    }
+    if (marcar) marcarExtra('bichinho')
   } catch {
     // Sem espaço ou bloqueado: segue só na memória
   }

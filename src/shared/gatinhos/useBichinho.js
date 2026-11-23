@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDados } from '../../dados/useDados'
 import { EVENTO_EXTRAS_RECEBIDOS } from '../../sync/extras'
 import {
@@ -56,8 +56,13 @@ export function useBichinho({
     return () => clearInterval(relogio)
   }, [])
 
+  // Só o que a pessoa fez (cuidar, abrir a caixinha, adotar) vai para os
+  // outros aparelhos; a nota do dia muda sozinha em cada um
+  const fezAlgo = useRef(false)
+
   useEffect(() => {
-    salvarBichinho(bichinho)
+    salvarBichinho(bichinho, { marcar: fezAlgo.current })
+    fezAlgo.current = false
   }, [bichinho])
 
   // O bichinho mudou em outro aparelho (cuidaram dele lá): usa o de lá
@@ -89,6 +94,7 @@ export function useBichinho({
   const cuidar = useCallback((acao) => {
     const instante = Date.now()
 
+    fezAlgo.current = true
     if (acao === 'comer') setBichinho((atual) => alimentar(atual, instante))
     if (acao === 'brincar') setBichinho((atual) => brincar(atual, instante))
     setAgora(instante)
@@ -98,6 +104,7 @@ export function useBichinho({
   const abrir = useCallback(() => {
     const instante = Date.now()
 
+    fezAlgo.current = true
     setBichinho((atual) => abrirCaixa(atual, instante))
     setAgora(instante)
   }, [])
@@ -105,6 +112,7 @@ export function useBichinho({
   const recomecar = useCallback(() => {
     const instante = Date.now()
 
+    fezAlgo.current = true
     setBichinho((atual) => novoBichinho(instante, (atual.geracao ?? 1) + 1))
     setAgora(instante)
   }, [])

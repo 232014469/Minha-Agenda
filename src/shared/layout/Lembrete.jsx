@@ -25,10 +25,11 @@ export default function Lembrete({ compacto = false }) {
   const [texto, setTexto] = useState(lerLembrete)
   const id = useId()
 
-  // Guarda ao escrever; só uma mudança de verdade vai para os outros aparelhos
+  // Guarda ao escrever; só uma mudança de verdade vai para os outros
+  // aparelhos (abrir o lembrete vazio não conta como escrever nada)
   useEffect(() => {
     try {
-      if (localStorage.getItem(CHAVE) === texto) return
+      if ((localStorage.getItem(CHAVE) ?? '') === texto) return
       localStorage.setItem(CHAVE, texto)
       marcarExtra('lembrete')
     } catch {
