@@ -35,10 +35,9 @@
   opacity: 0.75;
 }
 
-/* As linhas do papel são o fundo do próprio campo, uma por linha de texto
-   (28px), logo abaixo das letras: o texto fica em cima delas. Cabem 6. */
+/* Papel liso, sem linhas; cabem 6 linhas de texto, sem rolagem */
 .lembrete textarea {
-  --linha: 28px;
+  --linha: 22px;
 
   display: block;
   width: 100%;
@@ -46,14 +45,7 @@
   padding: 0;
   overflow: hidden;
   border: 0;
-  background: linear-gradient(
-      transparent calc(var(--linha) - 3px),
-      color-mix(in srgb, var(--tema) 45%, transparent) calc(var(--linha) - 3px)
-        calc(var(--linha) - 2px),
-      transparent calc(var(--linha) - 2px)
-    )
-    0 0 / 100% var(--linha);
-  background-attachment: local;
+  background: transparent;
   color: var(--cor-texto);
   font-family: var(--fonte-titulo);
   font-size: 0.9rem;
