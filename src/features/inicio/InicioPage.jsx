@@ -19,6 +19,7 @@ import { CartaoSemana, CartaoFaltas, CartaoProva } from './CartoesDoPainel'
 import { fraseDoDia } from '../../config/frases'
 import GatinhoDormindo from '../../shared/gatinhos/GatinhoDormindo'
 import ProgressoGeral from './ProgressoGeral'
+import RelatorioDeEntregas from './RelatorioDeEntregas'
 import {
   esquecerMateriasNovas,
   lerMateriasNovas,
@@ -37,12 +38,47 @@ function FraseDoDia() {
   )
 }
 
-function Progresso({ resumo, atrasadas }) {
+/**
+ * Meu progresso: o anel e os números. Clicar no cartão (ou no ⤢) abre o
+ * relatório de entregas, saindo do próprio cartão.
+ */
+function Progresso({ resumo, atrasadas, tarefas, materias, semestre }) {
   const { concluidas, total, pendentes, percentual } = resumo
+  // Aberto: onde estava o cartão, para a janela sair dele (fechado: null)
+  const [relatorio, setRelatorio] = useState(null)
 
   return (
-    <section className="inicio-caixa inicio-progresso">
-      <h2>Meu progresso</h2>
+    <section
+      className={`inicio-caixa inicio-progresso${total ? ' inicio-progresso-clicavel' : ''}`}
+      aria-labelledby="progresso-titulo"
+      onClick={(evento) => {
+        if (total && !evento.target.closest('.janela-fundo')) {
+          setRelatorio(evento.currentTarget.getBoundingClientRect())
+        }
+      }}
+    >
+      <div className="inicio-caixa-topo">
+        <h2 id="progresso-titulo">Meu progresso</h2>
+        {total > 0 && (
+          <button
+            type="button"
+            className="inicio-ampliar"
+            aria-label="Ver o relatório de entregas"
+            title="Ver o relatório"
+          >
+            ⤢
+          </button>
+        )}
+      </div>
+      {relatorio && (
+        <RelatorioDeEntregas
+          tarefas={tarefas}
+          materias={materias}
+          semestre={semestre}
+          origem={relatorio}
+          aoFechar={() => setRelatorio(null)}
+        />
+      )}
       {total === 0 ? (
         <EstadoVazio mensagem="Você ainda não tem tarefas no semestre." />
       ) : (
@@ -266,7 +302,13 @@ export default function InicioPage() {
         </div>
 
         <aside className="inicio-lateral">
-          <Progresso resumo={resumo} atrasadas={atrasadas} />
+          <Progresso
+            resumo={resumo}
+            atrasadas={atrasadas}
+            tarefas={tarefas}
+            materias={materias}
+            semestre={semestre}
+          />
           <Proximas
             proximas={proximasTarefas(tarefas, materias)}
             atrasadas={atrasadas}

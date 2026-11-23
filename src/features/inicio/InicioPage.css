@@ -573,11 +573,13 @@
 }
 
 /* O cartão da semana abre o mês ampliado ao clicar. */
-.inicio-semana-cartao {
+.inicio-semana-cartao,
+.inicio-progresso-clicavel {
   cursor: pointer;
 }
 
-.inicio-semana-cartao:hover {
+.inicio-semana-cartao:hover,
+.inicio-progresso-clicavel:hover {
   box-shadow: 0 4px 14px rgb(var(--sombra) / 0.12);
 }
 

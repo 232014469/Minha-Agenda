@@ -1,0 +1,246 @@
+/* Relatório de entregas (RelatorioDeEntregas.jsx), na JanelaNaPagina */
+.janela.relatorio {
+  display: grid;
+  gap: 18px;
+  max-height: 88vh;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: var(--cor-papel);
+  box-shadow: 0 16px 44px rgb(0 0 0 / 0.25);
+  color: var(--cor-texto);
+}
+
+.relatorio-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.relatorio-topo h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.relatorio-topo p {
+  margin: 2px 0 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+}
+
+.relatorio-fechar {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--cor-hover);
+  color: inherit;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Números de cima, em plaquinhas */
+.relatorio-numeros {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.relatorio-numero {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tema) 14%, var(--cor-papel));
+}
+
+.relatorio-numero dt {
+  color: var(--cor-texto-suave);
+  font-size: 0.72rem;
+}
+
+.relatorio-numero dd {
+  display: grid;
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+  line-height: 1.1;
+}
+
+.relatorio-numero small {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-texto);
+  font-size: 0.7rem;
+}
+
+.relatorio-alerta {
+  background: var(--cor-erro-fundo);
+}
+
+.relatorio-alerta dd {
+  color: var(--cor-erro-texto);
+}
+
+.relatorio-colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.relatorio-bloco h3 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.relatorio-bloco ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Linha: nome, barra e conta */
+.relatorio-linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+}
+
+.relatorio-linha-nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relatorio-barra {
+  display: flex;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--cor-trilho);
+}
+
+.relatorio-barra-feitas {
+  background: var(--painel-forte, var(--tema));
+}
+
+.relatorio-barra-perdidas {
+  background: var(--cor-borda-forte);
+  opacity: 0.6;
+}
+
+.relatorio-linha-conta {
+  min-width: 34px;
+  color: var(--cor-texto-suave);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Ritmo: uma coluna por semana; a parte cheia são as concluídas */
+.relatorio-ritmo {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  height: 130px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relatorio-ritmo li {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+}
+
+.relatorio-ritmo-conta {
+  min-height: 1em;
+  color: var(--cor-texto-suave);
+}
+
+.relatorio-ritmo-coluna {
+  display: flex;
+  align-self: end;
+  align-items: flex-end;
+  width: 70%;
+  min-height: 4px;
+  overflow: hidden;
+  border-radius: 8px 8px 4px 4px;
+  background: color-mix(in srgb, var(--tema) 22%, var(--cor-trilho));
+}
+
+.relatorio-ritmo-coluna span {
+  width: 100%;
+  background: var(--tema);
+}
+
+.relatorio-semana-atual .relatorio-ritmo-data {
+  font-weight: 700;
+}
+
+.relatorio-ritmo-data {
+  color: var(--cor-texto-suave);
+}
+
+.relatorio-vazio,
+.relatorio-nota {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+}
+
+/* As barras crescem logo depois que a janela abre */
+.relatorio .relatorio-barra > span,
+.relatorio-ritmo-coluna {
+  animation: relatorio-cresce 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s backwards;
+}
+
+.relatorio .relatorio-barra > span {
+  transform-origin: left;
+}
+
+.relatorio-ritmo-coluna {
+  transform-origin: bottom;
+}
+
+@keyframes relatorio-cresce {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+.relatorio .relatorio-barra > span {
+  animation-name: relatorio-cresce-x;
+}
+
+@keyframes relatorio-cresce-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .relatorio .relatorio-barra > span,
+  .relatorio-ritmo-coluna {
+    animation: none;
+  }
+}
+
+/* Celular: números em duas colunas e blocos um embaixo do outro */
+@media (max-width: 760px) {
+  .relatorio-numeros {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .relatorio-colunas {
+    grid-template-columns: 1fr;
+  }
+}
