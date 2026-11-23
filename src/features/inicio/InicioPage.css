@@ -665,6 +665,39 @@
   }
 }
 
+/* Fechar: a janela volta encolhendo até o cartão e o fundo clareia */
+.inicio-mes-fundo.fechando {
+  pointer-events: none;
+  animation: inicio-mes-fundo-some 0.26s ease-in both;
+}
+
+.inicio-mes-fundo.fechando .inicio-mes-janela {
+  animation: inicio-mes-fecha 0.26s cubic-bezier(0.5, 0, 0.75, 0.4) both;
+}
+
+@keyframes inicio-mes-fundo-some {
+  to {
+    background-color: rgb(40 28 20 / 0);
+  }
+}
+
+@keyframes inicio-mes-fecha {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(var(--de-x, 0), var(--de-y, 0))
+      scale(var(--de-escala, 0.6));
+  }
+}
+
 @keyframes inicio-mes-barra-sobe {
   from {
     transform: scaleY(0);
@@ -674,7 +707,9 @@
 @media (prefers-reduced-motion: reduce) {
   .inicio-mes-fundo,
   .inicio-mes-janela,
-  .inicio-mes-barras .inicio-semana-barra {
+  .inicio-mes-barras .inicio-semana-barra,
+  .inicio-mes-fundo.fechando,
+  .inicio-mes-fundo.fechando .inicio-mes-janela {
     animation: none;
   }
 }

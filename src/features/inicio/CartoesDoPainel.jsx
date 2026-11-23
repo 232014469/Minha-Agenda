@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router'
 import { useDados } from '../../dados/useDados'
@@ -229,20 +229,48 @@ function origemDaJanela(origem) {
  * cobrir a janela, mas sem cobrir o menu): as entregas do mês inteiro, com setas para os outros
  * meses. Abre saindo do cartão clicado; fecha no ×, no Esc ou clicando fora.
  */
+/** Quanto dura a volta da janela do mês até o cartão (ver o CSS). */
+const FECHAR_MES_MS = 260
+
+/** Animar só onde dá (nos testes não há matchMedia) e se a pessoa quiser. */
+function podeAnimar() {
+  return (
+    typeof window !== 'undefined' &&
+    Boolean(window.matchMedia) &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+}
+
 function EntregasDoMes({ tarefas, materias, agora, origem, aoFechar }) {
   const [mes, setMes] = useState(
     () => new Date(agora.getFullYear(), agora.getMonth(), 1),
   )
+  // Fechando: a janela volta encolhendo até o cartão antes de sumir
+  const [fechando, setFechando] = useState(false)
+  const jaFechando = useRef(false)
+
+  const fechar = useCallback(() => {
+    if (jaFechando.current) return
+    jaFechando.current = true
+
+    if (!podeAnimar()) {
+      aoFechar()
+      return
+    }
+
+    setFechando(true)
+    setTimeout(aoFechar, FECHAR_MES_MS)
+  }, [aoFechar])
 
   useEffect(() => {
     function tecla(evento) {
-      if (evento.key === 'Escape') aoFechar()
+      if (evento.key === 'Escape') fechar()
     }
 
     document.addEventListener('keydown', tecla)
 
     return () => document.removeEventListener('keydown', tecla)
-  }, [aoFechar])
+  }, [fechar])
 
   const dias = entregasDoMes(
     tarefas,
@@ -272,9 +300,9 @@ function EntregasDoMes({ tarefas, materias, agora, origem, aoFechar }) {
 
   return createPortal(
     <div
-      className="inicio-mes-fundo"
+      className={`inicio-mes-fundo${fechando ? ' fechando' : ''}`}
       onClick={(evento) => {
-        if (evento.target === evento.currentTarget) aoFechar()
+        if (evento.target === evento.currentTarget) fechar()
       }}
     >
       <section
@@ -313,7 +341,7 @@ function EntregasDoMes({ tarefas, materias, agora, origem, aoFechar }) {
             type="button"
             className="inicio-mes-fechar"
             aria-label="Fechar"
-            onClick={aoFechar}
+            onClick={fechar}
             autoFocus
           >
             ×
