@@ -23,6 +23,7 @@ import {
   resumirPendencias,
 } from './disciplinaUtils'
 import './PaginaMateria.css'
+import SeloAvaliativa from '../../shared/components/SeloAvaliativa'
 
 const FILTROS = [
   { chave: 'todas', titulo: 'Todas' },
@@ -66,7 +67,10 @@ function Entrega({ entrega, agora, ordem, aoAlternar, aoExcluir }) {
     >
       <div className="entrega-conteudo">
         <div className="entrega-linha">
-          <h3>{entrega.titulo}</h3>
+          <h3>
+            <SeloAvaliativa tarefa={entrega} />
+            {entrega.titulo}
+          </h3>
           <span className={`entrega-status entrega-status-${situacao.classe}`}>
             {situacao.texto}
           </span>

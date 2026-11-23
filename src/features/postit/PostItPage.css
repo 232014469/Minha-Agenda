@@ -344,40 +344,6 @@
   font-weight: 700;
 }
 
-/* Nota da atividade (ao editar): "Tirei 8,5 de 10, peso 2" numa linha */
-.postit-nota {
-  display: flex;
-  gap: 8px;
-  margin: 4px 0 0;
-  padding: 0;
-  border: 0;
-}
-
-.postit-nota legend {
-  margin-bottom: 4px;
-  padding: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.postit-nota label {
-  display: grid;
-  flex: 1;
-  gap: 2px;
-}
-
-.postit-nota label span {
-  font-size: 0.7rem;
-  font-weight: 400;
-  opacity: 0.75;
-}
-
-.postit-nota input {
-  width: 100%;
-  min-width: 0;
-  text-align: center;
-}
-
 .postit-acoes {
   display: flex;
   flex-wrap: wrap;

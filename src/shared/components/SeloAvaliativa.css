@@ -1,0 +1,29 @@
+/* Atividades avaliativas (valem nota): estrelinha dourada antes do nome e
+   um contorno dourado no cartão, post-it ou linha onde aparecem */
+:root {
+  --cor-avaliativa: #d99a12;
+}
+
+:root[data-modo='escuro'] {
+  --cor-avaliativa: #f2c14e;
+}
+
+.selo-avaliativa {
+  display: inline-block;
+  margin-right: 3px;
+  color: var(--cor-avaliativa);
+  font-style: normal;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.15);
+}
+
+.agenda-chip:has(.selo-avaliativa),
+.agenda-cartao:has(.selo-avaliativa),
+.agenda-lista-item:has(.selo-avaliativa),
+.agenda-card:has(.selo-avaliativa),
+.postit:has(.selo-avaliativa),
+.semana-postit:has(.selo-avaliativa),
+.inicio-proxima:has(.selo-avaliativa),
+.entrega:has(.selo-avaliativa) {
+  outline: 2px solid var(--cor-avaliativa);
+  outline-offset: -2px;
+}

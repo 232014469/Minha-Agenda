@@ -123,6 +123,8 @@
 }
 
 .notas-remover {
+  display: grid;
+  place-items: center;
   width: 22px;
   height: 22px;
   padding: 0;
@@ -133,37 +135,58 @@
   cursor: pointer;
 }
 
-/* Nova avaliação avulsa */
-.notas-avulsa {
-  display: flex;
+/* Nova avaliação: nome, tipo, data (com data entra na Agenda) */
+.notas-nova {
+  display: grid;
   gap: 6px;
+  padding: 10px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: 12px;
 }
 
-.notas-avulsa input {
-  flex: 1;
+.notas-nova-titulo {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.notas-nova input,
+.notas-nova select {
   min-width: 0;
   padding: 6px 8px;
-  border: 1px dashed var(--cor-borda-forte);
+  border: 1px solid var(--cor-borda);
   border-radius: 8px;
-  background: transparent;
+  background: var(--cor-superficie);
   color: var(--cor-texto);
   font: inherit;
   font-size: 0.8rem;
 }
 
-.notas-avulsa button {
-  width: 30px;
+.notas-nova-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.notas-nova-linha button {
+  grid-column: 1 / -1;
+  padding: 7px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 999px;
   background: var(--painel-forte, var(--tema));
   color: #fff;
+  font: inherit;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
 }
 
-.notas-avulsa button:disabled {
+.notas-nova-linha button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.notas-marcar {
+  font-size: 0.8rem;
 }
 
 /* Como o professor calcula */

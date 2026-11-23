@@ -1,3 +1,5 @@
+import { ehAvaliativa } from '../../shared/avaliativa'
+
 /**
  * Notas de uma matéria: as avaliações (atividades com nota e as avulsas que
  * a pessoa lançar direto na matéria), a regra do professor e o que sai
@@ -26,20 +28,6 @@ export const MODOS = [
   { id: 'pontos', nome: 'Soma de pontos' },
 ]
 
-/** Tipos que contam na nota sem precisar marcar (os outros, só com nota). */
-const TIPOS_AVALIADOS = [
-  'Prova',
-  'Entrega de trabalho',
-  'Projeto',
-  'Apresentação',
-  'Seminário',
-  'Relatório',
-  'Atividade',
-  'Lista de exercícios',
-  'Laboratório',
-  'Questionário',
-]
-
 const numero = (valor) =>
   typeof valor === 'number' && Number.isFinite(valor) ? valor : null
 
@@ -66,18 +54,14 @@ export function mencaoDe(media, { reprovadoPorFalta = false } = {}) {
 }
 
 /**
- * As avaliações da matéria: as atividades que contam (pelo tipo, ou por
- * terem nota ou peso) e as avulsas. Peso 0 tira da conta.
+ * As avaliações da matéria: as atividades avaliativas (criadas ou marcadas
+ * no cartão de Notas; ver shared/avaliativa.js) e as avulsas, sem data.
+ * Peso 0 tira da conta.
  */
 export function avaliacoesDa(materia, tarefas) {
   const daMateria = tarefas
     .filter((tarefa) => tarefa.materiaId === materia.id)
-    .filter(
-      (tarefa) =>
-        numero(tarefa.nota) !== null ||
-        numero(tarefa.peso) !== null ||
-        TIPOS_AVALIADOS.includes(tarefa.tipo),
-    )
+    .filter(ehAvaliativa)
     .map((tarefa) => ({
       id: `t${tarefa.id}`,
       tarefaId: tarefa.id,

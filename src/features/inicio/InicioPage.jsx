@@ -26,6 +26,7 @@ import {
   lerMateriasNovas,
 } from '../materias/vooDaMateria'
 import './InicioPage.css'
+import SeloAvaliativa from '../../shared/components/SeloAvaliativa'
 
 /** Uma frase por dia, alternando na ordem da lista. */
 function FraseDoDia() {
@@ -184,7 +185,10 @@ function Proximas({ proximas, atrasadas }) {
                     {MES_CURTO[data.getMonth()]}
                   </span>
                   <span className="inicio-proxima-texto">
-                    <strong>{item.titulo}</strong>
+                    <strong>
+                      <SeloAvaliativa tarefa={item} />
+                      {item.titulo}
+                    </strong>
                     <span className="inicio-proxima-materia">
                       {item.materiaNome}
                     </span>

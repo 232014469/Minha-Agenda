@@ -14,6 +14,7 @@ const tarefa = (id, tipo, extra = {}) => ({
   tipo,
   prazo: `2026-11-${10 + id}T23:59:00`,
   status: 'A_FAZER',
+  avaliativa: tipo !== 'Leitura',
   ...extra,
 })
 

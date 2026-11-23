@@ -184,8 +184,9 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
   }, [])
 
   /**
-   * Muda título, tipo, data, descrição ou a nota (nota, de quanto, peso e se
-   * é substitutiva) de uma tarefa já salva. Nota `null` apaga a nota.
+   * Muda título, tipo, data, descrição ou a parte de nota (se é avaliativa,
+   * a nota, de quanto, o peso e se é substitutiva) de uma tarefa já salva.
+   * Nota `null` apaga a nota.
    */
   const editarTarefa = useCallback((id, mudancas) => {
     const permitidas = [
@@ -197,6 +198,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       'notaMaxima',
       'peso',
       'substitutiva',
+      'avaliativa',
     ]
     const limpas = Object.fromEntries(
       Object.entries(mudancas).filter(([campo]) => permitidas.includes(campo)),

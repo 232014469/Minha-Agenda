@@ -14,6 +14,7 @@ import {
   proximaProva,
   textoDosDias,
 } from './inicioUtils'
+import SeloAvaliativa from '../../shared/components/SeloAvaliativa'
 
 /** Faltas de cada matéria do semestre, com "+1 falta" direto daqui. */
 export function CartaoFaltas() {
@@ -74,7 +75,10 @@ export function CartaoProva({ agora = new Date() }) {
       {prova ? (
         <Link to={`/materias/${prova.materiaId}`} className="inicio-prova-link">
           <span className="inicio-prova-quando">{textoDosDias(dias)}</span>
-          <strong>{prova.titulo}</strong>
+          <strong>
+            <SeloAvaliativa tarefa={prova} />
+            {prova.titulo}
+          </strong>
           <span>{materia?.nome}</span>
           <small>{formatarPrazoCurto(prova.prazo, agora)}</small>
         </Link>

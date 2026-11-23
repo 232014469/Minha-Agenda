@@ -3,6 +3,7 @@ import { useDados } from '../../dados/useDados'
 import { EVENTO_ALERTA_POSTIT } from '../gatinhos/gatos'
 import '../cores.css'
 import { atividadesDaSemana, rotuloDoDia } from './semana'
+import SeloAvaliativa from '../components/SeloAvaliativa'
 
 /**
  * Quadro fixo no menu lateral com as atividades pendentes da semana, em
@@ -57,7 +58,10 @@ export default function QuadroDaSemana({ hoje = new Date() }) {
                 title={`${tarefa.titulo} · ${nomeDe(tarefa.materiaId)}`}
               >
                 <span className="semana-dia">{dia}</span>
-                <span className="semana-titulo">{tarefa.titulo}</span>
+                <span className="semana-titulo">
+                  <SeloAvaliativa tarefa={tarefa} />
+                  {tarefa.titulo}
+                </span>
                 <span className="semana-materia">
                   {nomeDe(tarefa.materiaId)}
                 </span>

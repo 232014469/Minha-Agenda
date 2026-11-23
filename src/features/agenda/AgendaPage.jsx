@@ -28,6 +28,7 @@ import {
 } from './agendaUtils'
 import '../../shared/cores.css'
 import './AgendaPage.css'
+import SeloAvaliativa from '../../shared/components/SeloAvaliativa'
 
 const DIAS_DA_SEMANA = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM']
 const DIAS_POR_EXTENSO = [
@@ -70,6 +71,7 @@ function Chip({ item, cor }) {
       title={`${item.titulo} · ${item.disciplina ?? ''}`}
     >
       <span className="agenda-chip-tipo" aria-hidden="true">
+        <SeloAvaliativa tarefa={item} />
         {item.tipo || 'Atividade'}
       </span>
       <span className="agenda-so-leitor">
@@ -170,7 +172,10 @@ function CartaoDeEntrega({ item, cor, ordem }) {
       style={ordem === undefined ? undefined : { '--ordem': ordem }}
     >
       <span className="agenda-cartao-hora">{formatarHora(item.prazo)}</span>
-      <strong>{item.titulo}</strong>
+      <strong>
+        <SeloAvaliativa tarefa={item} />
+        {item.titulo}
+      </strong>
       {item.descricao && <p>{item.descricao}</p>}
       <span className="agenda-cartao-meta">
         {item.disciplina} · {item.tipo}
@@ -342,7 +347,10 @@ function ListaDoMes({ itens, corDe }) {
           }${ehConcluida(item.status) ? ' agenda-chip-concluida' : ''}`}
         >
           <strong>{formatarPrazoDdMm(item.prazo)}</strong>
-          <span className="agenda-lista-titulo">{item.titulo}</span>
+          <span className="agenda-lista-titulo">
+            <SeloAvaliativa tarefa={item} />
+            {item.titulo}
+          </span>
           <span className="agenda-lista-meta">
             {item.disciplina} · {item.tipo} · {descreverStatus(item)}
           </span>
@@ -553,7 +561,10 @@ function Quadro({ itens, alvo, setAlvo, soltar, mover, erroAcao, corDe }) {
                           item.disciplina,
                         )}${atrasada ? ' atrasada' : ''}`}
                       >
-                        <h3>{item.titulo}</h3>
+                        <h3>
+                          <SeloAvaliativa tarefa={item} />
+                          {item.titulo}
+                        </h3>
                         {item.disciplina && (
                           <span className="agenda-card-materia">
                             {item.disciplina}

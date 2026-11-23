@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
+import { ehAvaliativa } from '../../shared/avaliativa'
+import Icone from '../../shared/layout/Icone'
 import { situacaoDasFaltas } from '../faltas/faltas'
 import {
   MEDIA_PARA_PASSAR,
@@ -44,7 +47,7 @@ function textoDaSituacao(conta) {
 
   switch (conta.situacao) {
     case 'sem-notas':
-      return 'Lance as notas nas atividades (no Post it, ao editar) ou aqui embaixo.'
+      return 'Adicione as avaliações aqui embaixo e lance as notas quando saírem.'
     case 'precisa':
       return `Para passar (${passar}), precisa de ${formatarNota(conta.precisa)} no que falta.`
     case 'aprovado':
@@ -63,13 +66,15 @@ function textoDaSituacao(conta) {
 /**
  * Notas da matéria (na página dela): média, menção da UnB, quanto falta
  * para passar e cada avaliação, com a nota e o peso editáveis ali mesmo.
- * As notas das atividades são as mesmas lançadas no Post it; dá para
- * juntar avaliações avulsas (participação...) e escolher como o professor
- * calcula.
+ * As avaliações nascem aqui: com data viram atividades avaliativas na
+ * Agenda (com destaque); sem data ficam só aqui. Dá para marcar uma entrega
+ * que já existe como avaliativa e escolher como o professor calcula.
  */
 export default function NotasDaMateria({ materia }) {
-  const { tarefas, editarTarefa, ajustarNotasDaMateria } = useDados()
-  const [novaAvulsa, setNovaAvulsa] = useState('')
+  const { tarefas, editarTarefa, adicionarTarefa, ajustarNotasDaMateria } =
+    useDados()
+  // Nova avaliação: com data entra na Agenda; sem data fica só aqui
+  const [nova, setNova] = useState({ nome: '', tipo: 'Prova', data: '' })
   const reprovadoPorFalta = situacaoDasFaltas(materia).nivel === 'reprovado'
   const conta = calcularNotas(materia, tarefas, { reprovadoPorFalta })
   const { regra } = conta
@@ -103,24 +108,46 @@ export default function NotasDaMateria({ materia }) {
     }
   }
 
-  function adicionarAvulsa(evento) {
+  function adicionarAvaliacao(evento) {
     evento.preventDefault()
-    if (!novaAvulsa.trim()) return
+    const nome = nova.nome.trim()
 
-    ajustarNotasDaMateria(materia.id, {
-      avaliacoes: [
-        ...avulsas,
-        { id: Date.now(), nome: novaAvulsa.trim(), nota: null, peso: 1 },
-      ],
-    })
-    setNovaAvulsa('')
+    if (!nome) return
+
+    if (nova.data) {
+      adicionarTarefa({
+        materiaId: materia.id,
+        titulo: nome,
+        tipo: nova.tipo,
+        prazo: `${nova.data}T23:59:00`,
+        avaliativa: true,
+      })
+    } else {
+      ajustarNotasDaMateria(materia.id, {
+        avaliacoes: [...avulsas, { id: Date.now(), nome, nota: null, peso: 1 }],
+      })
+    }
+
+    setNova({ nome: '', tipo: nova.tipo, data: '' })
   }
 
-  function removerAvulsa(item) {
+  // Tirar das notas: a avulsa some; a atividade volta a ser uma entrega
+  // normal (continua na Agenda)
+  function tirar(item) {
+    if (item.tarefaId !== undefined) {
+      editarTarefa(item.tarefaId, { avaliativa: false, nota: null })
+      return
+    }
+
     ajustarNotasDaMateria(materia.id, {
       avaliacoes: avulsas.filter((avulsa) => avulsa.id !== item.avulsaId),
     })
   }
+
+  // Entregas da matéria que ainda não valem nota (para marcar uma delas)
+  const naoAvaliativas = tarefas.filter(
+    (tarefa) => tarefa.materiaId === materia.id && !ehAvaliativa(tarefa),
+  )
 
   return (
     <section className="materia-caixa notas" aria-labelledby="notas-titulo">
@@ -203,35 +230,88 @@ export default function NotasDaMateria({ materia }) {
                   />
                 </span>
               ) : null}
-              {item.avulsaId !== undefined && (
-                <button
-                  type="button"
-                  className="notas-remover"
-                  aria-label={`Tirar ${item.nome}`}
-                  title="Tirar"
-                  onClick={() => removerAvulsa(item)}
-                >
-                  ×
-                </button>
-              )}
+              <button
+                type="button"
+                className="notas-remover"
+                aria-label={`Tirar ${item.nome} das notas`}
+                title={
+                  item.tarefaId !== undefined
+                    ? 'Tirar das notas (continua na Agenda)'
+                    : 'Tirar'
+                }
+                onClick={() => tirar(item)}
+              >
+                <Icone nome="lixo" tamanho={13} />
+              </button>
             </li>
           ))}
         </ul>
       )}
 
-      <form className="notas-avulsa" onSubmit={adicionarAvulsa}>
+      <form
+        className="notas-nova"
+        onSubmit={adicionarAvaliacao}
+        aria-label="Nova avaliação"
+      >
+        <span className="notas-nova-titulo">Nova avaliação</span>
         <input
           type="text"
-          value={novaAvulsa}
-          maxLength={60}
-          placeholder="Outra avaliação (ex.: participação)"
-          aria-label="Nome de outra avaliação"
-          onChange={(evento) => setNovaAvulsa(evento.target.value)}
+          value={nova.nome}
+          maxLength={80}
+          placeholder="Ex.: P1, Projeto final, Participação"
+          aria-label="Nome da avaliação"
+          onChange={(evento) => setNova({ ...nova, nome: evento.target.value })}
         />
-        <button type="submit" disabled={!novaAvulsa.trim()}>
-          +
-        </button>
+        <div className="notas-nova-linha">
+          <select
+            value={nova.tipo}
+            aria-label="Tipo da avaliação"
+            onChange={(evento) =>
+              setNova({ ...nova, tipo: evento.target.value })
+            }
+          >
+            {TIPOS.map((tipo) => (
+              <option key={tipo}>{tipo}</option>
+            ))}
+          </select>
+          <input
+            type="date"
+            value={nova.data}
+            aria-label="Data da avaliação"
+            onChange={(evento) =>
+              setNova({ ...nova, data: evento.target.value })
+            }
+          />
+          <button type="submit" disabled={!nova.nome.trim()}>
+            Adicionar
+          </button>
+        </div>
+        <span className="notas-dica">
+          Com data, ela entra na Agenda com a ★. Sem data (ex.: participação),
+          fica só aqui.
+        </span>
       </form>
+
+      {naoAvaliativas.length > 0 && (
+        <label className="notas-opcao notas-marcar">
+          <span>Marcar entrega como avaliativa</span>
+          <select
+            value=""
+            onChange={(evento) => {
+              if (evento.target.value) {
+                editarTarefa(Number(evento.target.value), { avaliativa: true })
+              }
+            }}
+          >
+            <option value="">Escolher…</option>
+            {naoAvaliativas.map((tarefa) => (
+              <option key={tarefa.id} value={tarefa.id}>
+                {tarefa.titulo}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
 
       <details className="notas-regra">
         <summary>Como o professor calcula</summary>
