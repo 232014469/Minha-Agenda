@@ -70,16 +70,27 @@
   opacity: 0.55;
 }
 
-/* Celular: faixa com uma linha só, em cima do título */
+/* Celular: faixa em cima do título com o começo do texto; tocar abre o
+   bilhete inteiro por cima da página */
 .lembrete-compacto {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   margin: 0 0 10px;
-  padding: 6px 14px 6px 10px;
+  padding: 10px 12px 10px 10px;
   border: 1px solid var(--cor-borda);
   border-radius: 999px;
   background: color-mix(in srgb, var(--tema) 18%, rgb(var(--vidro) / 0.8));
+  color: var(--cor-texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lembrete-compacto:focus-visible {
+  outline: 3px solid var(--tema);
+  outline-offset: 2px;
 }
 
 .lembrete-alfinete {
@@ -91,21 +102,48 @@
   box-shadow: 0 2px 3px rgb(var(--sombra) / 0.3);
 }
 
-.lembrete-compacto input {
+.lembrete-compacto-texto {
   flex: 1;
   min-width: 0;
-  padding: 6px 0;
-  border: 0;
-  background: transparent;
-  color: var(--cor-texto);
+  overflow: hidden;
   font-family: var(--fonte-titulo);
   font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.lembrete-compacto input:focus-visible {
-  outline: none;
+.lembrete-compacto-texto.vazio {
+  color: var(--cor-texto-suave);
 }
 
-.lembrete-compacto:focus-within {
-  box-shadow: 0 0 0 2px var(--tema);
+.lembrete-compacto-abrir {
+  flex: none;
+  opacity: 0.6;
+}
+
+/* O bilhete aberto: a própria janela é o papel */
+.janela.lembrete-janela {
+  overflow: visible;
+  padding: 14px 6px 6px;
+  background: none;
+  box-shadow: none;
+}
+
+.lembrete-janela .lembrete {
+  margin: 0;
+  rotate: -1deg;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.28);
+}
+
+.lembrete-pronto {
+  justify-self: end;
+  margin-top: 4px;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tema);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
 }

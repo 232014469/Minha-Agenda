@@ -20,9 +20,20 @@ describe('Lembrete', () => {
     cleanup()
     render(<Lembrete compacto />)
 
+    // No celular aparece o começo; tocar abre o bilhete inteiro
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Lembrete: Levar a calculadora na prova',
+      }),
+    )
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByLabelText('Lembrete')).toHaveValue(
       'Levar a calculadora na prova',
     )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Pronto' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
   it('corta o texto em 90 letras, para caber no papel', () => {
@@ -43,6 +54,11 @@ describe('Lembrete', () => {
 
     expect(mudou).not.toHaveBeenCalled()
     expect(localStorage.getItem('wolf-study.dados.lembrete')).toBeNull()
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Escrever um lembrete' }),
+    )
+    expect(mudou).not.toHaveBeenCalled()
 
     fireEvent.change(screen.getByLabelText('Lembrete'), {
       target: { value: 'Prova na quarta' },
