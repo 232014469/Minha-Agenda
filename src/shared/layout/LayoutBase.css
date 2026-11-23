@@ -621,3 +621,26 @@
   color: var(--cor-erro-texto);
   font-weight: 700;
 }
+
+/* Ao escolher uma tela no menu, ela aparece subindo de leve, como a Agenda
+   (que já faz isso nas vistas) e a página da matéria (que tem a sua) */
+.layout-conteudo > .inicio,
+.layout-conteudo > .postit-pagina,
+.layout-conteudo > .materias-pagina {
+  animation: layout-tela-entra 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+@keyframes layout-tela-entra {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layout-conteudo > .inicio,
+  .layout-conteudo > .postit-pagina,
+  .layout-conteudo > .materias-pagina {
+    animation: none;
+  }
+}
