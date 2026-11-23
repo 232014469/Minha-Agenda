@@ -5,7 +5,7 @@ import { useDados } from '../../dados/useDados'
 import { EstadoVazio } from '../../shared/components/Estados'
 import '../../shared/cores.css'
 import BarraDeFaltas from '../faltas/BarraDeFaltas'
-import { HORAS_POR_ENCONTRO } from '../faltas/faltas'
+import { HORAS_POR_ENCONTRO, situacaoDasFaltas } from '../faltas/faltas'
 import {
   diasAte,
   entregasDoMes,
@@ -15,10 +15,49 @@ import {
   textoDosDias,
 } from './inicioUtils'
 import SeloAvaliativa from '../../shared/components/SeloAvaliativa'
+import { MEDIA_PARA_PASSAR, calcularNotas, formatarNota } from '../notas/notas'
 
-/** Faltas de cada matéria do semestre, com "+1 falta" direto daqui. */
+/** A linha de notas de uma matéria no cartão: menção, média e o que falta. */
+function ResumoDeNotas({ materia, tarefas }) {
+  const conta = calcularNotas(materia, tarefas, {
+    reprovadoPorFalta: situacaoDasFaltas(materia).nivel === 'reprovado',
+  })
+
+  if (conta.situacao === 'sem-notas' && !conta.mencao) return null
+
+  const passar = formatarNota(MEDIA_PARA_PASSAR)
+  const frase = {
+    precisa: `precisa de ${formatarNota(conta.precisa)} no que falta`,
+    aprovado: 'já passou',
+    impossivel: `não chega mais a ${passar}`,
+    reprovado: 'reprovado por falta',
+    fechada: conta.media >= MEDIA_PARA_PASSAR ? 'aprovado' : 'notas fechadas',
+    'sem-notas': 'nenhuma nota ainda',
+  }[conta.situacao]
+
+  return (
+    <span className={`inicio-faltas-notas inicio-notas-${conta.situacao}`}>
+      {conta.mencao ? (
+        <span
+          className={`inicio-materia-mencao notas-mencao-${conta.mencao.sigla.toLowerCase()}`}
+          title={conta.mencao.nome}
+        >
+          {conta.mencao.sigla} · {formatarNota(conta.media)}
+        </span>
+      ) : (
+        <span className="inicio-faltas-notas-rotulo">Notas:</span>
+      )}
+      <span>{frase}</span>
+    </span>
+  )
+}
+
+/**
+ * Faltas e notas de cada matéria do semestre, com "+1 falta" direto daqui.
+ * A linha de notas só aparece quando a matéria tem avaliações.
+ */
 export function CartaoFaltas() {
-  const { materias, registrarFalta } = useDados()
+  const { materias, tarefas, registrarFalta } = useDados()
 
   return (
     <section
@@ -26,8 +65,10 @@ export function CartaoFaltas() {
       aria-labelledby="faltas-painel-titulo"
     >
       <div className="inicio-caixa-topo">
-        <h2 id="faltas-painel-titulo">Faltas</h2>
-        <span className="inicio-dica">Cada +1 = um encontro de 2 h</span>
+        <h2 id="faltas-painel-titulo">Faltas e notas</h2>
+        <span className="inicio-dica" title="Cada +1 é um encontro de 2 h">
+          +1 = 2 h de falta
+        </span>
       </div>
 
       {materias.length === 0 ? (
@@ -41,6 +82,7 @@ export function CartaoFaltas() {
                 className="inicio-faltas-link"
               >
                 <BarraDeFaltas materia={materia} />
+                <ResumoDeNotas materia={materia} tarefas={tarefas} />
               </Link>
               <button
                 type="button"

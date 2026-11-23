@@ -903,3 +903,23 @@
 .inicio-materia:has(.inicio-materia-mencao) {
   grid-template-rows: auto auto 1fr auto;
 }
+
+/* Notas de cada matéria no cartão de faltas: menção, média e o que falta */
+.inicio-faltas-notas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 0.72rem;
+}
+
+.inicio-faltas-notas-rotulo {
+  font-weight: 700;
+}
+
+.inicio-notas-impossivel,
+.inicio-notas-reprovado {
+  color: var(--cor-erro-texto);
+  font-weight: 700;
+}
