@@ -266,4 +266,37 @@ describe('sincronizar', () => {
       'Química',
     ])
   })
+
+  it('o cofre com uma versão mais velha não apaga a mudança mais nova daqui', async () => {
+    const cofre = criarCofreDeTeste()
+    const chave = lerChave(gerarChave())
+    const id = await idDoCofre(chave)
+    const comPrazo = (prazo, alteradoEm) => ({
+      ...tarefa(10, 1, 'Lista'),
+      prazo,
+      alteradoEm,
+    })
+    // O prazo foi mudado (e já sincronizado) neste aparelho
+    const mac = {
+      ...DADOS_VAZIOS,
+      materias: [materia(1, 'Cálculo')],
+      tarefas: [comPrazo('2026-12-20T23:59:00', 200)],
+    }
+    const base = await rodada(mac, chave, NUNCA, cofre)
+
+    // Outro aparelho, desatualizado, gravou o prazo antigo por cima
+    cofre.banco.set(id, {
+      dados: await cifrar(
+        { ...mac, tarefas: [comPrazo('2026-11-20T23:59:00', 100)] },
+        chave,
+      ),
+      versao: base.versao + 1,
+    })
+
+    const r = await rodada(mac, chave, base.estado, cofre)
+    const noCofre = await decifrar(cofre.banco.get(id).dados, chave)
+
+    expect(r.dados.tarefas[0].prazo).toBe('2026-12-20T23:59:00')
+    expect(noCofre.tarefas[0].prazo).toBe('2026-12-20T23:59:00')
+  })
 })

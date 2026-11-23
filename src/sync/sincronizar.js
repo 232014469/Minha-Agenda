@@ -55,7 +55,11 @@ export async function sincronizar({ local, chave, estado, cofre }) {
       // Lembrete, tema, preferências e bichinho vêm junto (ver extras.js)
       if (bruto.extras) deLa = { ...deLa, extras: validarExtras(bruto.extras) }
 
-      const soReceber = !mudouAqui || (estado.versao === 0 && estaVazio(local))
+      // Só recebe direto quando este aparelho acabou de entrar, vazio. No
+      // resto, junta sempre: em cada item vale a mudança mais recente
+      // (`alteradoEm`). Assim, se o cofre chegar com uma versão mais velha
+      // de algo que mudou aqui, a daqui não se perde.
+      const soReceber = estado.versao === 0 && estaVazio(local)
 
       dados = soReceber ? deLa : mesclarDados(local, deLa)
     }

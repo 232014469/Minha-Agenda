@@ -93,11 +93,13 @@ export function useSincronizacao(
           }
         }
 
-        const novo = {
-          chave: reg.chave,
-          versao: r.versao,
-          assinatura: mexeuNoMeio ? reg.assinatura : r.assinatura,
-        }
+        // Se mexeu no meio, o que chegou não foi aplicado aqui: este aparelho
+        // continua na versão de antes. Assim a próxima rodada lê o cofre de
+        // novo e junta com o que mudou (e não manda por cima os dados velhos
+        // daqui, que ainda não tinham as mudanças do outro aparelho).
+        const novo = mexeuNoMeio
+          ? reg
+          : { chave: reg.chave, versao: r.versao, assinatura: r.assinatura }
 
         salvarRegistro(novo)
         registroRef.current = novo
