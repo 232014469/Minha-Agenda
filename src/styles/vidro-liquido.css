@@ -1,24 +1,25 @@
 /*
  * Vidro líquido (opção "Liquid glass" nas Configurações, ligada por padrão):
- * cartões, caixas, painéis e janelas viram um vidro claro, quase sem cor,
- * com borda grossa e brilhante e um brilho por dentro, como no iPhone. Por
- * trás aparecem o céu, as manchas e as cores do fundo, pouco embaçados. Só
- * vale com `data-vidro` na raiz.
+ * cartões e caixas viram um vidro bem transparente, quase sem cor e quase
+ * sem desfoque, desenhado pela borda grossa e brilhante e por um brilho por
+ * dentro, como no iPhone. Por trás aparecem nítidos o céu, as manchas e as
+ * cores do fundo. Painéis e janelas que abrem por cima continuam mais
+ * embaçados, para o texto ficar legível. Só vale com `data-vidro` na raiz.
  */
 :root[data-vidro] {
   --vidro-borda: rgb(255 255 255 / 0.6);
   --vidro-brilho: rgb(255 255 255 / 0.95);
-  --vidro-reflexo: rgb(255 255 255 / 0.35);
-  --vidro-claro: rgb(255 255 255 / 0.34);
-  --vidro-meio: rgb(255 255 255 / 0.12);
-  --vidro-pecinha: rgb(255 255 255 / 0.22);
-  --vidro-desfoque: blur(10px) saturate(1.6) brightness(1.04);
+  --vidro-reflexo: rgb(255 255 255 / 0.4);
+  --vidro-claro: rgb(255 255 255 / 0.05);
+  --vidro-meio: rgb(255 255 255 / 0);
+  --vidro-pecinha: rgb(255 255 255 / 0.04);
+  --vidro-desfoque: blur(1.5px) saturate(1.2);
   /* Borda clara em cima à esquerda, mais fraca embaixo à direita e um brilho
      por dentro: o "líquido" do vidro */
   --vidro-relevo:
     inset 1.5px 1.5px 0 var(--vidro-brilho),
     inset -1px -1px 0 var(--vidro-reflexo),
-    inset 0 0 20px rgb(255 255 255 / 0.28);
+    inset 0 0 14px rgb(255 255 255 / 0.25);
   --vidro-fundo: linear-gradient(
     135deg,
     var(--vidro-claro),
@@ -29,15 +30,15 @@
 
 :root[data-vidro][data-modo='escuro'] {
   --vidro-borda: rgb(255 255 255 / 0.18);
-  --vidro-brilho: rgb(255 255 255 / 0.4);
-  --vidro-reflexo: rgb(255 255 255 / 0.12);
-  --vidro-claro: rgb(255 255 255 / 0.1);
+  --vidro-brilho: rgb(255 255 255 / 0.45);
+  --vidro-reflexo: rgb(255 255 255 / 0.15);
+  --vidro-claro: rgb(255 255 255 / 0.02);
   --vidro-meio: rgb(255 255 255 / 0.03);
-  --vidro-pecinha: rgb(255 255 255 / 0.06);
+  --vidro-pecinha: rgb(255 255 255 / 0.02);
   --vidro-relevo:
     inset 1.5px 1.5px 0 var(--vidro-brilho),
     inset -1px -1px 0 var(--vidro-reflexo),
-    inset 0 0 20px rgb(255 255 255 / 0.06);
+    inset 0 0 14px rgb(255 255 255 / 0.05);
 }
 
 /* Caixas e cartões neutros: o papel vira vidro claro */
@@ -58,7 +59,7 @@
 /* Cartões coloridos do Dashboard: só um toque da cor de cada um */
 :root[data-vidro] .inicio-cartoes > .inicio-caixa {
   background:
-    var(--vidro-fundo), color-mix(in srgb, var(--cartao-cor) 32%, transparent);
+    var(--vidro-fundo), color-mix(in srgb, var(--cartao-cor) 7%, transparent);
 }
 
 /* Cartões das matérias: um toque da cor da matéria */
@@ -67,7 +68,7 @@
   border-bottom-color: var(--vidro-borda);
   border-left-color: var(--vidro-borda);
   background:
-    var(--vidro-fundo), color-mix(in srgb, var(--painel-fundo) 40%, transparent);
+    var(--vidro-fundo), color-mix(in srgb, var(--painel-fundo) 10%, transparent);
   box-shadow: var(--vidro-relevo);
   -webkit-backdrop-filter: var(--vidro-desfoque);
   backdrop-filter: var(--vidro-desfoque);
