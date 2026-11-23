@@ -1,5 +1,6 @@
 import { validarDados } from '../dados/armazenamento'
 import { cifrar, decifrar, idDoCofre } from './cripto'
+import { validarExtras } from './extras'
 import { mesclarDados } from './mesclar'
 
 /** Resumo curto dos dados, para saber se mudaram desde a última vez. */
@@ -44,11 +45,15 @@ export async function sincronizar({ local, chave, estado, cofre }) {
     let dados = local
 
     if (remoto && versaoRemota !== estado.versao) {
-      deLa = validarDados(await decifrar(remoto.dados, chave))
+      const bruto = await decifrar(remoto.dados, chave)
+
+      deLa = validarDados(bruto)
 
       if (!deLa) {
         throw new Error('Os dados do cofre não estão no formato certo.')
       }
+      // Lembrete, tema, preferências e bichinho vêm junto (ver extras.js)
+      if (bruto.extras) deLa = { ...deLa, extras: validarExtras(bruto.extras) }
 
       const soReceber = !mudouAqui || (estado.versao === 0 && estaVazio(local))
 

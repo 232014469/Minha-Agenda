@@ -95,6 +95,35 @@ describe('Sincronizar aparelhos', () => {
     )
   })
 
+  it('o lembrete e o tema também vão para o outro aparelho', async () => {
+    localStorage.setItem(`${CHAVE}.lembrete`, 'Levar a calculadora')
+    localStorage.setItem(`${CHAVE}.tema`, 'doce')
+    abrir()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Criar chave' }))
+    await screen.findByText(/Sincronizado às/)
+    fireEvent.click(screen.getByRole('button', { name: 'Mostrar chave' }))
+
+    const chave = screen.getByLabelText(
+      'Sua chave de sincronização',
+    ).textContent
+
+    outroAparelho()
+    abrir()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Já tenho uma chave' }))
+    fireEvent.change(screen.getByLabelText('Chave de sincronização'), {
+      target: { value: chave },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Conectar' }))
+
+    expect(await screen.findByText(/Sincronizado às/)).toBeInTheDocument()
+    expect(localStorage.getItem(`${CHAVE}.lembrete`)).toBe(
+      'Levar a calculadora',
+    )
+    expect(localStorage.getItem(`${CHAVE}.tema`)).toBe('doce')
+  })
+
   it('avisa quando a chave está errada ou não existe', async () => {
     abrir()
 

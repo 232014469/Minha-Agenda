@@ -1,3 +1,5 @@
+import { mesclarExtras } from './extras'
+
 /**
  * Junta os dados de dois aparelhos que mudaram ao mesmo tempo.
  *
@@ -8,6 +10,8 @@
  * - Disciplinas cursadas: as marcadas em qualquer um dos dois.
  * - Semestre escolhido: o deste aparelho.
  * - Progresso do curso (histórico importado): o importado ou alterado por
+ *   último.
+ * - Extras (lembrete, tema, preferências, bichinho): cada um, o que mudou por
  *   último.
  */
 function maisRecente(daqui, deLa) {
@@ -54,5 +58,8 @@ export function mesclarDados(local, remoto) {
     fluxogramaAtivo: local.fluxogramaAtivo || remoto.fluxogramaAtivo,
     removidos,
     ...maisRecente(local.progressoCurso, remoto.progressoCurso),
+    ...(local.extras || remoto.extras
+      ? { extras: mesclarExtras(local.extras, remoto.extras) }
+      : {}),
   }
 }

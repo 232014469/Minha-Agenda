@@ -1,3 +1,4 @@
+import { EVENTO_EXTRAS_RECEBIDOS, marcarExtra } from '../sync/extras'
 import { APP } from './app'
 
 /** Temas do app: a cor do menu ativo, das abas, das barras e das manchas. */
@@ -30,7 +31,10 @@ export function aplicarTema(id) {
   pintarBarra()
 
   try {
-    localStorage.setItem(CHAVE, tema)
+    if (localStorage.getItem(CHAVE) !== tema) {
+      localStorage.setItem(CHAVE, tema)
+      marcarExtra('tema')
+    }
   } catch {
     // Sem armazenamento (modo privado): o tema vale só até fechar.
   }
@@ -112,10 +116,29 @@ export function aplicarModo(id) {
   pintarModo()
 
   try {
-    localStorage.setItem(CHAVE_MODO, modoAtual)
+    if (localStorage.getItem(CHAVE_MODO) !== modoAtual) {
+      localStorage.setItem(CHAVE_MODO, modoAtual)
+      marcarExtra('modo')
+    }
   } catch {
     // Sem armazenamento (modo privado): vale só até fechar.
   }
 
   return modoAtual
+}
+
+/** Avisado quando tema ou modo chegam de outro aparelho (ver Tema.jsx). */
+export const EVENTO_TEMA_RECEBIDO = 'wolf-study:tema-recebido'
+
+// Tema ou modo mais novos vindos de outro aparelho: aplica na hora
+if (typeof window !== 'undefined') {
+  window.addEventListener(EVENTO_EXTRAS_RECEBIDOS, (evento) => {
+    const nomes = evento.detail ?? []
+
+    if (nomes.includes('tema')) aplicarTema(lerTema())
+    if (nomes.includes('modo')) aplicarModo(lerModo())
+    if (nomes.includes('tema') || nomes.includes('modo')) {
+      window.dispatchEvent(new Event(EVENTO_TEMA_RECEBIDO))
+    }
+  })
 }

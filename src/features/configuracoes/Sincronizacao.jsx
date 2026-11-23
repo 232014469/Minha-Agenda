@@ -125,9 +125,10 @@ export default function Sincronizacao() {
       ) : (
         <>
           <p>
-            Crie uma chave para levar suas matérias e tarefas para outros
-            aparelhos. Não precisa de conta nem senha: os dados viajam
-            criptografados e só abrem com a chave.
+            Crie uma chave para levar suas matérias, tarefas, lembrete, tema,
+            preferências e o bichinho para outros aparelhos. Não precisa de
+            conta nem senha: os dados viajam criptografados e só abrem com a
+            chave.
           </p>
           {entrando ? (
             <form className="config-entrar" onSubmit={entrar}>

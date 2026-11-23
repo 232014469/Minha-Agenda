@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
+  EVENTO_TEMA_RECEBIDO,
   MODOS,
   TEMAS,
   aplicarModo,
@@ -17,6 +18,18 @@ export default function Tema() {
   const { ceu, vidro } = usePreferencias()
   const [atual, setAtual] = useState(lerTema)
   const [modo, setModo] = useState(lerModo)
+
+  // Tema ou modo trocados em outro aparelho: a escolha marcada acompanha
+  useEffect(() => {
+    function reler() {
+      setAtual(lerTema())
+      setModo(lerModo())
+    }
+
+    window.addEventListener(EVENTO_TEMA_RECEBIDO, reler)
+
+    return () => window.removeEventListener(EVENTO_TEMA_RECEBIDO, reler)
+  }, [])
 
   function escolher(id) {
     setAtual(aplicarTema(id))

@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { APP } from '../config/app'
+import { EVENTO_EXTRAS_RECEBIDOS, marcarExtra } from '../sync/extras'
 import { ehGato } from './gatinhos/gatos'
 
 /**
@@ -59,6 +60,8 @@ export function lerPreferencias() {
 }
 
 export function mudarPreferencia(nome, valor) {
+  if (atuais[nome] === valor) return
+
   atuais = { ...atuais, [nome]: valor }
 
   try {
@@ -67,7 +70,15 @@ export function mudarPreferencia(nome, valor) {
     // Sem armazenamento: vale só até fechar a página.
   }
 
+  marcarExtra('preferencias')
   avisar()
+}
+
+// Chegaram preferências mais novas de outro aparelho: relê e avisa a tela
+if (typeof window !== 'undefined') {
+  window.addEventListener(EVENTO_EXTRAS_RECEBIDOS, (evento) => {
+    if (evento.detail?.includes('preferencias')) recarregarPreferencias()
+  })
 }
 
 /** Relê do armazenamento (usado nos testes, que limpam o localStorage). */

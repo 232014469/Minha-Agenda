@@ -1,3 +1,5 @@
+import { marcarExtra } from '../../sync/extras'
+
 /**
  * Ciclo de vida do gatinho no bichinho virtual, como num Tamagotchi: chega
  * numa caixinha (foi abandonado e você adota), é filhote na primeira semana
@@ -63,9 +65,14 @@ export function lerBichinho(agora = Date.now()) {
   return novoBichinho(agora)
 }
 
+/** Guarda o bichinho; se mudou de verdade, ele vai para os outros aparelhos. */
 export function salvarBichinho(bichinho) {
   try {
-    localStorage.setItem(CHAVE_BICHINHO, JSON.stringify(bichinho))
+    const texto = JSON.stringify(bichinho)
+
+    if (localStorage.getItem(CHAVE_BICHINHO) === texto) return
+    localStorage.setItem(CHAVE_BICHINHO, texto)
+    marcarExtra('bichinho')
   } catch {
     // Sem espaço ou bloqueado: segue só na memória
   }

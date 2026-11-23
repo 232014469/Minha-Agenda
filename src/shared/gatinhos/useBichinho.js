@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDados } from '../../dados/useDados'
+import { EVENTO_EXTRAS_RECEBIDOS } from '../../sync/extras'
 import {
   EVENTO_CUIDADO,
   abrirCaixa,
@@ -58,6 +59,17 @@ export function useBichinho({
   useEffect(() => {
     salvarBichinho(bichinho)
   }, [bichinho])
+
+  // O bichinho mudou em outro aparelho (cuidaram dele lá): usa o de lá
+  useEffect(() => {
+    function reler(evento) {
+      if (evento.detail?.includes('bichinho')) setBichinho(lerBichinho())
+    }
+
+    window.addEventListener(EVENTO_EXTRAS_RECEBIDOS, reler)
+
+    return () => window.removeEventListener(EVENTO_EXTRAS_RECEBIDOS, reler)
+  }, [])
 
   // Desligado, pausa; religado, a contagem recomeça dali
   if (!ativo && !bichinho.pausado) setBichinho(pausar(bichinho))

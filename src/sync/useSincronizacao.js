@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { APP } from '../config/app'
 import { cofreSupabase, sincronizacaoLigada } from './cofre'
 import { formatarChave, gerarChave, idDoCofre, lerChave } from './cripto'
+import { EVENTO_EXTRAS, aplicarExtras, comExtras } from './extras'
 import { assinaturaDe, sincronizar } from './sincronizar'
 
 // Gaveta separada dos dados: a chave e até onde este aparelho já sincronizou.
@@ -39,6 +40,8 @@ export function useSincronizacao(
 ) {
   const [registro, setRegistro] = useState(lerRegistro)
   const [situacao, setSituacao] = useState({ estado: 'parado' })
+  // Conta as mudanças nos extras (lembrete, tema...), para enviar também
+  const [mudancasExtras, setMudancasExtras] = useState(0)
   const dadosRef = useRef(dados)
   const registroRef = useRef(registro)
   const rodando = useRef(false)
@@ -64,7 +67,9 @@ export function useSincronizacao(
       setSituacao((atual) => ({ ...atual, estado: 'sincronizando' }))
 
       try {
-        const local = dadosRef.current
+        // Os dados vão com os extras deste aparelho (ver extras.js)
+        const dadosAqui = dadosRef.current
+        const local = comExtras(dadosAqui)
         const r = await sincronizar({
           local,
           chave: reg.chave,
@@ -74,9 +79,19 @@ export function useSincronizacao(
         // Se a pessoa mexeu em algo durante a rodada, não apaga a mudança:
         // roda de novo em seguida, juntando com o que chegou.
         const mexeuNoMeio =
-          assinaturaDe(dadosRef.current) !== assinaturaDe(local)
+          assinaturaDe(comExtras(dadosRef.current)) !== assinaturaDe(local)
 
-        if (r.trocouLocal && !mexeuNoMeio) substituir(r.dados)
+        if (r.trocouLocal && !mexeuNoMeio) {
+          const { extras, ...resto } = r.dados
+
+          if (!extras) substituir(r.dados)
+          else {
+            aplicarExtras(extras)
+            if (assinaturaDe(resto) !== assinaturaDe(dadosAqui)) {
+              substituir(resto)
+            }
+          }
+        }
 
         const novo = {
           chave: reg.chave,
@@ -111,6 +126,15 @@ export function useSincronizacao(
 
   const temChave = Boolean(registro?.chave)
 
+  // Mudou um extra aqui (lembrete, tema, preferências, bichinho)
+  useEffect(() => {
+    const contar = () => setMudancasExtras((total) => total + 1)
+
+    window.addEventListener(EVENTO_EXTRAS, contar)
+
+    return () => window.removeEventListener(EVENTO_EXTRAS, contar)
+  }, [])
+
   // Mudou alguma coisa aqui: envia depois de um instante parado.
   useEffect(() => {
     if (!temChave) return undefined
@@ -118,7 +142,7 @@ export function useSincronizacao(
     const espera_ = setTimeout(() => rodar(), espera)
 
     return () => clearTimeout(espera_)
-  }, [dados, temChave, rodar, espera])
+  }, [dados, mudancasExtras, temChave, rodar, espera])
 
   // Ao abrir, ao voltar para a janela, quando a internet volta e a cada minuto.
   useEffect(() => {
