@@ -1,4 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Link, useLocation } from 'react-router'
 import { TIPOS } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -191,26 +197,54 @@ function origemDaJanela(origem) {
   }
 }
 
-// Um dia do mês ampliado, por cima da página: a janela sai do dia clicado.
-// Fecha no ×, no Esc ou fora.
+/** Quanto dura a volta da janela do dia até o quadradinho (ver o CSS). */
+const FECHAR_DIA_MS = 260
+
+/** Animar só onde dá (nos testes não há matchMedia) e se a pessoa quiser. */
+function podeAnimar() {
+  return (
+    typeof window !== 'undefined' &&
+    Boolean(window.matchMedia) &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+}
+
+// Um dia do mês ampliado, por cima da página: a janela sai do dia clicado
+// e, ao fechar (no ×, no Esc ou fora), volta encolhendo até ele.
 function DiaAmpliado({ dia, origem, itens, corDe, aoFechar }) {
+  const [fechando, setFechando] = useState(false)
+  const jaFechando = useRef(false)
+
+  const fechar = useCallback(() => {
+    if (jaFechando.current) return
+    jaFechando.current = true
+
+    if (!podeAnimar()) {
+      aoFechar()
+      return
+    }
+
+    setFechando(true)
+    setTimeout(aoFechar, FECHAR_DIA_MS)
+  }, [aoFechar])
+
   useEffect(() => {
     function tecla(evento) {
-      if (evento.key === 'Escape') aoFechar()
+      if (evento.key === 'Escape') fechar()
     }
 
     document.addEventListener('keydown', tecla)
 
     return () => document.removeEventListener('keydown', tecla)
-  }, [aoFechar])
+  }, [fechar])
 
   const titulo = `${DIAS_POR_EXTENSO[(dia.getDay() + 6) % 7]}, ${formatarPrazoDdMm(dia)}`
 
   return (
     <div
-      className="agenda-dia-fundo"
+      className={`agenda-dia-fundo${fechando ? ' fechando' : ''}`}
       onClick={(evento) => {
-        if (evento.target === evento.currentTarget) aoFechar()
+        if (evento.target === evento.currentTarget) fechar()
       }}
     >
       <section
@@ -226,7 +260,7 @@ function DiaAmpliado({ dia, origem, itens, corDe, aoFechar }) {
             type="button"
             className="agenda-dia-fechar"
             aria-label="Fechar"
-            onClick={aoFechar}
+            onClick={fechar}
             autoFocus
           >
             ×

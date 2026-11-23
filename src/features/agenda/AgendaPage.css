@@ -333,6 +333,40 @@ button.agenda-dia-numero:focus-visible {
   }
 }
 
+/* Fechar: a janela volta encolhendo até o quadradinho de onde saiu e o
+   fundo clareia */
+.agenda-dia-fundo.fechando {
+  pointer-events: none;
+  animation: agenda-fundo-some 0.26s ease-in both;
+}
+
+.agenda-dia-fundo.fechando .agenda-dia-janela {
+  animation: agenda-dia-fecha 0.26s cubic-bezier(0.5, 0, 0.75, 0.4) both;
+}
+
+@keyframes agenda-fundo-some {
+  to {
+    background-color: rgb(40 28 20 / 0);
+  }
+}
+
+@keyframes agenda-dia-fecha {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(var(--de-x, 0), var(--de-y, 0))
+      scale(var(--de-escala, 0.6));
+  }
+}
+
 /* Sem quadro final: cada cartão termina na opacidade dele (as concluídas
    ficam apagadas, ver agenda-chip-concluida) */
 @keyframes agenda-cartao-entra {
@@ -345,7 +379,9 @@ button.agenda-dia-numero:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .agenda-dia-fundo,
   .agenda-dia-janela,
-  .agenda-dia-janela .agenda-cartao {
+  .agenda-dia-janela .agenda-cartao,
+  .agenda-dia-fundo.fechando,
+  .agenda-dia-fundo.fechando .agenda-dia-janela {
     animation: none;
   }
 }
