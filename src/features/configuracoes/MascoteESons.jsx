@@ -80,7 +80,7 @@ export default function MascoteESons() {
         <input
           type="checkbox"
           checked={bordoes}
-          disabled={!sons}
+          disabled={gatinho && !sons}
           onChange={(evento) =>
             mudarPreferencia('bordoes', evento.target.checked)
           }

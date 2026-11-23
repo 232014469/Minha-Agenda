@@ -19,6 +19,7 @@ import { temAtrasadas } from './alerta'
 import CeuDoDia from './CeuDoDia'
 import CeuEstrelado from './CeuEstrelado'
 import Mascote from './Mascote'
+import BordoesSemGatinho from './BordoesSemGatinho'
 import CartaoHoje from './CartaoHoje'
 import Lembrete from './Lembrete'
 import RelogioDeEstudo from './RelogioDeEstudo'
@@ -227,6 +228,7 @@ export default function LayoutBase() {
           <Outlet />
         </main>
         <AlertaPodeNao />
+        {!gatinho && <BordoesSemGatinho />}
         <RastroDeBrilho />
         {/* Primeiro acesso (nada cadastrado ainda): o tour pelo site */}
         <Tutorial

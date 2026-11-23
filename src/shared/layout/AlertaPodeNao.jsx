@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useDados } from '../../dados/useDados'
 import { ehAtrasada } from '../../features/agenda/agendaUtils'
 import { EVENTO_ALERTA_POSTIT } from '../gatinhos/gatos'
-import { usePreferencias } from '../preferencias'
+import { tocaBordoes, usePreferencias } from '../preferencias'
 import Sprite from '../gatinhos/Sprite'
 import { miar } from '../sons'
 import { tarefasUrgentes } from './alerta'
@@ -112,14 +112,14 @@ export default function AlertaPodeNao({ hoje = new Date() }) {
       // Sem armazenamento: pode avisar de novo ao recarregar.
     }
 
-    if (!sons || !bordoes) return
+    if (!tocaBordoes({ sons, bordoes, cantinho })) return
 
     miar('pode-nao', { volume: 0.9 }).then((tocou) => {
       if (!tocou) {
         setAlerta((atual) => atual && { ...atual, esperaToque: true })
       }
     })
-  }, [fase, hoje, sons, bordoes])
+  }, [fase, hoje, sons, bordoes, cantinho])
 
   // No meio da tela por um tempo; depois voa até o post-it
   useEffect(() => {

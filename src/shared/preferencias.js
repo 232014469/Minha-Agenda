@@ -81,6 +81,15 @@ if (typeof window !== 'undefined') {
   })
 }
 
+/**
+ * Se os bordões tocam. Com o gatinho, eles substituem alguns miados, então
+ * dependem dos miados ligados; sem o gatinho não há miados, e basta a chave
+ * dos bordões.
+ */
+export function tocaBordoes({ sons, bordoes, cantinho }) {
+  return Boolean(bordoes && (sons || cantinho !== 'gatinho'))
+}
+
 /** Relê do armazenamento (usado nos testes, que limpam o localStorage). */
 export function recarregarPreferencias() {
   atuais = ler()
