@@ -10,6 +10,8 @@ import {
   situacaoDasFaltas,
 } from '../faltas/faltas'
 import GatinhoDormindo from '../../shared/gatinhos/GatinhoDormindo'
+import NotasDaMateria from '../notas/NotasDaMateria'
+import { formatarNota } from '../notas/notas'
 import Icone from '../../shared/layout/Icone'
 import '../../shared/cores.css'
 import {
@@ -73,6 +75,13 @@ function Entrega({ entrega, agora, ordem, aoAlternar, aoExcluir }) {
         {entrega.descricao && <p>{entrega.descricao}</p>}
         <p className="entrega-meta">
           {entrega.tipo && <span>{entrega.tipo}</span>}
+          {typeof entrega.nota === 'number' && (
+            <span className="entrega-nota" title="Nota">
+              Nota {formatarNota(entrega.nota)}
+              {(entrega.notaMaxima ?? 10) !== 10 &&
+                ` de ${formatarNota(entrega.notaMaxima)}`}
+            </span>
+          )}
           <time dateTime={entrega.prazo}>
             {formatarData(entrega.prazo, agora)}
           </time>
@@ -250,6 +259,7 @@ function DetalhesDaMateria({ id }) {
         </section>
 
         <aside className="materia-lateral">
+          <NotasDaMateria materia={materia} />
           <section
             className="materia-caixa materia-faltas"
             aria-labelledby="faltas-titulo"

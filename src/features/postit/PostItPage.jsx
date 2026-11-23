@@ -13,6 +13,7 @@ import {
   ehNaoRealizada,
 } from '../agenda/agendaUtils'
 import { formatarPrazoCurto } from '../inicio/inicioUtils'
+import { formatarNota, lerNota } from '../notas/notas'
 import './PostItPage.css'
 
 /** As três áreas do mural. `status` é o que a tarefa recebe ao chegar ali. */
@@ -58,6 +59,13 @@ function FormularioDoPostIt({
     TIPOS.includes(inicial.tipo) ? inicial.tipo : TIPOS[0],
   )
   const [data, setData] = useState(inicial.prazo?.slice(0, 10) ?? '')
+  // Nota (só ao editar uma atividade já colada): nota, de quanto e o peso
+  const editando = inicial.id !== undefined
+  const [nota, setNota] = useState(
+    typeof inicial.nota === 'number' ? formatarNota(inicial.nota) : '',
+  )
+  const [maxima, setMaxima] = useState(formatarNota(inicial.notaMaxima ?? 10))
+  const [peso, setPeso] = useState(formatarNota(inicial.peso ?? 1))
 
   function salvar(evento) {
     evento.preventDefault()
@@ -65,8 +73,22 @@ function FormularioDoPostIt({
 
     // Ao editar, mantém a hora que já estava; post-it novo vence às 23:59.
     const hora = inicial.prazo?.slice(10) || 'T23:59:00'
+    const campos = { titulo: titulo.trim(), tipo, prazo: `${data}${hora}` }
 
-    aoSalvar({ titulo: titulo.trim(), tipo, prazo: `${data}${hora}` })
+    if (editando) {
+      const novaMaxima = lerNota(maxima) || 10
+      const novoPeso = lerNota(peso) ?? 1
+
+      campos.nota = lerNota(nota)
+      // De quanto e peso só ficam guardados se mudaram do padrão (10 e 1):
+      // assim editar uma leitura, por exemplo, não faz ela contar na nota
+      if (novaMaxima !== 10 || inicial.notaMaxima !== undefined) {
+        campos.notaMaxima = novaMaxima
+      }
+      if (novoPeso !== 1 || inicial.peso !== undefined) campos.peso = novoPeso
+    }
+
+    aoSalvar(campos)
   }
 
   return (
@@ -98,6 +120,42 @@ function FormularioDoPostIt({
         value={data}
         onChange={(evento) => setData(evento.target.value)}
       />
+      {editando && (
+        <fieldset className="postit-nota">
+          <legend>Nota</legend>
+          <label>
+            <span>Tirei</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={nota}
+              placeholder="–"
+              aria-label="Nota que tirei"
+              onChange={(evento) => setNota(evento.target.value)}
+            />
+          </label>
+          <label>
+            <span>de</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={maxima}
+              aria-label="Nota máxima"
+              onChange={(evento) => setMaxima(evento.target.value)}
+            />
+          </label>
+          <label>
+            <span>peso</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={peso}
+              aria-label="Peso na média"
+              onChange={(evento) => setPeso(evento.target.value)}
+            />
+          </label>
+        </fieldset>
+      )}
       <div className="postit-acoes">
         <button type="submit" disabled={!titulo.trim() || !data}>
           {textoSalvar}

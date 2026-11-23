@@ -78,6 +78,28 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
     if (horas > 0) window.dispatchEvent(new CustomEvent(EVENTO_FALTA))
   }, [])
 
+  /**
+   * Notas pela matéria: `regraDeNotas` (como o professor calcula) e as
+   * avaliações avulsas (as que não são atividades, como participação).
+   */
+  const ajustarNotasDaMateria = useCallback((id, mudancas) => {
+    const limpas = {}
+
+    if ('regraDeNotas' in mudancas) limpas.regraDeNotas = mudancas.regraDeNotas
+    if (Array.isArray(mudancas.avaliacoes)) {
+      limpas.avaliacoes = mudancas.avaliacoes
+    }
+
+    setDados((atuais) => ({
+      ...atuais,
+      materias: atuais.materias.map((materia) =>
+        materia.id === id
+          ? { ...materia, ...limpas, alteradoEm: agora() }
+          : materia,
+      ),
+    }))
+  }, [])
+
   const definirCargaHoraria = useCallback((id, horas) => {
     setDados((atuais) => ({
       ...atuais,
@@ -161,9 +183,21 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
     }
   }, [])
 
-  /** Muda título, tipo, data ou descrição de uma tarefa já salva. */
+  /**
+   * Muda título, tipo, data, descrição ou a nota (nota, de quanto, peso e se
+   * é substitutiva) de uma tarefa já salva. Nota `null` apaga a nota.
+   */
   const editarTarefa = useCallback((id, mudancas) => {
-    const permitidas = ['titulo', 'tipo', 'prazo', 'descricao']
+    const permitidas = [
+      'titulo',
+      'tipo',
+      'prazo',
+      'descricao',
+      'nota',
+      'notaMaxima',
+      'peso',
+      'substitutiva',
+    ]
     const limpas = Object.fromEntries(
       Object.entries(mudancas).filter(([campo]) => permitidas.includes(campo)),
     )
@@ -295,6 +329,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       salvou,
       registrarFalta,
       definirCargaHoraria,
+      ajustarNotasDaMateria,
       adicionarMateria,
       removerMateria,
       adicionarTarefa,
@@ -317,6 +352,7 @@ export default function DadosProvider({ children, opcoesDaSincronizacao }) {
       guardarProgressoCurso,
       registrarFalta,
       definirCargaHoraria,
+      ajustarNotasDaMateria,
       adicionarMateria,
       removerMateria,
       adicionarTarefa,

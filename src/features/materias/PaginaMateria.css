@@ -545,3 +545,11 @@
     animation: none;
   }
 }
+
+/* Nota lançada na entrega, ao lado do tipo */
+.entrega-nota {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--painel-forte) 18%, transparent);
+  font-weight: 700;
+}

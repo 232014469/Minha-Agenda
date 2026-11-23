@@ -881,3 +881,25 @@
     animation: none;
   }
 }
+
+/* Média e menção da UnB no cartão da matéria (quando já saiu nota) */
+.inicio-materia-mencao {
+  justify-self: start;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #3f9b5f 20%, transparent);
+  color: color-mix(in srgb, #2b7a46 80%, var(--cor-texto));
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.inicio-materia-mencao.notas-mencao-mi,
+.inicio-materia-mencao.notas-mencao-ii,
+.inicio-materia-mencao.notas-mencao-sr {
+  background: var(--cor-erro-fundo);
+  color: var(--cor-erro-texto);
+}
+
+.inicio-materia:has(.inicio-materia-mencao) {
+  grid-template-rows: auto auto 1fr auto;
+}

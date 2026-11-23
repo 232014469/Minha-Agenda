@@ -20,6 +20,7 @@ import { fraseDoDia } from '../../config/frases'
 import GatinhoDormindo from '../../shared/gatinhos/GatinhoDormindo'
 import ProgressoGeral from './ProgressoGeral'
 import RelatorioDeEntregas from './RelatorioDeEntregas'
+import { calcularNotas, formatarNota } from '../notas/notas'
 import {
   esquecerMateriasNovas,
   lerMateriasNovas,
@@ -230,6 +231,8 @@ function MinhasMaterias({ materias, tarefas }) {
             const { total, concluidas, pendentes } = resumirEntregas(
               tarefas.filter((tarefa) => tarefa.materiaId === materia.id),
             )
+            // Média e menção, quando já saiu alguma nota
+            const { media, mencao } = calcularNotas(materia, tarefas)
 
             return (
               <li
@@ -243,6 +246,14 @@ function MinhasMaterias({ materias, tarefas }) {
                   to={`/materias/${materia.id}`}
                 >
                   <strong>{materia.nome}</strong>
+                  {mencao && (
+                    <span
+                      className={`inicio-materia-mencao notas-mencao-${mencao.sigla.toLowerCase()}`}
+                      title={`Média ${formatarNota(media)} (${mencao.nome})`}
+                    >
+                      {mencao.sigla} · {formatarNota(media)}
+                    </span>
+                  )}
                   <span className="inicio-materia-situacao">
                     {total === 0
                       ? 'Sem entregas ainda'
