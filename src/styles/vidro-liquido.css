@@ -85,6 +85,12 @@
     inset -1px -1px 0 var(--vidro-reflexo);
 }
 
+/* O +1 das faltas acende na cor do tema ao passar o cursor */
+:root[data-vidro] .inicio-cartoes .inicio-faltas-mais:hover {
+  background: color-mix(in srgb, var(--tema) 75%, transparent);
+  color: #fff;
+}
+
 /* Painel das Configurações e janelas que abrem por cima: mais embaçados,
    para o texto ficar legível */
 :root[data-vidro] .config-painel,

@@ -153,8 +153,11 @@
   cursor: pointer;
 }
 
+/* Ao passar o cursor, o +1 fica na cor do tema, como o cartão */
 .inicio-faltas-mais:hover {
-  background: var(--cor-lilas);
+  border-color: var(--tema-escuro);
+  background: var(--tema);
+  color: #fff;
 }
 
 .inicio-faltas-link:focus-visible,
