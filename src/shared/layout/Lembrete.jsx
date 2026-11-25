@@ -222,7 +222,7 @@ function Pilha({
 
   return (
     <div className="lembrete-pilha">
-      <div className="lembrete-pilha-folhas" style={{ '--folhas': atras }}>
+      <div className="lembrete-pilha-folhas">
         {Array.from({ length: atras }, (_, posicao) => (
           <span
             key={posicao}

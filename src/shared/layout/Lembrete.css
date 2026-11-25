@@ -166,8 +166,6 @@
 .lembrete-pilha-folhas {
   position: relative;
   display: grid;
-  /* Espaço para as folhas de trás espiarem sem cobrir os botões */
-  margin-bottom: calc(var(--folhas, 0) * 5px + var(--folhas, 0) * 3px);
 }
 
 .lembrete-pilha .lembrete {
@@ -433,6 +431,8 @@
   rotate: 38deg;
 }
 
+/* Os botões ficam sempre no mesmo lugar; as folhas de trás passam por
+   baixo deles */
 .lembrete-controles {
   position: relative;
   z-index: 3;
@@ -449,7 +449,7 @@
   padding: 0 6px;
   border: 1px solid var(--cor-borda);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--tema) 12%, transparent);
+  background: color-mix(in srgb, var(--tema) 12%, var(--cor-papel));
   color: var(--cor-texto);
   font: inherit;
   font-weight: 700;
