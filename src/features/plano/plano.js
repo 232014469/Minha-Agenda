@@ -250,26 +250,28 @@ export function paraEncaixar({
 }
 
 /**
- * Números do plano: horas por semestre, quando seria a formatura (o último
- * semestre com alguma coisa, se não sobrou nada para encaixar) e quantas
- * horas ainda estão sem semestre.
+ * Números do plano: horas por semestre (o planejado mais as matérias
+ * cadastradas em cada um), quando seria a formatura (o último semestre com
+ * alguma coisa, se não sobrou nada para encaixar), quantos semestres faltam
+ * contando o de agora e quantas horas ainda estão sem semestre.
  */
 export function resumirPlano({ plano, materias = [], semestre, faltando }) {
   const horasPorSemestre = {}
-
-  for (const item of plano.itens) {
-    horasPorSemestre[item.semestre] =
-      (horasPorSemestre[item.semestre] ?? 0) + item.horas
+  const somar = (periodo, horas) => {
+    horasPorSemestre[periodo] = (horasPorSemestre[periodo] ?? 0) + horas
   }
 
-  const horasCursando = materias.reduce(
-    (total, materia) => total + cargaHorariaDe(materia),
-    0,
-  )
-  horasPorSemestre[semestre] = (horasPorSemestre[semestre] ?? 0) + horasCursando
+  for (const item of plano.itens) somar(item.semestre, item.horas)
+  for (const materia of materias) {
+    somar(materia.periodo ?? semestre, cargaHorariaDe(materia))
+  }
 
-  const comAlgo = Object.keys(horasPorSemestre)
-    .filter((chave) => horasPorSemestre[chave] > 0)
+  const daquiPraFrente = Object.keys(horasPorSemestre)
+    .filter(
+      (chave) =>
+        horasPorSemestre[chave] > 0 &&
+        ordemDoSemestre(chave) >= ordemDoSemestre(semestre),
+    )
     .sort(porOrdem)
   const horasSemSemestre = faltando.reduce(
     (total, disciplina) => total + disciplina.horas,
@@ -279,7 +281,7 @@ export function resumirPlano({ plano, materias = [], semestre, faltando }) {
   return {
     horasPorSemestre,
     horasSemSemestre,
-    formatura: faltando.length === 0 ? (comAlgo.at(-1) ?? null) : null,
-    semestresAte: comAlgo.length,
+    formatura: faltando.length === 0 ? (daquiPraFrente.at(-1) ?? null) : null,
+    semestresAte: daquiPraFrente.length,
   }
 }

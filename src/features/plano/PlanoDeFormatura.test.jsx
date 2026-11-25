@@ -12,6 +12,7 @@ import '@testing-library/jest-dom/vitest'
 import { MemoryRouter } from 'react-router'
 import DadosProvider from '../../dados/DadosProvider'
 import { EVENTO_EXTRAS_RECEBIDOS, ITENS_EXTRAS } from '../../sync/extras'
+import { CHAVE } from '../../dados/armazenamento'
 import PlanoDeFormatura from './PlanoDeFormatura'
 
 function abrir() {
@@ -97,5 +98,25 @@ describe('Plano de formatura', () => {
     })
 
     expect(screen.getByText('TCC 1')).toBeInTheDocument()
+  })
+
+  it('mostra as matérias de outros semestres, cada uma no seu', () => {
+    localStorage.setItem(
+      CHAVE,
+      JSON.stringify({
+        versao: 1,
+        semestre: '2026.1',
+        materias: [
+          { id: 1, nome: 'Redes', periodo: '2031.1', cor: 'azul', faltas: 0 },
+        ],
+        tarefas: [],
+      }),
+    )
+    abrir()
+
+    const coluna = screen.getByRole('article', { name: 'Semestre 2031.1' })
+
+    expect(within(coluna).getByText('Redes')).toBeInTheDocument()
+    expect(within(coluna).getByText('Cadastrada')).toBeInTheDocument()
   })
 })

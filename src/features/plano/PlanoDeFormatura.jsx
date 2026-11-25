@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { semestreDaData } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
 import { CARGAS } from '../faltas/faltas'
 import {
@@ -33,13 +34,28 @@ const corDoTipo = (tipo) =>
  * Em cima, o que ainda falta encaixar (obrigatórias pendentes do histórico
  * ou do fluxograma e vagas de optativa). Cada disciplina vai para um
  * semestre arrastando (no computador) ou pelo menu dela, e pode mudar de
- * semestre ou sair do plano a qualquer hora: replanejar é só mover. As do
- * semestre atual podem ser cadastradas direto como matéria. O plano fica
- * salvo sozinho e vai para os outros aparelhos na sincronização.
+ * semestre ou sair do plano a qualquer hora: replanejar é só mover. É um
+ * plano só para todos os semestres: mostra as matérias cadastradas em cada
+ * um (não só no escolhido no topo), e as planejadas de agora em diante podem
+ * ser cadastradas direto, já no semestre delas. O plano fica salvo sozinho e
+ * vai para os outros aparelhos na sincronização.
  */
 export default function PlanoDeFormatura({ aoCadastrar }) {
-  const { materias, semestre, progressoCurso, fluxogramaAtivo, cursadas } =
-    useDados()
+  const { todos, progressoCurso, fluxogramaAtivo, cursadas } = useDados()
+  // Um plano só para todos os semestres: o "agora" é o semestre de hoje (e
+  // não o escolhido no topo), e entram as matérias cadastradas em qualquer
+  // semestre, cada uma no seu
+  const semestre = semestreDaData()
+  const todasAsMaterias = todos.materias.filter((materia) =>
+    /^\d{4}\.[12]$/.test(materia.periodo ?? ''),
+  )
+  const materiasDe = (periodo) =>
+    todasAsMaterias.filter((materia) => materia.periodo === periodo)
+  // As de agora e as já cadastradas para depois (as de antes já estão no
+  // histórico, aprovadas ou não)
+  const materias = todasAsMaterias.filter(
+    (materia) => ordemDoSemestre(materia.periodo) >= ordemDoSemestre(semestre),
+  )
   const [plano, setPlano] = useState(lerPlano)
   const [alvo, setAlvo] = useState(null)
 
@@ -56,14 +72,17 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
     return () => window.removeEventListener(EVENTO_EXTRAS_RECEBIDOS, reler)
   }, [])
 
-  // Uma disciplina do plano já cadastrada como matéria deste semestre
+  // Uma disciplina do plano já cadastrada como matéria no mesmo semestre
   // aparece só como matéria (e não conta duas vezes)
-  const cursando = new Set(materias.map((materia) => normalizar(materia.nome)))
+  const cadastradas = new Set(
+    todasAsMaterias.map(
+      (materia) => `${materia.periodo}|${normalizar(materia.nome)}`,
+    ),
+  )
   const visivel = {
     ...plano,
     itens: plano.itens.filter(
-      (item) =>
-        item.semestre !== semestre || !cursando.has(normalizar(item.nome)),
+      (item) => !cadastradas.has(`${item.semestre}|${normalizar(item.nome)}`),
     ),
   }
 
@@ -76,14 +95,19 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
   })
   const resumo = resumirPlano({
     plano: visivel,
-    materias,
+    materias: todasAsMaterias,
     semestre,
     faltando,
   })
-  const semestres = [...new Set([semestre, ...plano.semestres])].sort(
-    (a, b) => ordemDoSemestre(a) - ordemDoSemestre(b),
-  )
-  const proximo = proximoSemestre(plano, semestre)
+  const semestres = [
+    ...new Set([
+      semestre,
+      ...plano.semestres,
+      ...todasAsMaterias.map((materia) => materia.periodo),
+    ]),
+  ].sort((a, b) => ordemDoSemestre(a) - ordemDoSemestre(b))
+  const ultimo = semestres.at(-1)
+  const proximo = proximoSemestre(plano, ultimo)
   // Só dá para cravar a formatura sabendo o que falta no curso
   const sabeOQueFalta = Boolean(progressoCurso?.exigido || fluxogramaAtivo)
 
@@ -208,6 +232,7 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
           const itens = visivel.itens.filter(
             (item) => item.semestre === periodo,
           )
+          const doSemestre = materiasDe(periodo)
           const horas = resumo.horasPorSemestre[periodo] ?? 0
           const puxado = creditos(horas) > CREDITOS_PUXADO
 
@@ -240,7 +265,7 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
                 >
                   {creditos(horas)} cr
                 </span>
-                {!atual && (
+                {!atual && !doSemestre.length && (
                   <button
                     type="button"
                     className="plano-tirar-semestre"
@@ -256,16 +281,17 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
               </header>
 
               <ul>
-                {atual &&
-                  materias.map((materia) => (
-                    <li
-                      key={materia.id}
-                      className={`plano-item cursando materia-cor-${materia.cor}`}
-                    >
-                      <span className="plano-item-nome">{materia.nome}</span>
-                      <span className="plano-horas">Cursando</span>
-                    </li>
-                  ))}
+                {doSemestre.map((materia) => (
+                  <li
+                    key={materia.id}
+                    className={`plano-item cursando materia-cor-${materia.cor}`}
+                  >
+                    <span className="plano-item-nome">{materia.nome}</span>
+                    <span className="plano-horas">
+                      {passado ? 'Cursada' : atual ? 'Cursando' : 'Cadastrada'}
+                    </span>
+                  </li>
+                ))}
                 {itens.map((item) => (
                   <li
                     key={item.id}
@@ -282,12 +308,12 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
                     <span className="plano-item-nome">{item.nome}</span>
                     <span className="plano-horas">{item.horas} h</span>
                     <span className="plano-item-acoes">
-                      {atual && aoCadastrar && (
+                      {!passado && aoCadastrar && (
                         <button
                           type="button"
                           className="plano-cadastrar"
                           aria-label={`Cadastrar ${item.nome} como matéria`}
-                          title="Cadastrar como matéria deste semestre"
+                          title={`Cadastrar como matéria de ${periodo}`}
                           onClick={() =>
                             // O formulário só aproveita o nome de quem tem
                             // código; uma escrita à mão também vale
@@ -295,6 +321,7 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
                               codigo: item.codigo || 'plano',
                               nome: item.nome,
                               cargaHoraria: item.horas,
+                              periodo,
                             })
                           }
                         >
@@ -332,7 +359,7 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
                 ))}
               </ul>
 
-              {!itens.length && !(atual && materias.length) && (
+              {!itens.length && !doSemestre.length && (
                 <p className="plano-vazio">Solte disciplinas aqui</p>
               )}
 
@@ -349,7 +376,7 @@ export default function PlanoDeFormatura({ aoCadastrar }) {
             type="button"
             className="plano-novo-semestre"
             onClick={() =>
-              setPlano((plano) => adicionarSemestre(plano, semestre))
+              setPlano((plano) => adicionarSemestre(plano, ultimo))
             }
           >
             <span aria-hidden="true">+</span>

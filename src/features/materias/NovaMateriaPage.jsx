@@ -73,6 +73,8 @@ export default function NovaMateriaPage() {
   function cursar(disciplina) {
     setNome(disciplina.codigo ? disciplina.nome : '')
     setCarga(disciplina.cargaHoraria ?? disciplina.creditos * 15)
+    // Do plano de formatura, já vem no semestre planejado
+    if (disciplina.periodo) setPeriodo(disciplina.periodo)
     setAdicionada(null)
     campoNome.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' })
     campoNome.current?.focus({ preventScroll: true })
