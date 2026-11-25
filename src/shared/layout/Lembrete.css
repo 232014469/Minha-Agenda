@@ -187,52 +187,38 @@
 }
 
 /* Jogado fora: a folha amassa numa bolinha de papel (o texto some, as
-   dobras aparecem, o contorno vira um bolo irregular), sobe um pouquinho e
-   cai dentro da lixeira (--ate-x/--ate-y: do meio do papel até ela) */
-.lembrete.saindo {
+   dobras aparecem, o contorno vira um bolo irregular), é jogada num arco e
+   cai dentro da lixeira (--ate-x/--ate-y: do meio do papel até ela; -6px porque ela cresce
+   andando um pouco para cima e para a esquerda). O
+   lado vai em .lembrete-voo, em ritmo constante; subir e cair vão no papel,
+   com aceleração: juntos desenham a curva. Cada trecho tem o seu ritmo,
+   para não dar trancos entre um e outro */
+.lembrete-voo {
+  display: grid;
+}
+
+.lembrete-voo.saindo {
+  position: relative;
   z-index: 2;
   pointer-events: none;
-  animation: lembrete-amassa 0.7s cubic-bezier(0.5, 0, 0.6, 1) forwards;
+  animation: lembrete-vai-de-lado 0.76s linear forwards;
 }
 
-.lembrete.saindo > * {
-  animation: lembrete-some 0.2s ease-out forwards;
+@keyframes lembrete-vai-de-lado {
+  0%,
+  34% {
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
+  }
+
+  86%,
+  100% {
+    translate: calc(var(--ate-x) - 6px) 0;
+  }
 }
 
-/* As dobras do papel amassado */
-.lembrete.saindo::after {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background:
-    linear-gradient(
-      115deg,
-      transparent 30%,
-      rgb(0 0 0 / 0.14) 31%,
-      transparent 40%
-    ),
-    linear-gradient(
-      35deg,
-      transparent 50%,
-      rgb(255 255 255 / 0.35) 51%,
-      transparent 60%
-    ),
-    linear-gradient(
-      160deg,
-      transparent 58%,
-      rgb(0 0 0 / 0.16) 59%,
-      transparent 70%
-    ),
-    linear-gradient(
-      80deg,
-      transparent 18%,
-      rgb(0 0 0 / 0.1) 19%,
-      transparent 28%
-    ),
-    radial-gradient(circle at 35% 30%, transparent 30%, rgb(0 0 0 / 0.22) 85%);
-  content: '';
-  opacity: 0;
-  animation: lembrete-dobras 0.7s ease-out forwards;
+.lembrete.saindo {
+  animation: lembrete-amassa 0.76s linear forwards;
 }
 
 @keyframes lembrete-amassa {
@@ -251,10 +237,11 @@
       0 66%,
       0 33%
     );
-    transform: translate(0, 0) rotate(0deg);
+    transform: none;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
   }
 
-  30% {
+  16% {
     clip-path: polygon(
       6% 10%,
       30% 4%,
@@ -269,30 +256,51 @@
       12% 60%,
       2% 30%
     );
-    transform: translate(0, 0) rotate(calc(0deg - 6deg)) scale(0.86, 0.78)
-      skew(-5deg, 3deg);
+    transform: translateY(0) rotate(-6deg) scale(0.82, 0.74) skew(-5deg, 3deg);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.4, 1);
+  }
+
+  /* Já bolinha: sobe um pouco (desacelerando)… */
+  34% {
+    clip-path: polygon(
+      24% 20%,
+      46% 10%,
+      62% 18%,
+      82% 24%,
+      88% 46%,
+      84% 66%,
+      72% 86%,
+      52% 90%,
+      32% 84%,
+      16% 70%,
+      10% 48%,
+      14% 30%
+    );
+    transform: translateY(0) rotate(40deg) scale(0.3);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
   }
 
   58% {
     clip-path: polygon(
-      22% 18%,
-      44% 8%,
-      64% 16%,
-      84% 20%,
-      90% 46%,
-      86% 68%,
-      74% 88%,
-      52% 92%,
-      30% 86%,
-      14% 72%,
-      8% 48%,
-      12% 28%
+      24% 20%,
+      46% 10%,
+      62% 18%,
+      82% 24%,
+      88% 46%,
+      84% 66%,
+      72% 86%,
+      52% 90%,
+      32% 84%,
+      16% 70%,
+      10% 48%,
+      14% 30%
     );
-    transform: translate(0, 0) rotate(calc(0deg + 30deg)) scale(0.3);
+    transform: translateY(-38px) rotate(150deg) scale(0.26);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.5);
   }
 
-  /* Um apertinho final na bolinha antes de jogar */
-  68% {
+  /* …e cai acelerando até a boca da lixeira */
+  86% {
     clip-path: polygon(
       24% 20%,
       46% 10%,
@@ -308,31 +316,12 @@
       14% 30%
     );
     opacity: 1;
-    transform: translate(0, 0) rotate(calc(0deg + 40deg)) scale(0.34);
+    transform: translateY(calc(var(--ate-y) - 16px)) rotate(270deg) scale(0.2);
+    animation-timing-function: ease-in;
   }
 
-  /* Por cima da lixeira, já bolinha */
-  84% {
-    clip-path: polygon(
-      24% 20%,
-      46% 10%,
-      62% 18%,
-      82% 24%,
-      88% 46%,
-      84% 66%,
-      72% 86%,
-      52% 90%,
-      32% 84%,
-      16% 70%,
-      10% 48%,
-      14% 30%
-    );
-    opacity: 1;
-    transform: translate(var(--ate-x), calc(var(--ate-y) - 46px)) rotate(160deg)
-      scale(0.2);
-  }
-
-  /* E cai para dentro (some atrás da frente da lixeira) */
+  /* Entra e some lá dentro */
+  94%,
   100% {
     clip-path: polygon(
       24% 20%,
@@ -348,9 +337,60 @@
       10% 48%,
       14% 30%
     );
-    opacity: 1;
-    transform: translate(var(--ate-x), calc(var(--ate-y) + 4px)) rotate(220deg)
-      scale(0.12);
+    opacity: 0;
+    transform: translateY(calc(var(--ate-y) - 2px)) rotate(300deg) scale(0.14);
+  }
+}
+
+/* O texto some logo no começo; aparecem as dobras do papel amassado */
+.lembrete.saindo > * {
+  animation: lembrete-some 0.18s ease-out forwards;
+}
+
+.lembrete.saindo::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 30%,
+      rgb(0 0 0 / 0.16) 31%,
+      transparent 40%
+    ),
+    linear-gradient(
+      35deg,
+      transparent 50%,
+      rgb(255 255 255 / 0.4) 51%,
+      transparent 60%
+    ),
+    linear-gradient(
+      160deg,
+      transparent 58%,
+      rgb(0 0 0 / 0.18) 59%,
+      transparent 70%
+    ),
+    linear-gradient(
+      80deg,
+      transparent 18%,
+      rgb(0 0 0 / 0.12) 19%,
+      transparent 28%
+    ),
+    radial-gradient(circle at 35% 30%, transparent 25%, rgb(0 0 0 / 0.28) 85%);
+  content: '';
+  opacity: 0;
+  animation: lembrete-dobras 0.76s ease-out forwards;
+}
+
+/* O próximo bilhete chega de trás da pilha */
+.lembrete.chegando {
+  animation: lembrete-chega 0.3s ease-out;
+}
+
+@keyframes lembrete-chega {
+  from {
+    opacity: 0;
+    transform: translate(6px, 6px) rotate(2deg);
   }
 }
 
@@ -390,9 +430,7 @@
   color: var(--cor-texto);
   opacity: 0.45;
   cursor: pointer;
-  transition:
-    scale 0.25s cubic-bezier(0.3, 1.6, 0.5, 1),
-    opacity 0.2s;
+  transition: opacity 0.2s;
 }
 
 .lembrete-lixo svg {
@@ -412,7 +450,6 @@
 
 .lembrete-lixo-tampa {
   transform-origin: 20px 6.5px;
-  transition: rotate 0.25s ease-out;
 }
 
 .lembrete-lixo:hover,
@@ -420,15 +457,58 @@
   opacity: 1;
 }
 
+/* Cresce e abre a tampa enquanto o papel amassa; fecha e volta ao
+   tamanho depois que a bolinha cai dentro (mesma duração do papel) */
 .lembrete-lixo.aberta {
   opacity: 1;
-  scale: 1.9;
-  translate: -6px -6px;
   pointer-events: none;
+  animation: lembrete-lixo-come 0.76s linear forwards;
 }
 
 .lembrete-lixo.aberta .lembrete-lixo-tampa {
-  rotate: 38deg;
+  animation: lembrete-lixo-tampa 0.76s linear forwards;
+}
+
+@keyframes lembrete-lixo-come {
+  0% {
+    scale: 1;
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+
+  18%,
+  88% {
+    scale: 1.9;
+    translate: -6px -6px;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.3, 1);
+  }
+
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes lembrete-lixo-tampa {
+  0% {
+    rotate: 0deg;
+    animation-timing-function: ease-out;
+  }
+
+  18%,
+  86% {
+    rotate: 40deg;
+    animation-timing-function: ease-in;
+  }
+
+  93% {
+    rotate: -4deg;
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    rotate: 0deg;
+  }
 }
 
 /* Os botões ficam sempre no mesmo lugar; as folhas de trás passam por

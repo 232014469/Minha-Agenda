@@ -10,7 +10,7 @@ const LIMITE_DO_LEMBRETE = 200
 /** Quantos lembretes cabem na pilha. */
 const MAXIMO_DE_LEMBRETES = 5
 /** Quanto dura o bilhete amassando e caindo na lixeira (ver o CSS). */
-const AMASSAR_MS = 700
+const AMASSAR_MS = 760
 
 /** Dá para animar o descarte? (sem matchMedia ou com menos movimento, não) */
 function podeAnimar() {
@@ -238,6 +238,7 @@ function Pilha({
           escrever={escrever}
           jogarFora={jogarFora}
           focar={focar}
+          chegando={vez > 0}
         />
       </div>
       <div className="lembrete-controles">
@@ -292,7 +293,7 @@ function Pilha({
  * lixeira fica no canto, fora do papel (para não amassar junto): tocada, ela
  * cresce e abre a tampa, e o bilhete amassa numa bolinha que cai dentro.
  */
-function Bilhete({ id, texto, escrever, jogarFora, focar }) {
+function Bilhete({ id, texto, escrever, jogarFora, focar, chegando }) {
   const [cheio, setCheio] = useState(false)
   const [saindo, setSaindo] = useState(null)
   const papel = useRef(null)
@@ -336,36 +337,42 @@ function Bilhete({ id, texto, escrever, jogarFora, focar }) {
 
   return (
     <>
-      <section
-        ref={papel}
-        className={`lembrete${saindo ? ' saindo' : ''}`}
-        aria-label="Quadro de lembrete"
+      {/* O voo vai em duas camadas: esta leva a bolinha para o lado (num
+          ritmo constante) e o papel sobe e cai, o que desenha um arco */}
+      <div
+        className={`lembrete-voo${saindo ? ' saindo' : ''}`}
         style={
           saindo
             ? { '--ate-x': `${saindo.x}px`, '--ate-y': `${saindo.y}px` }
             : undefined
         }
       >
-        <span className="lembrete-fita" aria-hidden="true" />
-        <label className="lembrete-titulo" htmlFor={id}>
-          Lembrete
-        </label>
-        <textarea
-          id={id}
-          value={texto}
-          onChange={mudar}
-          maxLength={LIMITE_DO_LEMBRETE}
-          rows={6}
-          autoFocus={focar}
-          placeholder="Escreva aqui o que não pode esquecer…"
-        />
-        <span
-          className={`lembrete-contador${cheio ? ' cheio' : ''}`}
-          role={cheio ? 'status' : undefined}
+        <section
+          ref={papel}
+          className={`lembrete${saindo ? ' saindo' : chegando ? ' chegando' : ''}`}
+          aria-label="Quadro de lembrete"
         >
-          {cheio ? 'Papel cheio' : ''}
-        </span>
-      </section>
+          <span className="lembrete-fita" aria-hidden="true" />
+          <label className="lembrete-titulo" htmlFor={id}>
+            Lembrete
+          </label>
+          <textarea
+            id={id}
+            value={texto}
+            onChange={mudar}
+            maxLength={LIMITE_DO_LEMBRETE}
+            rows={6}
+            autoFocus={focar}
+            placeholder="Escreva aqui o que não pode esquecer…"
+          />
+          <span
+            className={`lembrete-contador${cheio ? ' cheio' : ''}`}
+            role={cheio ? 'status' : undefined}
+          >
+            {cheio ? 'Papel cheio' : ''}
+          </span>
+        </section>
+      </div>
       <button
         ref={lixeira}
         type="button"
