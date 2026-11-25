@@ -35,7 +35,8 @@
   opacity: 0.75;
 }
 
-/* Papel liso, sem linhas; cabem 6 linhas de texto, sem rolagem */
+/* Papel liso, sem linhas, do tamanho de 6 linhas de texto: o que não cabe
+   não entra (ver Lembrete.jsx), então nunca rola */
 .lembrete textarea {
   --linha: 22px;
 
@@ -68,6 +69,13 @@
   justify-self: end;
   font-size: 0.68rem;
   opacity: 0.55;
+}
+
+/* Avisa quando o papel encheu (a próxima letra não entra) */
+.lembrete-contador.cheio {
+  color: var(--cor-erro-texto);
+  font-weight: 700;
+  opacity: 1;
 }
 
 /* Celular: faixa em cima do título com o começo do texto; tocar abre o

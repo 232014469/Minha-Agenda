@@ -36,14 +36,14 @@ describe('Lembrete', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
 
-  it('corta o texto em 90 letras, para caber no papel', () => {
+  it('não passa do teto de letras', () => {
     render(<Lembrete />)
 
     fireEvent.change(screen.getByLabelText('Lembrete'), {
       target: { value: 'a'.repeat(250) },
     })
 
-    expect(screen.getByLabelText('Lembrete').value).toHaveLength(90)
+    expect(screen.getByLabelText('Lembrete').value).toHaveLength(200)
   })
 
   it('abrir vazio não conta como mudança para os outros aparelhos', () => {

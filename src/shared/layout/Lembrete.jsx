@@ -5,8 +5,8 @@ import { EVENTO_EXTRAS_RECEBIDOS, marcarExtra } from '../../sync/extras'
 import './Lembrete.css'
 
 const CHAVE = `${APP.chaveDosDados}.lembrete`
-// Cabe inteiro nas 6 linhas do papel, sem rolagem
-const LIMITE_DO_LEMBRETE = 90
+// Teto de letras; na prática o limite é o que cabe no papel (ver Bilhete)
+const LIMITE_DO_LEMBRETE = 200
 
 function lerLembrete() {
   try {
@@ -106,8 +106,29 @@ export default function Lembrete({ compacto = false }) {
   return <Bilhete id={id} texto={texto} mudar={mudar} />
 }
 
-/** O bilhetinho em si: fita, título, texto e quantas letras ainda cabem. */
+/**
+ * O bilhetinho em si: fita, título e o texto. O papel tem tamanho fixo (6
+ * linhas): o que não cabe nele não entra, para nunca precisar rolar. O
+ * limite de letras é só um teto; na prática vale o que cabe no papel.
+ */
 function Bilhete({ id, texto, mudar, focar = false, children }) {
+  const [cheio, setCheio] = useState(false)
+
+  function escrever(evento) {
+    const campo = evento.target
+    const novo = campo.value
+
+    // Passou do papel (e está crescendo)? Não entra; o campo volta ao texto
+    // de antes. Apagar sempre pode.
+    if (novo.length > texto.length && campo.scrollHeight > campo.clientHeight) {
+      setCheio(true)
+      return
+    }
+
+    setCheio(false)
+    mudar(evento)
+  }
+
   return (
     <section className="lembrete" aria-label="Quadro de lembrete">
       <span className="lembrete-fita" aria-hidden="true" />
@@ -117,14 +138,17 @@ function Bilhete({ id, texto, mudar, focar = false, children }) {
       <textarea
         id={id}
         value={texto}
-        onChange={mudar}
+        onChange={escrever}
         maxLength={LIMITE_DO_LEMBRETE}
         rows={6}
         autoFocus={focar}
         placeholder="Escreva aqui o que não pode esquecer…"
       />
-      <span className="lembrete-contador" aria-hidden="true">
-        {texto.length}/{LIMITE_DO_LEMBRETE}
+      <span
+        className={`lembrete-contador${cheio ? ' cheio' : ''}`}
+        role={cheio ? 'status' : undefined}
+      >
+        {cheio ? 'Papel cheio' : ''}
       </span>
       {children}
     </section>
