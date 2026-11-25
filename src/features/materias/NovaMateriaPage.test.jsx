@@ -123,4 +123,26 @@ describe('Cor da matéria', () => {
       expect(salvas()[0].cargaHoraria).toBe(90)
     })
   })
+
+  it('troca entre as matérias do curso e o plano de formatura', () => {
+    abrir()
+
+    const curso = screen.getByRole('button', { name: 'Matérias do curso' })
+    const plano = screen.getByRole('button', { name: 'Plano de formatura' })
+
+    expect(curso).toHaveAttribute('aria-pressed', 'true')
+    expect(
+      screen.queryByRole('heading', { name: 'Plano de formatura' }),
+    ).not.toBeInTheDocument()
+
+    fireEvent.click(plano)
+
+    expect(plano).toHaveAttribute('aria-pressed', 'true')
+    expect(
+      screen.getByRole('heading', { name: 'Plano de formatura' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'Fluxograma' }),
+    ).not.toBeInTheDocument()
+  })
 })

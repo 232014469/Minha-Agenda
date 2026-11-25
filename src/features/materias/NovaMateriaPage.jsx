@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { CORES, nomeDoSemestre } from '../../dados/armazenamento'
 import { useDados } from '../../dados/useDados'
@@ -34,6 +34,40 @@ export default function NovaMateriaPage() {
   const [carga, setCarga] = useState(CARGA_PADRAO)
   const [adicionada, setAdicionada] = useState(null)
   const campoNome = useRef(null)
+  // Embaixo do formulário: as matérias do curso (fluxograma/histórico) ou o
+  // plano de formatura, como as vistas da Agenda
+  const [vista, setVista] = useState('curso')
+  const vistasRef = useRef(null)
+
+  // O destaque corre até o botão escolhido (medindo o botão, como na Agenda)
+  useLayoutEffect(() => {
+    const grupo = vistasRef.current
+
+    if (!grupo) return undefined
+
+    function posicionar() {
+      const ativo = grupo.querySelector('button[aria-pressed="true"]')
+      const marcador = grupo.querySelector('.materias-vistas-marcador')
+
+      if (!ativo || !marcador) return
+
+      marcador.style.transform = `translate(${ativo.offsetLeft}px, ${ativo.offsetTop}px)`
+      marcador.style.width = `${ativo.offsetWidth}px`
+      marcador.style.height = `${ativo.offsetHeight}px`
+      // Só anima depois de já estar no lugar (não corre ao abrir a tela)
+      requestAnimationFrame(() => grupo.classList.add('pronto'))
+    }
+
+    posicionar()
+
+    if (typeof ResizeObserver === 'undefined') return undefined
+
+    const observador = new ResizeObserver(posicionar)
+
+    observador.observe(grupo)
+
+    return () => observador.disconnect()
+  }, [vista])
 
   /** O "+" do fluxograma traz a disciplina para o formulário. */
   function cursar(disciplina) {
@@ -156,9 +190,36 @@ export default function NovaMateriaPage() {
         )}
       </section>
 
-      <PlanoDeFormatura aoCadastrar={cursar} />
+      <div
+        className="materias-vistas"
+        role="group"
+        aria-label="Vista"
+        ref={vistasRef}
+      >
+        <span className="materias-vistas-marcador" aria-hidden="true" />
+        <button
+          type="button"
+          aria-pressed={vista === 'curso'}
+          onClick={() => setVista('curso')}
+        >
+          Matérias do curso
+        </button>
+        <button
+          type="button"
+          aria-pressed={vista === 'plano'}
+          onClick={() => setVista('plano')}
+        >
+          Plano de formatura
+        </button>
+      </div>
 
-      <Fluxograma aoCursar={cursar} />
+      <div key={vista} className="materias-vista">
+        {vista === 'plano' ? (
+          <PlanoDeFormatura aoCadastrar={cursar} />
+        ) : (
+          <Fluxograma aoCursar={cursar} />
+        )}
+      </div>
     </div>
   )
 }
