@@ -207,17 +207,168 @@
   transition: transform 0.2s ease-out;
 }
 
-/* Jogado fora: voa para longe e some */
+/* Jogado fora: a folha amassa numa bolinha de papel (o texto some, as
+   dobras aparecem, o contorno vira um bolo irregular) e a bolinha é jogada
+   para o lado do arrasto, ou cai, se foi pela lixeira */
 .lembrete.saindo {
   z-index: 2;
   pointer-events: none;
-  animation: lembrete-voa 0.32s ease-in forwards;
+  animation: lembrete-amassa 0.7s cubic-bezier(0.5, 0, 0.6, 1) forwards;
 }
 
-@keyframes lembrete-voa {
+.lembrete.saindo > * {
+  animation: lembrete-some 0.2s ease-out forwards;
+}
+
+/* As dobras do papel amassado */
+.lembrete.saindo::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 30%,
+      rgb(0 0 0 / 0.14) 31%,
+      transparent 40%
+    ),
+    linear-gradient(
+      35deg,
+      transparent 50%,
+      rgb(255 255 255 / 0.35) 51%,
+      transparent 60%
+    ),
+    linear-gradient(
+      160deg,
+      transparent 58%,
+      rgb(0 0 0 / 0.16) 59%,
+      transparent 70%
+    ),
+    linear-gradient(
+      80deg,
+      transparent 18%,
+      rgb(0 0 0 / 0.1) 19%,
+      transparent 28%
+    ),
+    radial-gradient(circle at 35% 30%, transparent 30%, rgb(0 0 0 / 0.22) 85%);
+  content: '';
+  opacity: 0;
+  animation: lembrete-dobras 0.7s ease-out forwards;
+}
+
+@keyframes lembrete-amassa {
+  0% {
+    clip-path: polygon(
+      0 0,
+      33% 0,
+      66% 0,
+      100% 0,
+      100% 33%,
+      100% 66%,
+      100% 100%,
+      66% 100%,
+      33% 100%,
+      0 100%,
+      0 66%,
+      0 33%
+    );
+    transform: translate(var(--solto-x), var(--solto-y)) rotate(var(--solto-r));
+  }
+
+  30% {
+    clip-path: polygon(
+      6% 10%,
+      30% 4%,
+      70% 12%,
+      94% 2%,
+      88% 36%,
+      98% 70%,
+      90% 96%,
+      62% 86%,
+      30% 98%,
+      4% 90%,
+      12% 60%,
+      2% 30%
+    );
+    transform: translate(var(--solto-x), var(--solto-y))
+      rotate(calc(var(--solto-r) - 6deg)) scale(0.86, 0.78) skew(-5deg, 3deg);
+  }
+
+  58% {
+    clip-path: polygon(
+      22% 18%,
+      44% 8%,
+      64% 16%,
+      84% 20%,
+      90% 46%,
+      86% 68%,
+      74% 88%,
+      52% 92%,
+      30% 86%,
+      14% 72%,
+      8% 48%,
+      12% 28%
+    );
+    transform: translate(var(--solto-x), var(--solto-y))
+      rotate(calc(var(--solto-r) + 30deg)) scale(0.3);
+  }
+
+  /* Um apertinho final na bolinha antes de jogar */
+  68% {
+    clip-path: polygon(
+      24% 20%,
+      46% 10%,
+      62% 18%,
+      82% 24%,
+      88% 46%,
+      84% 66%,
+      72% 86%,
+      52% 90%,
+      32% 84%,
+      16% 70%,
+      10% 48%,
+      14% 30%
+    );
+    opacity: 1;
+    transform: translate(var(--solto-x), var(--solto-y))
+      rotate(calc(var(--solto-r) + 40deg)) scale(0.34);
+  }
+
+  100% {
+    clip-path: polygon(
+      24% 20%,
+      46% 10%,
+      62% 18%,
+      82% 24%,
+      88% 46%,
+      84% 66%,
+      72% 86%,
+      52% 90%,
+      32% 84%,
+      16% 70%,
+      10% 48%,
+      14% 30%
+    );
+    opacity: 0;
+    transform: translate(var(--voa-x), var(--voa-y))
+      rotate(calc(var(--solto-r) + 260deg)) scale(0.26);
+  }
+}
+
+@keyframes lembrete-some {
   to {
     opacity: 0;
-    transform: translate(var(--voa-x), var(--voa-y)) rotate(28deg) scale(0.7);
+  }
+}
+
+@keyframes lembrete-dobras {
+  20% {
+    opacity: 0.6;
+  }
+
+  60%,
+  100% {
+    opacity: 1;
   }
 }
 

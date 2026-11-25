@@ -11,8 +11,8 @@ const LIMITE_DO_LEMBRETE = 200
 const MAXIMO_DE_LEMBRETES = 5
 /** Quanto arrastar (em px) para o bilhete ir para o lixo. */
 const DISTANCIA_PARA_JOGAR_FORA = 90
-/** Quanto dura o bilhete voando para fora (ver o CSS). */
-const VOO_MS = 320
+/** Quanto dura o bilhete amassando e sendo jogado (ver o CSS). */
+const AMASSAR_MS = 700
 
 /** Dá para animar o voo? (sem matchMedia ou com menos movimento, não) */
 function podeAnimar() {
@@ -318,13 +318,15 @@ function Bilhete({ id, texto, escrever, jogarFora, focar }) {
     escrever(novoTexto)
   }
 
-  function jogar(direcao = { x: 1, y: -0.3 }) {
+  // Amassa a folha onde ela está (onde foi solta, se foi arrastada) e joga
+  // a bolinha para o lado do arrasto; pela lixeira, ela cai
+  function jogar(direcao = { x: 0.35, y: 1 }, solto = { x: 0, y: 0 }) {
     if (!podeAnimar()) {
       jogarFora()
       return
     }
-    setSaindo(direcao)
-    setTimeout(jogarFora, VOO_MS)
+    setSaindo({ direcao, solto })
+    setTimeout(jogarFora, AMASSAR_MS)
   }
 
   function pegar(evento) {
@@ -349,7 +351,7 @@ function Bilhete({ id, texto, escrever, jogarFora, focar }) {
     const distancia = Math.hypot(arrasto?.x ?? 0, arrasto?.y ?? 0)
 
     if (distancia >= DISTANCIA_PARA_JOGAR_FORA) {
-      jogar({ x: arrasto.x / distancia, y: arrasto.y / distancia })
+      jogar({ x: arrasto.x / distancia, y: arrasto.y / distancia }, arrasto)
     }
     setArrasto(null)
   }
@@ -358,7 +360,13 @@ function Bilhete({ id, texto, escrever, jogarFora, focar }) {
     arrasto && Math.hypot(arrasto.x, arrasto.y) >= DISTANCIA_PARA_JOGAR_FORA
 
   const estilo = saindo
-    ? { '--voa-x': `${saindo.x * 260}px`, '--voa-y': `${saindo.y * 260}px` }
+    ? {
+        '--solto-x': `${saindo.solto.x}px`,
+        '--solto-y': `${saindo.solto.y}px`,
+        '--solto-r': `${saindo.solto.x / 12}deg`,
+        '--voa-x': `${saindo.solto.x + saindo.direcao.x * 160}px`,
+        '--voa-y': `${saindo.solto.y + saindo.direcao.y * 160}px`,
+      }
     : arrasto
       ? {
           transform: `translate(${arrasto.x}px, ${arrasto.y}px) rotate(${arrasto.x / 12}deg)`,
