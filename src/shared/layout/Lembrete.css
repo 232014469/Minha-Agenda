@@ -170,12 +170,6 @@
 
 .lembrete-pilha .lembrete {
   margin: 0;
-  touch-action: none;
-  cursor: grab;
-}
-
-.lembrete-pilha .lembrete textarea {
-  cursor: text;
 }
 
 .lembrete-folha-atras {
@@ -192,24 +186,9 @@
   rotate: calc(var(--atras) * 2.6deg - 0.4deg);
 }
 
-/* Arrastando: segue o dedo, sem a demora da transição */
-.lembrete.arrastando {
-  z-index: 2;
-  cursor: grabbing;
-  box-shadow: 0 14px 30px rgb(var(--sombra) / 0.3);
-}
-
-.lembrete.longe {
-  opacity: 0.7;
-}
-
-.lembrete:not(.arrastando, .saindo) {
-  transition: transform 0.2s ease-out;
-}
-
 /* Jogado fora: a folha amassa numa bolinha de papel (o texto some, as
-   dobras aparecem, o contorno vira um bolo irregular) e a bolinha é jogada
-   para o lado do arrasto, ou cai, se foi pela lixeira */
+   dobras aparecem, o contorno vira um bolo irregular), sobe um pouquinho e
+   cai dentro da lixeira (--ate-x/--ate-y: do meio do papel até ela) */
 .lembrete.saindo {
   z-index: 2;
   pointer-events: none;
@@ -272,7 +251,7 @@
       0 66%,
       0 33%
     );
-    transform: translate(var(--solto-x), var(--solto-y)) rotate(var(--solto-r));
+    transform: translate(0, 0) rotate(0deg);
   }
 
   30% {
@@ -290,8 +269,8 @@
       12% 60%,
       2% 30%
     );
-    transform: translate(var(--solto-x), var(--solto-y))
-      rotate(calc(var(--solto-r) - 6deg)) scale(0.86, 0.78) skew(-5deg, 3deg);
+    transform: translate(0, 0) rotate(calc(0deg - 6deg)) scale(0.86, 0.78)
+      skew(-5deg, 3deg);
   }
 
   58% {
@@ -309,8 +288,7 @@
       8% 48%,
       12% 28%
     );
-    transform: translate(var(--solto-x), var(--solto-y))
-      rotate(calc(var(--solto-r) + 30deg)) scale(0.3);
+    transform: translate(0, 0) rotate(calc(0deg + 30deg)) scale(0.3);
   }
 
   /* Um apertinho final na bolinha antes de jogar */
@@ -330,10 +308,31 @@
       14% 30%
     );
     opacity: 1;
-    transform: translate(var(--solto-x), var(--solto-y))
-      rotate(calc(var(--solto-r) + 40deg)) scale(0.34);
+    transform: translate(0, 0) rotate(calc(0deg + 40deg)) scale(0.34);
   }
 
+  /* Por cima da lixeira, já bolinha */
+  84% {
+    clip-path: polygon(
+      24% 20%,
+      46% 10%,
+      62% 18%,
+      82% 24%,
+      88% 46%,
+      84% 66%,
+      72% 86%,
+      52% 90%,
+      32% 84%,
+      16% 70%,
+      10% 48%,
+      14% 30%
+    );
+    opacity: 1;
+    transform: translate(var(--ate-x), calc(var(--ate-y) - 46px)) rotate(160deg)
+      scale(0.2);
+  }
+
+  /* E cai para dentro (some atrás da frente da lixeira) */
   100% {
     clip-path: polygon(
       24% 20%,
@@ -349,9 +348,9 @@
       10% 48%,
       14% 30%
     );
-    opacity: 0;
-    transform: translate(var(--voa-x), var(--voa-y))
-      rotate(calc(var(--solto-r) + 260deg)) scale(0.26);
+    opacity: 1;
+    transform: translate(var(--ate-x), calc(var(--ate-y) + 4px)) rotate(220deg)
+      scale(0.12);
   }
 }
 
@@ -372,37 +371,64 @@
   }
 }
 
-.lembrete-rodape {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 22px;
-}
-
-.lembrete-rodape .lembrete-contador {
-  justify-self: auto;
-  white-space: nowrap;
-}
-
-.lembrete.longe .lembrete-contador {
-  color: var(--cor-erro-texto);
-  font-weight: 700;
-  opacity: 1;
-}
-
+/* A lixeira, no canto do papel mas fora dele (não amassa junto). Tocada,
+   cresce e abre a tampa para o bilhete amassado cair dentro; fica na frente
+   da bolinha, que some lá dentro */
 .lembrete-lixo {
-  padding: 2px 4px;
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   border: 0;
+  border-radius: 50%;
   background: none;
-  font-size: 0.85rem;
+  color: var(--cor-texto);
   opacity: 0.45;
   cursor: pointer;
+  transition:
+    scale 0.25s cubic-bezier(0.3, 1.6, 0.5, 1),
+    opacity 0.2s;
+}
+
+.lembrete-lixo svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  overflow: visible;
+}
+
+.lembrete-lixo-corpo {
+  fill: color-mix(in srgb, var(--tema) 22%, var(--cor-papel));
+}
+
+.lembrete-lixo-tampa {
+  transform-origin: 4px 6.5px;
+  transition: rotate 0.25s ease-out;
 }
 
 .lembrete-lixo:hover,
 .lembrete-lixo:focus-visible {
   opacity: 1;
+}
+
+.lembrete-lixo.aberta {
+  opacity: 1;
+  scale: 1.9;
+  translate: -6px -6px;
+  pointer-events: none;
+}
+
+.lembrete-lixo.aberta .lembrete-lixo-tampa {
+  rotate: -38deg;
 }
 
 .lembrete-controles {
@@ -469,7 +495,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lembrete:not(.arrastando, .saindo) {
+  .lembrete-lixo,
+  .lembrete-lixo-tampa {
     transition: none;
   }
+}
+
+/* O aviso de papel cheio fica à esquerda: à direita mora a lixeira */
+.lembrete-pilha .lembrete-contador {
+  justify-self: start;
+  min-height: 1em;
 }

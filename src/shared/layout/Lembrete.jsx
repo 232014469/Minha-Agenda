@@ -9,12 +9,10 @@ const CHAVE = `${APP.chaveDosDados}.lembrete`
 const LIMITE_DO_LEMBRETE = 200
 /** Quantos lembretes cabem na pilha. */
 const MAXIMO_DE_LEMBRETES = 5
-/** Quanto arrastar (em px) para o bilhete ir para o lixo. */
-const DISTANCIA_PARA_JOGAR_FORA = 90
-/** Quanto dura o bilhete amassando e sendo jogado (ver o CSS). */
+/** Quanto dura o bilhete amassando e caindo na lixeira (ver o CSS). */
 const AMASSAR_MS = 700
 
-/** Dá para animar o voo? (sem matchMedia ou com menos movimento, não) */
+/** Dá para animar o descarte? (sem matchMedia ou com menos movimento, não) */
 function podeAnimar() {
   return (
     typeof window.matchMedia === 'function' &&
@@ -62,8 +60,8 @@ function guardarComo(lista) {
 /**
  * Pilha de lembretes: até 5 bilhetinhos presos com fita no alto do menu. O
  * da frente é o que dá para ler e escrever; os outros aparecem atrás, e as
- * setinhas trocam qual fica na frente. Para jogar um fora, é só arrastar o
- * bilhete para longe (ou usar a lixeira): ele voa e libera espaço para o
+ * setinhas trocam qual fica na frente. Para jogar um fora, toca na lixeira:
+ * ela cresce, o bilhete amassa e cai dentro, e libera espaço para o
  * próximo. Tudo é salvo sozinho e vai para os outros aparelhos na
  * sincronização. No celular, `compacto`, vira uma faixa em cima do título;
  * tocar nela abre a pilha por cima da página, como o dia na Agenda.
@@ -205,8 +203,8 @@ export default function Lembrete({ compacto = false }) {
 }
 
 /**
- * A pilha: as folhas de trás, o bilhete da frente (que dá para arrastar
- * pela fita para jogar fora) e os controles embaixo.
+ * A pilha: as folhas de trás, o bilhete da frente (com a lixeira no
+ * canto) e os controles embaixo.
  */
 function Pilha({
   id,
@@ -290,15 +288,15 @@ function Pilha({
 
 /**
  * O bilhetinho da frente: fita, título e o texto. O papel tem tamanho fixo
- * (6 linhas): o que não cabe não entra, para nunca precisar rolar. Arrastado
- * pela fita (ou pelo papel, fora do texto) para longe, ele voa para o lixo;
- * solto perto, volta para o lugar.
+ * (6 linhas): o que não cabe não entra, para nunca precisar rolar. A
+ * lixeira fica no canto, fora do papel (para não amassar junto): tocada, ela
+ * cresce e abre a tampa, e o bilhete amassa numa bolinha que cai dentro.
  */
 function Bilhete({ id, texto, escrever, jogarFora, focar }) {
   const [cheio, setCheio] = useState(false)
-  const [arrasto, setArrasto] = useState(null)
   const [saindo, setSaindo] = useState(null)
-  const inicio = useRef(null)
+  const papel = useRef(null)
+  const lixeira = useRef(null)
 
   function mudar(evento) {
     const campo = evento.target
@@ -318,102 +316,73 @@ function Bilhete({ id, texto, escrever, jogarFora, focar }) {
     escrever(novoTexto)
   }
 
-  // Amassa a folha onde ela está (onde foi solta, se foi arrastada) e joga
-  // a bolinha para o lado do arrasto; pela lixeira, ela cai
-  function jogar(direcao = { x: 0.35, y: 1 }, solto = { x: 0, y: 0 }) {
+  function jogar() {
+    if (saindo) return
     if (!podeAnimar()) {
       jogarFora()
       return
     }
-    setSaindo({ direcao, solto })
+
+    // Quanto a bolinha anda: do meio do papel até o meio da lixeira
+    const de = papel.current.getBoundingClientRect()
+    const para = lixeira.current.getBoundingClientRect()
+
+    setSaindo({
+      x: para.left + para.width / 2 - (de.left + de.width / 2),
+      y: para.top + para.height / 2 - (de.top + de.height / 2),
+    })
     setTimeout(jogarFora, AMASSAR_MS)
   }
 
-  function pegar(evento) {
-    if (saindo || evento.target.closest('textarea, button')) return
-    inicio.current = { x: evento.clientX, y: evento.clientY }
-    evento.currentTarget.setPointerCapture?.(evento.pointerId)
-    setArrasto({ x: 0, y: 0 })
-  }
-
-  function mover(evento) {
-    if (!inicio.current) return
-    setArrasto({
-      x: evento.clientX - inicio.current.x,
-      y: evento.clientY - inicio.current.y,
-    })
-  }
-
-  function soltar() {
-    if (!inicio.current) return
-    inicio.current = null
-
-    const distancia = Math.hypot(arrasto?.x ?? 0, arrasto?.y ?? 0)
-
-    if (distancia >= DISTANCIA_PARA_JOGAR_FORA) {
-      jogar({ x: arrasto.x / distancia, y: arrasto.y / distancia }, arrasto)
-    }
-    setArrasto(null)
-  }
-
-  const longe =
-    arrasto && Math.hypot(arrasto.x, arrasto.y) >= DISTANCIA_PARA_JOGAR_FORA
-
-  const estilo = saindo
-    ? {
-        '--solto-x': `${saindo.solto.x}px`,
-        '--solto-y': `${saindo.solto.y}px`,
-        '--solto-r': `${saindo.solto.x / 12}deg`,
-        '--voa-x': `${saindo.solto.x + saindo.direcao.x * 160}px`,
-        '--voa-y': `${saindo.solto.y + saindo.direcao.y * 160}px`,
-      }
-    : arrasto
-      ? {
-          transform: `translate(${arrasto.x}px, ${arrasto.y}px) rotate(${arrasto.x / 12}deg)`,
-        }
-      : undefined
-
   return (
-    <section
-      className={`lembrete${arrasto ? ' arrastando' : ''}${longe ? ' longe' : ''}${saindo ? ' saindo' : ''}`}
-      aria-label="Quadro de lembrete"
-      style={estilo}
-      onPointerDown={pegar}
-      onPointerMove={mover}
-      onPointerUp={soltar}
-      onPointerCancel={soltar}
-      title="Arraste para longe para jogar fora"
-    >
-      <span className="lembrete-fita" aria-hidden="true" />
-      <label className="lembrete-titulo" htmlFor={id}>
-        Lembrete
-      </label>
-      <textarea
-        id={id}
-        value={texto}
-        onChange={mudar}
-        maxLength={LIMITE_DO_LEMBRETE}
-        rows={6}
-        autoFocus={focar}
-        placeholder="Escreva aqui o que não pode esquecer…"
-      />
-      <div className="lembrete-rodape">
+    <>
+      <section
+        ref={papel}
+        className={`lembrete${saindo ? ' saindo' : ''}`}
+        aria-label="Quadro de lembrete"
+        style={
+          saindo
+            ? { '--ate-x': `${saindo.x}px`, '--ate-y': `${saindo.y}px` }
+            : undefined
+        }
+      >
+        <span className="lembrete-fita" aria-hidden="true" />
+        <label className="lembrete-titulo" htmlFor={id}>
+          Lembrete
+        </label>
+        <textarea
+          id={id}
+          value={texto}
+          onChange={mudar}
+          maxLength={LIMITE_DO_LEMBRETE}
+          rows={6}
+          autoFocus={focar}
+          placeholder="Escreva aqui o que não pode esquecer…"
+        />
         <span
           className={`lembrete-contador${cheio ? ' cheio' : ''}`}
           role={cheio ? 'status' : undefined}
         >
-          {longe ? 'Solte para jogar fora' : cheio ? 'Papel cheio' : ''}
+          {cheio ? 'Papel cheio' : ''}
         </span>
-        <button
-          type="button"
-          className="lembrete-lixo"
-          aria-label="Jogar este lembrete fora"
-          title="Jogar fora"
-          onClick={() => jogar()}
-        >
-          🗑
-        </button>
-      </div>
-    </section>
+      </section>
+      <button
+        ref={lixeira}
+        type="button"
+        className={`lembrete-lixo${saindo ? ' aberta' : ''}`}
+        aria-label="Jogar este lembrete fora"
+        title="Jogar fora"
+        onClick={jogar}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <g className="lembrete-lixo-tampa">
+            <path d="M4 6.5h16" />
+            <path d="M9.5 6.5V4.5h5v2" />
+          </g>
+          <path className="lembrete-lixo-corpo" d="M6 6.5l1 14h10l1-14" />
+          <path d="M10.2 10.5v6.5M13.8 10.5v6.5" />
+        </svg>
+      </button>
+    </>
   )
 }
