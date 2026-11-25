@@ -166,6 +166,8 @@
 .lembrete-pilha-folhas {
   position: relative;
   display: grid;
+  /* Espaço para as folhas de trás espiarem sem cobrir os botões */
+  margin-bottom: calc(var(--folhas, 0) * 5px + var(--folhas, 0) * 3px);
 }
 
 .lembrete-pilha .lembrete {
@@ -183,7 +185,7 @@
   );
   box-shadow: 0 3px 8px rgb(var(--sombra) / 0.12);
   translate: calc(var(--atras) * 5px) calc(var(--atras) * 5px);
-  rotate: calc(var(--atras) * 2.6deg - 0.4deg);
+  rotate: calc(var(--atras) * 1.6deg);
 }
 
 /* Jogado fora: a folha amassa numa bolinha de papel (o texto some, as
@@ -432,6 +434,8 @@
 }
 
 .lembrete-controles {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
