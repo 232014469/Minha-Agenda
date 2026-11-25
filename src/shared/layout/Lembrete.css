@@ -413,7 +413,7 @@
 }
 
 .lembrete-lixo-tampa {
-  transform-origin: 4px 6.5px;
+  transform-origin: 20px 6.5px;
   transition: rotate 0.25s ease-out;
 }
 
@@ -430,7 +430,7 @@
 }
 
 .lembrete-lixo.aberta .lembrete-lixo-tampa {
-  rotate: -38deg;
+  rotate: 38deg;
 }
 
 .lembrete-controles {
