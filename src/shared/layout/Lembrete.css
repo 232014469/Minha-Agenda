@@ -155,3 +155,170 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* Pilha de até 5 bilhetes: o da frente e as folhas de trás espiando */
+.lembrete-pilha {
+  display: grid;
+  gap: 6px;
+  margin: 14px 10px 24px;
+}
+
+.lembrete-pilha-folhas {
+  position: relative;
+  display: grid;
+}
+
+.lembrete-pilha .lembrete {
+  margin: 0;
+  touch-action: none;
+  cursor: grab;
+}
+
+.lembrete-pilha .lembrete textarea {
+  cursor: text;
+}
+
+.lembrete-folha-atras {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px 4px 14px 4px;
+  background: color-mix(
+    in srgb,
+    var(--tema) calc(14% + var(--atras) * 4%),
+    var(--cor-papel)
+  );
+  box-shadow: 0 3px 8px rgb(var(--sombra) / 0.12);
+  translate: calc(var(--atras) * 5px) calc(var(--atras) * 5px);
+  rotate: calc(var(--atras) * 2.6deg - 0.4deg);
+}
+
+/* Arrastando: segue o dedo, sem a demora da transição */
+.lembrete.arrastando {
+  z-index: 2;
+  cursor: grabbing;
+  box-shadow: 0 14px 30px rgb(var(--sombra) / 0.3);
+}
+
+.lembrete.longe {
+  opacity: 0.7;
+}
+
+.lembrete:not(.arrastando, .saindo) {
+  transition: transform 0.2s ease-out;
+}
+
+/* Jogado fora: voa para longe e some */
+.lembrete.saindo {
+  z-index: 2;
+  pointer-events: none;
+  animation: lembrete-voa 0.32s ease-in forwards;
+}
+
+@keyframes lembrete-voa {
+  to {
+    opacity: 0;
+    transform: translate(var(--voa-x), var(--voa-y)) rotate(28deg) scale(0.7);
+  }
+}
+
+.lembrete-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.lembrete-rodape .lembrete-contador {
+  justify-self: auto;
+  white-space: nowrap;
+}
+
+.lembrete.longe .lembrete-contador {
+  color: var(--cor-erro-texto);
+  font-weight: 700;
+  opacity: 1;
+}
+
+.lembrete-lixo {
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  font-size: 0.85rem;
+  opacity: 0.45;
+  cursor: pointer;
+}
+
+.lembrete-lixo:hover,
+.lembrete-lixo:focus-visible {
+  opacity: 1;
+}
+
+.lembrete-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.78rem;
+}
+
+.lembrete-controles button {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tema) 12%, transparent);
+  color: var(--cor-texto);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lembrete-controles button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lembrete-controles .lembrete-pronto {
+  margin: 0 0 0 auto;
+  border: 0;
+  background: var(--tema);
+  color: #fff;
+}
+
+.lembrete-qual {
+  opacity: 0.7;
+}
+
+.lembrete-compacto-quantos {
+  flex: none;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--tema);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.lembrete-janela .lembrete-pilha {
+  gap: 12px;
+  margin: 0;
+}
+
+/* Na janela do celular, os controles ganham um fundo para não sumirem
+   em cima da página */
+.lembrete-janela .lembrete-controles {
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgb(var(--vidro) / 0.94);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lembrete:not(.arrastando, .saindo) {
+    transition: none;
+  }
+}

@@ -28,7 +28,7 @@ const CANTINHO = {
     alvo: '.lembrete, .lembrete-compacto',
     titulo: 'Lembrete',
     texto:
-      'Escreva aqui o que não pode esquecer (o quanto couber no papel). Ele fica salvo sozinho.',
+      'Escreva aqui o que não pode esquecer: até 5 bilhetes, cada um do tamanho do papel. Arraste um para longe para jogá-lo fora. Tudo fica salvo sozinho.',
   },
 }
 
