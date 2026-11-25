@@ -54,7 +54,7 @@ export function passosDoTutorial(cantinho = 'gatinho') {
       alvo: '.layout-links a[href$="adicionar-materia"]',
       titulo: 'Comece pelas matérias',
       texto:
-        'Cadastre as matérias do semestre com a carga horária: é ela que conta o limite de faltas.',
+        'Cadastre as matérias do semestre com a carga horária: é ela que conta o limite de faltas. Lá também fica o plano de formatura, semestre por semestre.',
     },
     {
       alvo: '.layout-links a[href$="agenda"]',

@@ -1,0 +1,379 @@
+/* Plano de formatura (PlanoDeFormatura.jsx): semestres lado a lado, como
+   colunas de um quadro, e em cima as disciplinas para encaixar */
+.plano-topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.plano-topo > div {
+  flex: 1 1 280px;
+}
+
+.plano-resumo {
+  display: grid;
+  flex: 0 1 auto;
+  gap: 2px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tema) 16%, var(--cor-papel));
+  font-size: 0.85rem;
+}
+
+.plano-resumo strong {
+  font-size: 1.05rem;
+}
+
+.plano-resumo-sub {
+  color: var(--cor-texto-suave);
+  font-size: 0.74rem;
+}
+
+.plano-subtitulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+}
+
+.plano-subtitulo span {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tema) 20%, transparent);
+  font-size: 0.72rem;
+}
+
+.plano-faltando ul,
+.plano-semestre ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Com o curso todo para encaixar, a lista rola em vez de empurrar os
+   semestres para longe */
+.plano-faltando ul {
+  max-height: 172px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.plano-semestre ul {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+/* Disciplina para encaixar: uma etiqueta que dá para arrastar */
+.plano-chip,
+.plano-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 6px 6px 6px 10px;
+  border: 1px solid var(--cor-borda);
+  border-left: 4px solid var(--painel-forte, var(--cor-borda-forte));
+  border-radius: 8px;
+  background: var(--cor-papel);
+  font-size: 0.78rem;
+  cursor: grab;
+}
+
+.plano-chip:active,
+.plano-item:active {
+  cursor: grabbing;
+}
+
+.plano-chip-nome,
+.plano-item-nome {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plano-chip-nome {
+  max-width: 220px;
+}
+
+.plano-horas {
+  flex: none;
+  color: var(--cor-texto-suave);
+  font-size: 0.7rem;
+}
+
+/* Menu (select nativo) de cada disciplina: bom no celular também */
+.plano-menu {
+  flex: none;
+  max-width: 92px;
+  padding: 3px 4px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.plano-item-acoes {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.plano-cadastrar {
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tema);
+  color: #fff;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Os semestres: colunas lado a lado, rolando para o lado se precisar */
+.plano-semestres {
+  display: grid;
+  grid-auto-columns: minmax(230px, 1fr);
+  grid-auto-flow: column;
+  align-items: start;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x proximity;
+}
+
+.plano-semestre {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+  min-height: 140px;
+  padding: 10px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tema) 6%, transparent);
+  scroll-snap-align: start;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.plano-semestre.atual {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--tema) 60%, var(--cor-borda));
+}
+
+.plano-semestre.passado {
+  opacity: 0.85;
+}
+
+/* Arrastando algo por cima: a coluna acende */
+.plano-semestre.alvo {
+  border-color: var(--tema);
+  background: color-mix(in srgb, var(--tema) 18%, transparent);
+}
+
+.plano-semestre > header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.plano-semestre h3 {
+  margin: 0 auto 0 0;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.plano-etiqueta {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--tema);
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.plano-etiqueta.aviso {
+  background: var(--cor-erro-texto);
+}
+
+.plano-creditos {
+  color: var(--cor-texto-suave);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.plano-creditos.puxado {
+  color: var(--cor-erro-texto);
+}
+
+.plano-creditos.puxado::before {
+  content: '⚠ ';
+}
+
+.plano-tirar-semestre {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--cor-texto-suave);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.plano-tirar-semestre:hover {
+  background: color-mix(in srgb, var(--cor-erro-texto) 14%, transparent);
+  color: var(--cor-erro-texto);
+}
+
+/* Nas colunas, o nome ocupa a linha toda (até duas linhas); embaixo, as
+   horas e o menu */
+.plano-item {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.plano-item .plano-item-nome {
+  display: -webkit-box;
+  flex: 1 1 100%;
+  overflow: hidden;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.plano-item .plano-item-acoes {
+  margin-left: auto;
+}
+
+.plano-item.cursando {
+  flex-wrap: nowrap;
+}
+
+.plano-item.cursando .plano-item-nome {
+  flex: 1;
+}
+
+/* Matérias já cadastradas no semestre atual */
+.plano-item.cursando {
+  background: var(--painel-fundo, var(--cor-papel));
+  cursor: default;
+}
+
+.plano-vazio {
+  margin: 0;
+  padding: 14px 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.74rem;
+  text-align: center;
+}
+
+.plano-escrever,
+.plano-novo-semestre {
+  border: 0;
+  background: none;
+  color: var(--cor-texto-suave);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.plano-escrever {
+  justify-self: start;
+  padding: 4px 2px;
+}
+
+.plano-escrever:hover,
+.plano-novo-semestre:hover {
+  color: var(--cor-texto);
+}
+
+.plano-novo-semestre {
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  min-height: 140px;
+  border: 1px dashed var(--cor-borda);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.plano-novo-semestre span {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.plano-escrever-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.plano-escrever-form input {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.plano-escrever-form input,
+.plano-escrever-form select,
+.plano-escrever-form button {
+  padding: 5px 8px;
+  border: 1px solid var(--cor-borda-forte);
+  border-radius: 6px;
+  background: var(--cor-papel);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 0.76rem;
+}
+
+.plano-escrever-form button[type='submit'] {
+  border-color: var(--tema);
+  background: var(--tema);
+  color: #fff;
+  font-weight: 700;
+}
+
+.plano-escrever-form button:disabled {
+  opacity: 0.5;
+}
+
+/* Celular: um semestre embaixo do outro */
+@media (max-width: 700px) {
+  .plano-semestres {
+    grid-auto-columns: auto;
+    grid-auto-flow: row;
+    overflow-x: visible;
+  }
+
+  .plano-semestre,
+  .plano-novo-semestre {
+    min-height: 0;
+  }
+
+  .plano-novo-semestre {
+    padding: 12px;
+  }
+
+  .plano-chip-nome {
+    max-width: 160px;
+  }
+}

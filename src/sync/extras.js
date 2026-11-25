@@ -3,8 +3,8 @@ import { APP } from '../config/app'
 /**
  * "Extras": o que fica guardado à parte dos dados (matérias e tarefas), mas
  * que também deve ser igual em todos os aparelhos sincronizados: o lembrete,
- * o tema, o modo claro/escuro, as preferências das Configurações e o
- * bichinho virtual.
+ * o tema, o modo claro/escuro, as preferências das Configurações, o
+ * bichinho virtual e o plano de formatura.
  *
  * Cada extra viaja como o texto guardado no navegador (`valor`) e o momento
  * em que mudou aqui (`em`). Ao juntar dois aparelhos, vale o que mudou por
@@ -18,6 +18,7 @@ export const ITENS_EXTRAS = {
   modo: `${APP.chaveDosDados}.modo`,
   preferencias: `${APP.chaveDosDados}.preferencias`,
   bichinho: 'wolf-study.bichinho',
+  plano: `${APP.chaveDosDados}.plano`,
 }
 
 /** Mudou um extra neste aparelho (a sincronização envia logo depois). */

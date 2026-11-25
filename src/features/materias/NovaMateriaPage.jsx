@@ -10,6 +10,7 @@ import {
   cargaDoHistorico,
   creditosDoFluxograma,
 } from '../faltas/faltas'
+import PlanoDeFormatura from '../plano/PlanoDeFormatura'
 import Fluxograma from './Fluxograma'
 import { lembrarMateriaNova, voarParaODashboard } from './vooDaMateria'
 import './NovaMateriaPage.css'
@@ -83,8 +84,8 @@ export default function NovaMateriaPage() {
     <div className="materias-pagina">
       <h1 className="titulo-pagina">Adicionar matéria</h1>
       <p className="subtitulo-pagina">
-        Cadastre as matérias do semestre. Depois é só lançar as tarefas na
-        Agenda.
+        Cadastre as matérias do semestre e planeje os próximos até a formatura.
+        Depois é só lançar as tarefas na Agenda.
       </p>
 
       <section className="secao-caixa" aria-labelledby="nova-titulo">
@@ -154,6 +155,8 @@ export default function NovaMateriaPage() {
           </p>
         )}
       </section>
+
+      <PlanoDeFormatura aoCadastrar={cursar} />
 
       <Fluxograma aoCursar={cursar} />
     </div>
