@@ -60,7 +60,20 @@ export default function LayoutBase() {
   // Atrasos e faltas deixam o gatinho chateado; tudo em dia, jardim
   // florido. No computador ele vive num bichinho virtual (ver useBichinho)
   // (dá para desligar nas Configurações).
-  const { cantinho, ceu, vidro } = usePreferencias()
+  const { cantinho, ceu, vidro, fonte } = usePreferencias()
+
+  // Tamanho do texto: o CSS (index.css) olha para data-fonte e muda a letra
+  // da página; o que é medido em rem cresce junto
+  useEffect(() => {
+    const raiz = document.documentElement
+
+    if (fonte === 'normal') delete raiz.dataset.fonte
+    else raiz.dataset.fonte = fonte
+
+    return () => {
+      delete raiz.dataset.fonte
+    }
+  }, [fonte])
 
   // Vidro líquido: o CSS (styles/vidro-liquido.css) olha para data-vidro
   useEffect(() => {

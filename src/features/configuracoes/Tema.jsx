@@ -8,14 +8,19 @@ import {
   lerModo,
   lerTema,
 } from '../../config/tema'
-import { mudarPreferencia, usePreferencias } from '../../shared/preferencias'
+import {
+  FONTES,
+  mudarPreferencia,
+  usePreferencias,
+} from '../../shared/preferencias'
 
 /**
  * Escolha da cor e da aparência (claro ou escuro) do app, neste aparelho, e
- * se o céu do topo é animado e os cartões são de vidro líquido.
+ * se o céu do topo é animado, os cartões são de vidro líquido e o tamanho
+ * do texto.
  */
 export default function Tema() {
-  const { ceu, vidro } = usePreferencias()
+  const { ceu, vidro, fonte } = usePreferencias()
   const [atual, setAtual] = useState(lerTema)
   const [modo, setModo] = useState(lerModo)
 
@@ -81,6 +86,28 @@ export default function Tema() {
             />
             <span className="config-tema-amostra" aria-hidden="true" />
             {tema.nome}
+          </label>
+        ))}
+      </fieldset>
+      <fieldset className="config-temas config-fontes">
+        <legend>Tamanho do texto</legend>
+        {FONTES.map((opcao) => (
+          <label key={opcao.id} className="config-tema config-fonte">
+            <input
+              type="radio"
+              name="fonte"
+              value={opcao.id}
+              checked={fonte === opcao.id}
+              onChange={() => mudarPreferencia('fonte', opcao.id)}
+            />
+            <span
+              className="config-fonte-amostra"
+              style={{ fontSize: `${opcao.escala}em` }}
+              aria-hidden="true"
+            >
+              Aa
+            </span>
+            {opcao.nome}
           </label>
         ))}
       </fieldset>

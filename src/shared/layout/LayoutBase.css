@@ -1,6 +1,6 @@
 .layout {
   display: grid;
-  grid-template-columns: 250px minmax(0, 1fr);
+  grid-template-columns: calc(250px * var(--escala)) minmax(0, 1fr);
   min-height: 100svh;
   background: var(--cor-fundo);
   color: var(--cor-texto);

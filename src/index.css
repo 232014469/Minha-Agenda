@@ -9,6 +9,26 @@
   color-scheme: light;
 }
 
+/* Tamanho do texto (Configurações → Tema). Em porcentagem, para somar com
+   o tamanho que a pessoa já escolheu no navegador; tudo em rem acompanha.
+   --escala serve para o que é medido em px e também precisa crescer junto
+   (a largura do menu, das janelas...) */
+:root {
+  --escala: 1;
+}
+
+:root[data-fonte='grande'] {
+  --escala: 1.125;
+
+  font-size: 112.5%;
+}
+
+:root[data-fonte='maior'] {
+  --escala: 1.25;
+
+  font-size: 125%;
+}
+
 *,
 *::before,
 *::after {

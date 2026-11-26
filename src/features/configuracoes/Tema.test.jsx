@@ -93,4 +93,12 @@ describe('Tema', () => {
     fireEvent.click(vidro)
     expect(lerPreferencias().vidro).toBe(false)
   })
+
+  it('escolhe o tamanho do texto', () => {
+    render(<Tema />)
+
+    expect(screen.getByRole('radio', { name: /Normal/ })).toBeChecked()
+    fireEvent.click(screen.getByRole('radio', { name: /Maior/ }))
+    expect(lerPreferencias().fonte).toBe('maior')
+  })
 })

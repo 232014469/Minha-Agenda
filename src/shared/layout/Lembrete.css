@@ -38,7 +38,7 @@
 /* Papel liso, sem linhas, do tamanho de 6 linhas de texto: o que não cabe
    não entra (ver Lembrete.jsx), então nunca rola */
 .lembrete textarea {
-  --linha: 22px;
+  --linha: 1.375rem;
 
   display: block;
   width: 100%;

@@ -20,7 +20,18 @@ describe('preferências do aparelho', () => {
       cantinho: 'gatinho',
       ceu: true,
       vidro: true,
+      fonte: 'normal',
     })
+  })
+
+  it('tamanho de texto desconhecido volta para o normal', () => {
+    localStorage.setItem(
+      'wolf-study.dados.preferencias',
+      JSON.stringify({ fonte: 'gigante' }),
+    )
+    recarregarPreferencias()
+
+    expect(lerPreferencias().fonte).toBe('normal')
   })
 
   it('quem tinha escolhido o lobinho fica com o gatinho marrom', () => {

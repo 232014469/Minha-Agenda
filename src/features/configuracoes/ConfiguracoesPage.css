@@ -363,3 +363,21 @@
   outline: 3px solid var(--cor-lilas-escuro);
   outline-offset: 2px;
 }
+
+/* Tamanho do texto: cada opção mostra um "Aa" do tamanho dela */
+.config-fontes legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 2px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.config-fonte-amostra {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.9em;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  line-height: 1;
+}

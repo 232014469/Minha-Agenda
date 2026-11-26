@@ -9,10 +9,22 @@ import { ehGato } from './gatinhos/gatos'
  * alto do menu (`cantinho`): o gatinho, o relógio de estudo, o cartão "Hoje"
  * ou um quadro de lembrete; e se o céu é animado (`ceu`: sol, nuvens, chuva
  * e lua; desligado, sobram só as estrelas da noite) e se os cartões são de
- * vidro líquido (`vidro`: meio transparentes e embaçados). Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
+ * vidro líquido (`vidro`: meio transparentes e embaçados), e o tamanho do
+ * texto (`fonte`, ver FONTES). Sem ser o gatinho, ele some de todo lugar. Opções que saíram do app
  * são esquecidas ao ler.
  */
 export const CANTINHOS = ['gatinho', 'relogio', 'hoje', 'lembrete']
+
+/**
+ * Tamanho do texto. Todo o app mede as letras em rem, então basta mudar o
+ * tamanho da letra da página (styles em index.css, `data-fonte`) para tudo
+ * crescer junto: textos, botões, cartões e espaços medidos em rem.
+ */
+export const FONTES = [
+  { id: 'normal', nome: 'Normal', escala: 1 },
+  { id: 'grande', nome: 'Grande', escala: 1.125 },
+  { id: 'maior', nome: 'Maior', escala: 1.25 },
+]
 
 const PADRAO = {
   mascote: 'gato01',
@@ -21,6 +33,7 @@ const PADRAO = {
   cantinho: 'gatinho',
   ceu: true,
   vidro: true,
+  fonte: 'normal',
 }
 const CHAVE = `${APP.chaveDosDados}.preferencias`
 const ouvintes = new Set()
@@ -39,6 +52,9 @@ function ler() {
       salvas.cantinho = 'relogio'
     }
     if (!CANTINHOS.includes(salvas.cantinho)) salvas.cantinho = PADRAO.cantinho
+    if (!FONTES.some((fonte) => fonte.id === salvas.fonte)) {
+      salvas.fonte = PADRAO.fonte
+    }
 
     // O lobinho saiu: quem tinha escolhido ele fica com o gatinho padrão.
     if (!ehGato(salvas.mascote)) salvas.mascote = PADRAO.mascote

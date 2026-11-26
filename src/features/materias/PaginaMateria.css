@@ -110,7 +110,7 @@
 /* Caixas */
 .materia-grade {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-columns: minmax(0, 1fr) 17.5rem;
   align-items: start;
   gap: 14px;
 }
